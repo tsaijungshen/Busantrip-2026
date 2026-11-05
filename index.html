@@ -80,12 +80,12 @@
     <!-- 視圖 1: 行程與地圖 -->
     <div id="tab-itinerary" class="space-y-4">
       
-      <!-- 上半部：開源免費向量地圖區塊 -->
+      <!-- 上半部：實際道路導航動線地圖 -->
       <div class="bg-jp-card rounded-2xl p-3 border border-jp-gray shadow-sm space-y-2">
         <div class="flex justify-between items-center text-xs px-1">
           <div class="flex items-center gap-1.5 font-bold text-jp-text">
             <span>🧭</span>
-            <span id="map-header-title">Day 1 開動線地圖 (免 Key 定位)</span>
+            <span id="map-header-title">Day 1 實際自駕路線地圖</span>
           </div>
           <span id="spots-count-badge" class="px-2 py-0.5 bg-jp-accentLight text-jp-accent font-bold rounded-full text-[10px]">
             4 個點位
@@ -101,7 +101,7 @@
         <div class="flex justify-between items-center text-[11px] text-jp-sub px-1 pt-1 border-t border-jp-gray/60">
           <div class="flex items-center gap-1">
             <span>⏱️</span>
-            <span>本日巡訪：<strong id="summary-spot-count" class="text-jp-text">4 個景點</strong></span>
+            <span>本日巡訪：<strong id="summary-spot-count" class="text-jp-text">4 個項目</strong></span>
           </div>
           <div class="flex items-center gap-1">
             <span>⛽</span>
@@ -255,7 +255,7 @@
     </div>
   </main>
 
-  <!-- 精簡後的底部導覽 Tab Bar (僅保留行程、工具、記帳) -->
+  <!-- 底部導覽 Tab Bar -->
   <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-jp-card border-t border-jp-gray px-8 py-2.5 flex justify-between items-center z-30">
     <button onclick="switchTab('itinerary')" id="nav-itinerary" class="flex flex-col items-center gap-0.5 text-jp-accent font-bold">
       <span class="text-lg">📅</span>
@@ -404,10 +404,10 @@
       renderDayContent(currentDayIndex);
     }
 
-    function renderDayContent(index) {
+    async function renderDayContent(index) {
       const data = itineraryData[index];
 
-      document.getElementById('map-header-title').textContent = `Day ${data.day} 開動線地圖 (免 Key 定位)`;
+      document.getElementById('map-header-title').textContent = `Day ${data.day} 實際自駕路線地圖`;
       document.getElementById('day-date-title').textContent = data.dateStr;
       document.getElementById('day-main-title').textContent = data.title;
       document.getElementById('weather-badge').querySelector('span:last-child').textContent = data.weather;
@@ -422,35 +422,59 @@
       markersGroup.clearLayers();
       if (polylineLayer) map.removeLayer(polylineLayer);
 
-      const latLngs = [];
+      const validSpots = filteredSpots.filter(s => s.lat && s.lng);
 
-      filteredSpots.forEach((spot, idx) => {
-        if (spot.lat && spot.lng) {
-          const customIcon = L.divIcon({
-            className: 'custom-map-pin',
-            html: `${idx + 1}`,
-            iconSize: [24, 24],
-            iconAnchor: [12, 12]
-          });
+      validSpots.forEach((spot, idx) => {
+        const customIcon = L.divIcon({
+          className: 'custom-map-pin',
+          html: `${idx + 1}`,
+          iconSize: [24, 24],
+          iconAnchor: [12, 12]
+        });
 
-          const marker = L.marker([spot.lat, spot.lng], { icon: customIcon }).addTo(markersGroup);
-          marker.bindPopup(`<b>${idx + 1}. ${spot.name}</b><br><span style="font-size:11px;">${spot.desc}</span>`);
-          latLngs.push([spot.lat, spot.lng]);
-        }
+        const marker = L.marker([spot.lat, spot.lng], { icon: customIcon }).addTo(markersGroup);
+        marker.bindPopup(`<b>${idx + 1}. ${spot.name}</b><br><span style="font-size:11px;">${spot.desc}</span>`);
       });
 
-      if (latLngs.length > 0) {
-        polylineLayer = L.polyline(latLngs, { color: '#5A6B5C', weight: 3, dashArray: '6, 6' }).addTo(map);
-        map.fitBounds(L.latLngBounds(latLngs), { padding: [30, 30] });
+      if (validSpots.length >= 2) {
+        try {
+          const coordsString = validSpots.map(s => `${s.lng},${s.lat}`).join(';');
+          const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${coordsString}?overview=full&geometries=geojson`);
+          const routeData = await res.json();
+
+          if (routeData.routes && routeData.routes.length > 0) {
+            const routeCoords = routeData.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+            polylineLayer = L.polyline(routeCoords, { color: '#5A6B5C', weight: 4, opacity: 0.85 }).addTo(map);
+            map.fitBounds(polylineLayer.getBounds(), { padding: [30, 30] });
+          } else {
+            fallbackStraightLine(validSpots);
+          }
+        } catch (e) {
+          fallbackStraightLine(validSpots);
+        }
+      } else if (validSpots.length === 1) {
+        map.setView([validSpots[0].lat, validSpots[0].lng], 14);
+      } else {
+        map.setView([35.1795, 129.0756], 11);
       }
 
       const container = document.getElementById('spots-container');
+      if (filteredSpots.length === 0) {
+        container.innerHTML = `
+          <div class="bg-jp-card p-6 rounded-2xl border border-jp-gray text-center text-jp-sub space-y-2">
+            <div class="text-2xl">☕</div>
+            <div class="text-xs font-bold text-jp-text">本日無此類別項目</div>
+            <div class="text-[11px]">您可以切換至「全部」或點選其他天數查看行程！</div>
+          </div>
+        `;
+        return;
+      }
+
       container.innerHTML = filteredSpots.map((spot, idx) => {
         const isNavigable = ['spot', 'dining', 'shopping', 'hotel'].includes(spot.type);
 
         return `
           <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
-            
             <div class="flex justify-between items-center">
               <div class="flex items-center gap-1.5">
                 <span class="w-6 h-6 rounded-full bg-jp-accent text-white flex items-center justify-center text-xs font-bold">
@@ -492,10 +516,15 @@
               ${spot.parking ? `<div class="flex items-center gap-1.5"><span>🅿️</span><span>停車費率估算：${spot.parking}</span></div>` : ''}
               ${spot.gas ? `<div class="flex items-center gap-1.5"><span>⛽</span><span>周邊加油站：${spot.gas}</span></div>` : ''}
             </div>
-
           </div>
         `;
       }).join('');
+    }
+
+    function fallbackStraightLine(validSpots) {
+      const latLngs = validSpots.map(s => [s.lat, s.lng]);
+      polylineLayer = L.polyline(latLngs, { color: '#5A6B5C', weight: 3, dashArray: '6, 6' }).addTo(map);
+      map.fitBounds(L.latLngBounds(latLngs), { padding: [30, 30] });
     }
 
     function switchTab(tabId) {
