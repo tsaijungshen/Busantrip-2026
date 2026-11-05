@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>釜山自駕旅遊導航手帳 (Koro 停車地圖整合版)</title>
+  <title>釜山自駕旅遊導航手帳 (匯率即時連線與韓文對話版)</title>
   
   <link rel="manifest" href="data:application/json,{
     \"name\": \"釜山自駕旅遊導航\",
@@ -105,7 +105,7 @@
           </span>
         </div>
 
-        <!-- 互動地圖容器 (約 1/2 版面 48vh) -->
+        <!-- 互動地圖容器 -->
         <div class="h-[48vh] w-full rounded-xl overflow-hidden relative shadow-inner">
           <div id="map"></div>
         </div>
@@ -147,11 +147,64 @@
       <div id="spots-container" class="space-y-3"></div>
     </div>
 
-    <!-- 視圖 2: 隨身工具箱 -->
+    <!-- 視圖 2: 隨身工具箱 (包含點餐/問路韓語對話) -->
     <div id="tab-toolkit" class="hidden space-y-4">
       <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">✈️ 隨身資訊與工具箱</h2>
+
+      <!-- 🗣️ 實用韓語對話卡片 (點餐與問路) -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
+        <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
+          <span>🗣️</span> 實用韓文對話 (點餐、問路與自駕)
+        </h3>
+
+        <!-- 點餐情境 -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-bold text-jp-warm border-b border-jp-gray pb-1">🍜 餐廳點餐與結帳</div>
+          
+          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
+            <div class="font-bold text-jp-text">請給我這個：</div>
+            <div class="text-jp-accent font-medium">이거 주세요.</div>
+            <div class="text-[10px] text-jp-sub italic">發音：I-geo ju-se-yo.</div>
+          </div>
+
+          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
+            <div class="font-bold text-jp-text">請給我菜單 / 小菜：</div>
+            <div class="text-jp-accent font-medium">메뉴판 / 반찬 좀 주세요.</div>
+            <div class="text-[10px] text-jp-sub italic">發音：Me-nyu-pan / Ban-chan jom ju-se-yo.</div>
+          </div>
+
+          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
+            <div class="font-bold text-jp-text">請問能算便宜一點嗎 / 請結帳：</div>
+            <div class="text-jp-accent font-medium">계산해 주세요.</div>
+            <div class="text-[10px] text-jp-sub italic">發音：Gye-san-hae ju-se-yo.</div>
+          </div>
+        </div>
+
+        <!-- 問路與自駕情境 -->
+        <div class="space-y-2 pt-1">
+          <div class="text-[11px] font-bold text-jp-warm border-b border-jp-gray pb-1">🚗 問路與停車求助</div>
+          
+          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
+            <div class="font-bold text-jp-text">請問停車場在哪裡？</div>
+            <div class="text-jp-accent font-medium">주차장이 어디에 있어요?</div>
+            <div class="text-[10px] text-jp-sub italic">發音：Ju-cha-jang-i eo-di-e is-seo-yo?</div>
+          </div>
+
+          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
+            <div class="font-bold text-jp-text">請問洗手間在哪裡？</div>
+            <div class="text-jp-accent font-medium">화장실이 어디예요?</div>
+            <div class="text-[10px] text-jp-sub italic">發音：Hwa-jang-sil-i eo-di-ye-yo?</div>
+          </div>
+
+          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
+            <div class="font-bold text-jp-text">刷卡失敗時（對講機求助）：</div>
+            <div class="text-jp-accent font-medium">신용카드가 안 돼요. 도와주세요.</div>
+            <div class="text-[10px] text-jp-sub italic">發音：Sin-yong-ka-deu-ga an dwae-yo. Do-wa-ju-se-yo.</div>
+          </div>
+        </div>
+      </div>
       
-      <!-- Koro 停車經驗技巧卡片 -->
+      <!-- Koro 自駕提醒卡片 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
         <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1.5">
           <span>🚘</span> KoreabyCar (Koro) 韓國自駕重點提醒
@@ -207,13 +260,13 @@
       </div>
     </div>
 
-    <!-- 視圖 3: 離線記帳 -->
+    <!-- 視圖 3: 離線記帳 (即時自動更新匯率) -->
     <div id="tab-budget" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 記帳與匯率換算</h2>
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 記帳與即時匯率換算</h2>
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
-        <div class="text-xs text-jp-sub flex justify-between">
-          <span>匯率參考：1 TWD ≈ 42 KRW</span>
-          <span class="text-jp-accent font-medium">離線自動儲存</span>
+        <div class="text-xs text-jp-sub flex justify-between items-center">
+          <span>即時匯率：<strong id="rate-display" class="text-jp-text font-bold">1 TWD ≈ 42.0 KRW</strong></span>
+          <span class="text-emerald-600 font-medium text-[10px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">🟢 每日自動同步</span>
         </div>
         <div class="space-y-2">
           <input type="text" id="expense-title" placeholder="消費項目（如：豚笑午餐、油錢）" class="w-full text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none" />
@@ -494,14 +547,31 @@
     let currentDayIndex = 0;
     let currentCategoryFilter = 'all';
     let map, markersGroup, polylineLayer;
+    let currentKrwRate = 42.0; // 預設匯率
     let expenses = JSON.parse(localStorage.getItem('busan_expenses') || '[]');
 
     window.onload = function() {
       initMap();
       renderDaySelector();
       renderDayContent(0);
+      fetchRealtimeExchangeRate();
       renderExpenses();
     };
+
+    // 連線更新即時匯率
+    async function fetchRealtimeExchangeRate() {
+      try {
+        const res = await fetch('https://api.exchangerate-api.com/v4/latest/TWD');
+        const data = await res.json();
+        if (data && data.rates && data.rates.KRW) {
+          currentKrwRate = parseFloat(data.rates.KRW.toFixed(1));
+          document.getElementById('rate-display').textContent = `1 TWD ≈ ${currentKrwRate} KRW`;
+          renderExpenses();
+        }
+      } catch (e) {
+        document.getElementById('rate-display').textContent = `1 TWD ≈ ${currentKrwRate} KRW`;
+      }
+    }
 
     function initMap() {
       map = L.map('map', { zoomControl: true }).setView([35.1795, 129.0756], 11);
@@ -567,7 +637,7 @@
       const validSpots = filteredSpots.filter(s => s.lat && s.lng);
       const allBoundsCoords = [];
 
-      // 繪製景點與地圖上的所有停車場標記（在地圖中直接顯示費率）
+      // 繪製景點與地圖上的所有停車場標記（只保留 Naver 與 Kakao 地圖）
       validSpots.forEach((spot, idx) => {
         allBoundsCoords.push([spot.lat, spot.lng]);
 
@@ -584,13 +654,13 @@
             <b>${idx + 1}. ${spot.name}</b>
             <div style="color:#666;">${spot.desc}</div>
             <div style="margin-top:6px;">
-              <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" style="color:#04c755; font-weight:bold; text-decoration:none; margin-right:8px;">🚀 Naver</a>
-              <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.name)}" target="_blank" style="color:#2563eb; font-weight:bold; text-decoration:none;">🗺️ 韓巢↗</a>
+              <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" style="color:#04c755; font-weight:bold; text-decoration:none; margin-right:8px;">🚀 Naver導航</a>
+              <a href="https://map.kakao.com/link/search/${encodeURIComponent(spot.name)}" target="_blank" style="color:#eab308; font-weight:bold; text-decoration:none;">🟡 Kakao地圖</a>
             </div>
           </div>
         `);
 
-        // 🅿️ 2. 地圖中呈現該景點的所有附近停車場（含費率）
+        // 🅿️ 2. 地圖中呈現附近停車場（含費率）
         if (spot.parkingOptions && spot.parkingOptions.length > 0) {
           spot.parkingOptions.forEach(p => {
             if (p.lat && p.lng) {
@@ -605,7 +675,7 @@
               
               pMarker.bindPopup(`
                 <div style="font-size:12px; min-width:180px;" class="space-y-1">
-                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div style="display:flex; justify-size:space-between; align-items:center;">
                     <b style="color:#1d4ed8;">🅿️ ${p.name}</b>
                     <span style="font-size:10px; background-color:#eff6ff; color:#1e40af; padding:1px 4px; border-radius:4px;">${p.type || '停車場'}</span>
                   </div>
@@ -615,10 +685,9 @@
                     <div><strong>營運時間：</strong>${p.hours}</div>
                     ${p.note ? `<div style="color:#64748b; font-size:10px; margin-top:2px;">💡 ${p.note}</div>` : ''}
                   </div>
-                  <div style="display:flex; gap:6px; font-size:11px; margin-top:4px;">
-                    <a href="https://map.naver.com/v5/search/${encodeURIComponent(p.name)}" target="_blank" style="color:#04c755; font-weight:bold; text-decoration:none;">🚀 Naver</a>
-                    <a href="https://map.kakao.com/link/search/${encodeURIComponent(p.name)}" target="_blank" style="color:#eab308; font-weight:bold; text-decoration:none;">🟡 Kakao</a>
-                    <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(p.name)}" target="_blank" style="color:#2563eb; font-weight:bold; text-decoration:none;">🗺️ 韓巢↗</a>
+                  <div style="display:flex; gap:8px; font-size:11px; margin-top:4px;">
+                    <a href="https://map.naver.com/v5/search/${encodeURIComponent(p.name)}" target="_blank" style="color:#04c755; font-weight:bold; text-decoration:none;">🚀 Naver導航</a>
+                    <a href="https://map.kakao.com/link/search/${encodeURIComponent(p.name)}" target="_blank" style="color:#eab308; font-weight:bold; text-decoration:none;">🟡 Kakao地圖</a>
                   </div>
                 </div>
               `);
@@ -650,7 +719,7 @@
         map.setView([35.1795, 129.0756], 11);
       }
 
-      // 渲染行程卡片（不含文字中的費率，改呈現周邊所有可能停車位置清單）
+      // 渲染行程卡片（只保留 Naver 與 Kakao 地圖）
       const container = document.getElementById('spots-container');
       if (filteredSpots.length === 0) {
         container.innerHTML = `
@@ -683,8 +752,8 @@
                   <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl font-medium flex items-center gap-1 border border-emerald-200 text-[11px]">
                     🚀 Naver
                   </a>
-                  <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl font-medium flex items-center gap-1 border border-blue-200 text-[11px]">
-                    🗺️ 韓巢 ↗
+                  <a href="https://map.kakao.com/link/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl font-medium flex items-center gap-1 border border-amber-200 text-[11px]">
+                    🟡 Kakao
                   </a>
                 </div>
               ` : ''}
@@ -704,7 +773,7 @@
               </div>
             ` : ''}
 
-            <!-- 附近所有可能停車位置 (點擊地圖圖示可直接看費率) -->
+            <!-- 附近所有可能停車位置清單 -->
             <div class="pt-2 border-t border-jp-gray/60 space-y-2 text-[11px] text-jp-sub">
               ${spot.driveNext ? `<div class="flex items-center gap-1.5"><span>🚗</span><span>下一步車程：${spot.driveNext}</span></div>` : ''}
               
@@ -714,7 +783,7 @@
                     <span class="font-bold text-jp-text flex items-center gap-1">
                       <span>🅿️</span> 附近所有可能停車位置 (${spot.parkingOptions.length} 個選項)：
                     </span>
-                    <span class="text-[10px] text-blue-600 font-medium">請於上方地圖看費率</span>
+                    <span class="text-[10px] text-blue-600 font-medium">請於地圖查看費率</span>
                   </div>
                   
                   <div class="space-y-1.5">
@@ -730,8 +799,7 @@
                         ${p.note ? `<div class="text-[10px] text-amber-800 bg-amber-50/60 p-1 rounded">💡 ${p.note}</div>` : ''}
                         <div class="flex gap-2 text-[10px] pt-0.5">
                           <a href="https://map.naver.com/v5/search/${encodeURIComponent(p.name)}" target="_blank" class="text-emerald-700 font-bold hover:underline">Naver地圖 ↗</a>
-                          <a href="https://map.kakao.com/link/search/${encodeURIComponent(p.name)}" target="_blank" class="text-yellow-700 font-bold hover:underline">Kakao地圖 ↗</a>
-                          <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(p.name)}" target="_blank" class="text-blue-700 font-bold hover:underline">韓巢地圖 ↗</a>
+                          <a href="https://map.kakao.com/link/search/${encodeURIComponent(p.name)}" target="_blank" class="text-amber-700 font-bold hover:underline">Kakao地圖 ↗</a>
                         </div>
                       </div>
                     `).join('')}
@@ -796,17 +864,19 @@
       let totalKrw = 0;
       list.innerHTML = expenses.map(e => {
         totalKrw += e.krw;
+        const twd = Math.round(e.krw / currentKrwRate);
         return `
           <div class="flex justify-between items-center bg-jp-bg p-2.5 rounded-xl border border-jp-gray">
             <div>
               <div class="font-medium text-jp-text">${e.title}</div>
-              <div class="text-[10px] text-jp-sub">約 NT$ ${Math.round(e.krw / 42).toLocaleString()}</div>
+              <div class="text-[10px] text-jp-sub">約 NT$ ${twd.toLocaleString()}</div>
             </div>
             <span class="font-mono text-jp-warm font-bold">₩ ${e.krw.toLocaleString()}</span>
           </div>
         `;
       }).join('');
-      totalDisplay.textContent = `總計：₩${totalKrw.toLocaleString()} (NT$${Math.round(totalKrw / 42).toLocaleString()})`;
+      const totalTwd = Math.round(totalKrw / currentKrwRate);
+      totalDisplay.textContent = `總計：₩${totalKrw.toLocaleString()} (NT$${totalTwd.toLocaleString()})`;
     }
   </script>
 </body>
