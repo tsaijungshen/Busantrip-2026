@@ -54,6 +54,8 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     #map { width: 100%; height: 100%; border-radius: 1rem; }
+    
+    /* 景點主標記 */
     .custom-map-pin {
       background-color: #5A6B5C;
       color: white;
@@ -64,6 +66,17 @@
       font-size: 12px;
       border: 2px solid white;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* 設施（停車場、加油站）圖示標記 */
+    .facility-map-pin {
+      background-color: #FFFFFF;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 22px;
+      font-size: 13px;
+      border: 2px solid #5A6B5C;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
     }
   </style>
 </head>
@@ -80,33 +93,32 @@
     <!-- 視圖 1: 行程與地圖 -->
     <div id="tab-itinerary" class="space-y-4">
       
-      <!-- 上半部：實際道路導航動線地圖 -->
+      <!-- 上半部：1/2 版面地圖區塊 -->
       <div class="bg-jp-card rounded-2xl p-3 border border-jp-gray shadow-sm space-y-2">
         <div class="flex justify-between items-center text-xs px-1">
           <div class="flex items-center gap-1.5 font-bold text-jp-text">
             <span>🧭</span>
-            <span id="map-header-title">Day 1 實際自駕路線地圖</span>
+            <span id="map-header-title">Day 1 實際自駕路線與設施地圖</span>
           </div>
           <span id="spots-count-badge" class="px-2 py-0.5 bg-jp-accentLight text-jp-accent font-bold rounded-full text-[10px]">
             4 個點位
           </span>
         </div>
 
-        <!-- 互動地圖容器 -->
-        <div class="h-44 w-full rounded-xl overflow-hidden relative shadow-inner">
+        <!-- 互動地圖容器 (約 1/2 版面 48vh) -->
+        <div class="h-[48vh] w-full rounded-xl overflow-hidden relative shadow-inner">
           <div id="map"></div>
         </div>
 
-        <!-- 地圖下方行車與加油站摘要 -->
+        <!-- 地圖下方標示說明摘要 -->
         <div class="flex justify-between items-center text-[11px] text-jp-sub px-1 pt-1 border-t border-jp-gray/60">
-          <div class="flex items-center gap-1">
-            <span>⏱️</span>
-            <span>本日巡訪：<strong id="summary-spot-count" class="text-jp-text">4 個項目</strong></span>
+          <div class="flex items-center gap-2">
+            <span>圖標：</span>
+            <span class="text-jp-text font-medium">🟢 行程點</span>
+            <span class="text-jp-text font-medium">🅿️ 停車場</span>
+            <span class="text-jp-text font-medium">⛽ 加油站</span>
           </div>
-          <div class="flex items-center gap-1">
-            <span>⛽</span>
-            <span>周邊加油站：<strong class="text-jp-text">SK / GS Caltex / S-Oil</strong></span>
-          </div>
+          <span id="summary-spot-count" class="font-bold text-jp-text">4 個項目</span>
         </div>
       </div>
 
@@ -277,74 +289,74 @@
         day: 1, dateStr: "Day 1 (二) · 2026/12/29", title: "抵達釜山 · 取車自駕 · 夜間輕裝整備",
         weather: "4°C ~ 11°C", driving: "金海機場 🚗 25 mins 🚗 西面飯店",
         spots: [
-          { type: "transport", catText: "抵達機場", name: "出關後換釜山PASS實體卡", lat: 35.1795, lng: 128.9382, highlight: "重要事項：務必檢查卡片啟用條碼與天數起算規則", desc: "於入境大廳 1 樓 Visitor Center 櫃檯出示憑證領取實體卡。", driveNext: "5 mins (1.2 km)", parking: "1級地(甲): 700KRW/10分", gas: "SK Energy 機場前加油站" },
-          { type: "transport", catText: "交通自駕", name: "釜山租車處取車與路線測試", lat: 35.1760, lng: 128.9430, desc: "確認車載 GPS 設定完好並拍照紀錄車況。", driveNext: "25 mins (14.5 km)", parking: "租車公司專屬停車場", gas: "GS Caltex" },
-          { type: "dining", catText: "美食晚餐", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596, highlight: "必吃美食：經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。", driveNext: "3 mins (0.8 km)", parking: "樂天百貨特約停車場", gas: "S-Oil 西面站" },
-          { type: "hotel", catText: "住宿安排", name: "住：西面商圈飯店", lat: 35.1578, lng: 129.0592, desc: "辦理入住登記，車輛停放於飯店停車場。", driveNext: "明日行程出發", parking: "飯店附設地下停車場", gas: "SK Energy" }
+          { type: "transport", catText: "抵達機場", name: "出關後換釜山PASS實體卡", lat: 35.1795, lng: 128.9382, parkingLat: 35.1788, parkingLng: 128.9390, gasLat: 35.1810, gasLng: 128.9370, highlight: "重要事項：務必檢查卡片啟用條碼與天數起算規則", desc: "於入境大廳 1 樓 Visitor Center 櫃檯出示憑證領取實體卡。", driveNext: "5 mins (1.2 km)", parking: "金海機場P1停車場 (700 KRW/10分鐘，單日上限 10,000 KRW)", gas: "SK Energy 機場前加油站 (24小時)" },
+          { type: "transport", catText: "交通自駕", name: "釜山租車處取車與路線測試", lat: 35.1760, lng: 128.9430, parkingLat: 35.1762, parkingLng: 128.9435, gasLat: 35.1740, gasLng: 128.9410, desc: "確認車載 GPS 設定完好並拍照紀錄車況。", driveNext: "25 mins (14.5 km)", parking: "租車公司專屬停車場 (免費停放取車)", gas: "GS Caltex 樂天金海加油站" },
+          { type: "dining", catText: "美食晚餐", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596, parkingLat: 35.1540, parkingLng: 129.0585, gasLat: 35.1515, gasLng: 129.0620, highlight: "必吃美食：經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。", driveNext: "3 mins (0.8 km)", parking: "樂天百貨西面店停車場 (消費滿2萬韓元免費停2小時，每10分1,000 KRW)", gas: "S-Oil 西面站專用加油站" },
+          { type: "hotel", catText: "住宿安排", name: "住：西面商圈飯店", lat: 35.1578, lng: 129.0592, parkingLat: 35.1575, parkingLng: 129.0595, gasLat: 35.1590, gasLng: 129.0570, desc: "辦理入住登記，車輛停放於飯店停車場。", driveNext: "明日行程出發", parking: "飯店附設地下停車場 (房客入住期間免費停車)", gas: "SK Energy 西面加油站" }
         ]
       },
       {
         day: 2, dateStr: "Day 2 (三) · 2026/12/30", title: "南浦洞 · 樂天百貨 · 札嘎其市場",
         weather: "2°C ~ 9°C", driving: "西面 🚗 20 mins 🚗 南浦洞",
         spots: [
-          { type: "dining", catText: "早餐美食", name: "Eggdrop / 田浦咖啡街", lat: 35.1542, lng: 129.0645, highlight: "必點菜單：厚切起司三明治", desc: "晨間漫步田浦咖啡街。", driveNext: "20 mins", parking: "田浦公營停車場", gas: "SK Energy" },
-          { type: "dining", catText: "美食午餐", name: "豚笑-南浦店 (11:00點預約)", lat: 35.0991, lng: 129.0305, highlight: "重要預約：12:00 線上預約確認", desc: "人氣極高黑豬肉炸豬排。", driveNext: "5 mins", parking: "南浦洞公營停車場", gas: "GS Caltex" },
-          { type: "shopping", catText: "購物巡禮", name: "樂天百貨南浦店 & 柯達專賣店", lat: 35.0976, lng: 129.0368, highlight: "必買伴手禮：韓國限定柯達周邊", desc: "辦理 VIP 會員卡與購物。", driveNext: "5 mins", parking: "樂天百貨停車場", gas: "S-Oil" },
-          { type: "dining", catText: "美食晚餐", name: "札嘎其市場帝王蟹 100號", lat: 35.0967, lng: 129.0306, highlight: "必吃美食：現撈帝王蟹蒸鍋", desc: "享用新鮮海鮮大餐。", driveNext: "20 mins", parking: "札嘎其市場地下停車場", gas: "SK Energy" }
+          { type: "dining", catText: "早餐美食", name: "Eggdrop / 田浦咖啡街", lat: 35.1542, lng: 129.0645, parkingLat: 35.1538, parkingLng: 129.0652, gasLat: 35.1560, gasLng: 129.0630, highlight: "必點菜單：厚切起司三明治", desc: "晨間漫步田浦咖啡街。", driveNext: "20 mins", parking: "田浦咖啡街公營停車場 (700 KRW/10分鐘)", gas: "SK Energy 田浦加油站" },
+          { type: "dining", catText: "美食午餐", name: "豚笑-南浦店 (11:00點預約)", lat: 35.0991, lng: 129.0305, parkingLat: 35.0985, parkingLng: 129.0312, gasLat: 35.1010, gasLng: 129.0280, highlight: "重要預約：12:00 線上預約確認", desc: "人氣極高黑豬肉炸豬排。", driveNext: "5 mins", parking: "南浦洞第一公營停車場 (500 KRW/10分鐘)", gas: "GS Caltex 南浦加油站" },
+          { type: "shopping", catText: "購物巡禮", name: "樂天百貨南浦店 & 柯達專賣店", lat: 35.0976, lng: 129.0368, parkingLat: 35.0970, parkingLng: 129.0375, gasLat: 35.0950, gasLng: 129.0350, highlight: "必買伴手禮：韓國限定柯達周邊", desc: "辦理 VIP 會員卡與購物。", driveNext: "5 mins", parking: "樂天百貨光復店停車場 (消費1萬韓元免費1小時)", gas: "S-Oil 影島大橋加油站" },
+          { type: "dining", catText: "美食晚餐", name: "札嘎其市場帝王蟹 100號", lat: 35.0967, lng: 129.0306, parkingLat: 35.0962, parkingLng: 129.0298, gasLat: 35.0980, gasLng: 129.0270, highlight: "必吃美食：現撈帝王蟹蒸鍋", desc: "享用新鮮海鮮大餐。", driveNext: "20 mins", parking: "札嘎其市場地下停車場 (用餐折扣折抵2小時，每10分500 KRW)", gas: "SK Energy 忠武加油站" }
         ]
       },
       {
         day: 3, dateStr: "Day 3 (四) · 2026/12/31", title: "白淺灘文化村 · 影島 · 廣安里無人機",
         weather: "1°C ~ 8°C", driving: "西面 🚗 25 mins 🚗 影島 🚗 30 mins 🚗 廣安里",
         spots: [
-          { type: "spot", catText: "熱門景點", name: "白淺灘文化村 / 海岸隧道", lat: 35.0786, lng: 129.0445, desc: "早上去避開排隊人潮。", driveNext: "15 mins", parking: "白淺灘公營停車場", gas: "GS Caltex" },
-          { type: "dining", catText: "美食午餐", name: "影島海女村吃海鮮", lat: 35.0612, lng: 129.0805, highlight: "必吃美食：現切海膽配拉麵", desc: "坐在岸邊享受海鮮。", driveNext: "20 mins", parking: "海女村專用停車位", gas: "SK Energy" },
-          { type: "spot", catText: "景點漫步", name: "五六島天空步道", lat: 35.1017, lng: 129.1234, desc: "懸崖峭壁玻璃步道。", driveNext: "30 mins", parking: "五六島旅遊中心停車場", gas: "S-Oil" },
-          { type: "spot", catText: "跨年重點", name: "廣安里無人機表演", lat: 35.1532, lng: 129.1189, highlight: "重要預約代號：飯店房間直播或海灘觀賞", desc: "震撼夜間無人機跨年秀。", driveNext: "入住飯店", parking: "廣安里公營停車場", gas: "SK Energy" }
+          { type: "spot", catText: "熱門景點", name: "白淺灘文化村 / 海岸隧道", lat: 35.0786, lng: 129.0445, parkingLat: 35.0792, parkingLng: 129.0438, gasLat: 35.0820, gasLng: 129.0460, desc: "早上去避開排隊人潮。", driveNext: "15 mins", parking: "絕影海岸公營停車場 (300 KRW/10分鐘)", gas: "GS Caltex 影島加油站" },
+          { type: "dining", catText: "美食午餐", name: "影島海女村吃海鮮", lat: 35.0612, lng: 129.0805, parkingLat: 35.0608, parkingLng: 129.0812, gasLat: 35.0640, gasLng: 129.0780, highlight: "必吃美食：現切海膽配拉麵", desc: "坐在岸邊享受海鮮。", driveNext: "20 mins", parking: "海女村專用停車場 (顧客免費停放)", gas: "SK Energy 東三加油站" },
+          { type: "spot", catText: "景點漫步", name: "五六島天空步道", lat: 35.1017, lng: 129.1234, parkingLat: 35.1022, parkingLng: 129.1225, gasLat: 35.1050, gasLng: 129.1200, desc: "懸崖峭壁玻璃步道。", driveNext: "30 mins", parking: "五六島旅遊中心停車場 (300 KRW/10分鐘)", gas: "S-Oil 龍塘加油站" },
+          { type: "spot", catText: "跨年重點", name: "廣安里無人機表演", lat: 35.1532, lng: 129.1189, parkingLat: 35.1525, parkingLng: 129.1195, gasLat: 35.1550, gasLng: 129.1160, highlight: "重要預約代號：飯店房間直播或海灘觀賞", desc: "震撼夜間無人機跨年秀。", driveNext: "入住飯店", parking: "廣安里海水浴場公營停車場 (500 KRW/10分鐘，連續停放每日上限15,000 KRW)", gas: "SK Energy 民樂加油站" }
         ]
       },
       {
         day: 4, dateStr: "Day 4 (五) · 2027/01/01", title: "海雲台 · 新世界百貨 · 荒嶺山夜景",
         weather: "3°C ~ 10°C", driving: "西面 🚗 30 mins 🚗 海雲台",
         spots: [
-          { type: "spot", catText: "傳統市場", name: "海雲台傳統市場與海水浴場", lat: 35.1606, lng: 129.1632, highlight: "必買伴手禮：盲鰻與糖餅", desc: "元旦沿海散步購物。", driveNext: "15 mins", parking: "海雲台地下停車場", gas: "GS Caltex" },
-          { type: "shopping", catText: "百貨購物", name: "新世界百貨 Centum City 店", lat: 35.1689, lng: 129.1297, desc: "全球最大百貨公司巡禮。", driveNext: "20 mins", parking: "百貨顧客停車場", gas: "S-Oil" },
-          { type: "spot", catText: "夜景首選", name: "荒嶺山觀景台", lat: 35.1565, lng: 129.0831, desc: "開車直達俯瞰 360 度釜山夜景。", driveNext: "20 mins", parking: "觀景台免費停車場", gas: "SK Energy" }
+          { type: "spot", catText: "傳統市場", name: "海雲台傳統市場與海水浴場", lat: 35.1606, lng: 129.1632, parkingLat: 35.1612, parkingLng: 129.1625, gasLat: 35.1630, gasLng: 129.1650, highlight: "必買伴手禮：盲鰻與糖餅", desc: "元旦沿海散步購物。", driveNext: "15 mins", parking: "海雲台廣場地下停車場 (500 KRW/10分鐘)", gas: "GS Caltex 海雲台加油站" },
+          { type: "shopping", catText: "百貨購物", name: "新世界百貨 Centum City 店", lat: 35.1689, lng: 129.1297, parkingLat: 35.1682, parkingLng: 129.1305, gasLat: 35.1710, gasLng: 129.1270, desc: "全球最大百貨公司巡禮。", driveNext: "20 mins", parking: "新世界顧客停車場 (消費滿1萬韓元免費1小時)", gas: "S-Oil Centum加油站" },
+          { type: "spot", catText: "夜景首選", name: "荒嶺山觀景台", lat: 35.1565, lng: 129.0831, parkingLat: 35.1560, parkingLng: 129.0838, gasLat: 35.1520, gasLng: 129.0800, desc: "開車直達俯瞰 360 度釜山夜景。", driveNext: "20 mins", parking: "荒嶺山頂烽火台免費停車場", gas: "SK Energy 蓮山加油站" }
         ]
       },
       {
         day: 5, dateStr: "Day 5 (六) · 2027/01/02", title: "甘川洞文化村 · 松島纜車 · 釜山塔",
         weather: "2°C ~ 9°C", driving: "西面 🚗 20 mins 🚗 甘川洞 🚗 15 mins 🚗 松島",
         spots: [
-          { type: "spot", catText: "經典景點", name: "甘川洞文化村 (小王子拍照)", lat: 35.0975, lng: 129.0106, highlight: "重要預約：09:30到！10:30開卡 Pass", desc: "彩繪山城拍照打卡。", driveNext: "15 mins", parking: "甘川洞公營停車場", gas: "GS Caltex" },
-          { type: "dining", catText: "美食午餐", name: "李在模披薩本店", lat: 35.1021, lng: 129.0315, highlight: "必吃美食：滿滿起司披薩", desc: "釜山代表性披薩店。", driveNext: "15 mins", parking: "周邊特約停車場", gas: "SK Energy" },
-          { type: "spot", catText: "跨海纜車", name: "松島海上纜車 & 龍宮雲橋", lat: 35.0763, lng: 129.0234, desc: "體驗透明底纜車。", driveNext: "入住飯店", parking: "松島纜車地下停車場", gas: "S-Oil" },
-          { type: "hotel", catText: "住宿安排", name: "住：廣安里橘子飯店 (Orange Hotel)", lat: 35.1532, lng: 129.1189, desc: "辦理入住登記，海景第一排。", driveNext: "明日行程出發", parking: "飯店特約停車場", gas: "SK Energy" }
+          { type: "spot", catText: "經典景點", name: "甘川洞文化村 (小王子拍照)", lat: 35.0975, lng: 129.0106, parkingLat: 35.0980, parkingLng: 129.0098, gasLat: 35.0950, gasLng: 129.0120, highlight: "重要預約：09:30到！10:30開卡 Pass", desc: "彩繪山城拍照打卡。", driveNext: "15 mins", parking: "甘川文化村公營停車場 (1,000 KRW/小時)", gas: "GS Caltex 沙下加油站" },
+          { type: "dining", catText: "美食午餐", name: "李在模披薩本店", lat: 35.1021, lng: 129.0315, parkingLat: 35.1016, parkingLng: 129.0322, gasLat: 35.1040, gasLng: 129.0290, highlight: "必吃美食：滿滿起司披薩", desc: "釜山代表性披薩店。", driveNext: "15 mins", parking: "龍頭山公園特約停車場 (500 KRW/10分鐘)", gas: "SK Energy 寶城加油站" },
+          { type: "spot", catText: "跨海纜車", name: "松島海上纜車 & 龍宮雲橋", lat: 35.0763, lng: 129.0234, parkingLat: 35.0758, parkingLng: 129.0242, gasLat: 35.0780, gasLng: 129.0210, desc: "體驗透明底纜車。", driveNext: "入住飯店", parking: "松島纜車地下停車場 (搭乘纜車折抵1小時免費)", gas: "S-Oil 松島加油站" },
+          { type: "hotel", catText: "住宿安排", name: "住：廣安里橘子飯店 (Orange Hotel)", lat: 35.1532, lng: 129.1189, parkingLat: 35.1538, parkingLng: 129.1182, gasLat: 35.1550, gasLng: 129.1160, desc: "辦理入住登記，海景第一排。", driveNext: "明日行程出發", parking: "飯店特約專用停車場 (住客免費停放)", gas: "SK Energy 水邊加油站" }
         ]
       },
       {
         day: 6, dateStr: "Day 6 (日) · 2027/01/03", title: "天空膠囊列車 · X the Sky · 鑽石遊艇",
         weather: "3°C ~ 10°C", driving: "廣安里 🚗 20 mins 🚗 青沙浦",
         spots: [
-          { type: "spot", catText: "熱門體驗", name: "天空膠囊列車 (青沙浦)", lat: 35.1612, lng: 129.1915, highlight: "重要預約：搭乘憑證 QRCode", desc: "沿海高空列車巡禮。", driveNext: "10 mins", parking: "青沙浦公營停車場", gas: "SK Energy" },
-          { type: "spot", catText: "高空觀景", name: "Busan X the Sky", lat: 35.1595, lng: 129.1698, desc: "韓國第二高樓看海灘。", driveNext: "20 mins", parking: "大樓停車場", gas: "GS Caltex" },
-          { type: "spot", catText: "夜間遊艇", name: "鑽石遊艇 (夜間版)", lat: 35.1540, lng: 129.1350, highlight: "重要預約：夜間搭乘班次", desc: "海上賞廣安大橋夜景。", driveNext: "回飯店", parking: "水邊公園停車場", gas: "S-Oil" }
+          { type: "spot", catText: "熱門體驗", name: "天空膠囊列車 (青沙浦)", lat: 35.1612, lng: 129.1915, parkingLat: 35.1618, parkingLng: 129.1908, gasLat: 35.1640, gasLng: 129.1890, highlight: "重要預約：搭乘憑證 QRCode", desc: "沿海高空列車巡禮。", driveNext: "10 mins", parking: "青沙浦港口公營停車場 (300 KRW/10分鐘)", gas: "SK Energy 松亭加油站" },
+          { type: "spot", catText: "高空觀景", name: "Busan X the Sky", lat: 35.1595, lng: 129.1698, parkingLat: 35.1590, parkingLng: 129.1705, gasLat: 35.1620, gasLng: 129.1670, desc: "韓國第二高樓看海灘。", driveNext: "20 mins", parking: "LCT 大樓顧客停車場 (觀景台購票免費折抵2小時)", gas: "GS Caltex 迎月加油站" },
+          { type: "spot", catText: "夜間遊艇", name: "鑽石遊艇 (夜間版)", lat: 35.1540, lng: 129.1350, parkingLat: 35.1545, parkingLng: 129.1342, gasLat: 35.1510, gasLng: 129.1370, highlight: "重要預約：夜間搭乘班次", desc: "海上賞廣安大橋夜景。", driveNext: "回飯店", parking: "民樂水邊公園停車場 (300 KRW/10分鐘)", gas: "S-Oil 廣安加油站" }
         ]
       },
       {
         day: 7, dateStr: "Day 7 (一) · 2027/01/04", title: "樂天世界 · Outlets 採購",
         weather: "4°C ~ 11°C", driving: "廣安里 🚗 25 mins 🚗 機張樂天世界",
         spots: [
-          { type: "dining", catText: "特色早餐", name: "水邊最高豬肉湯飯 (民樂店)", lat: 35.1558, lng: 129.1245, highlight: "必吃美食：人氣豬肉湯飯", desc: "在地超高評價湯飯。", driveNext: "25 mins", parking: "湯飯館專用停車場", gas: "SK Energy" },
-          { type: "spot", catText: "樂園購物", name: "樂天世界 & Lotte Outlets", lat: 35.1963, lng: 129.2131, highlight: "必買伴手禮：Outlet 品牌折扣", desc: "暢遊樂園與購物。", driveNext: "回飯店", parking: "樂天世界園區停車場", gas: "GS Caltex" }
+          { type: "dining", catText: "特色早餐", name: "水邊最高豬肉湯飯 (民樂店)", lat: 35.1558, lng: 129.1245, parkingLat: 35.1562, parkingLng: 129.1238, gasLat: 35.1580, gasLng: 129.1220, highlight: "必吃美食：人氣豬肉湯飯", desc: "在地超高評價湯飯。", driveNext: "25 mins", parking: "湯飯館專用免費停車場 (用餐顧客免費)", gas: "SK Energy 水邊加油站" },
+          { type: "spot", catText: "樂園購物", name: "樂天世界 & Lotte Outlets", lat: 35.1963, lng: 129.2131, parkingLat: 35.1955, parkingLng: 129.2140, gasLat: 35.1980, gasLng: 129.2100, highlight: "必買伴手禮：Outlet 品牌折扣", desc: "暢遊樂園與購物。", driveNext: "回飯店", parking: "樂天世界園區停車場 (單日最高上限 6,000 KRW)", gas: "GS Caltex 機張加油站" }
         ]
       },
       {
         day: 8, dateStr: "Day 8 (二) · 2027/01/05", title: "西面地下街巡禮與歸途",
         weather: "5°C ~ 12°C", driving: "廣安里 🚗 20 mins 🚗 西面 🚗 25 mins 🚗 金海機場",
         spots: [
-          { type: "shopping", catText: "地下街購物", name: "西面韓條地下街買韓版衣服", lat: 35.1578, lng: 129.0592, highlight: "必買伴手禮：流行韓系服飾", desc: "最後購物巡禮。", driveNext: "25 mins", parking: "西面地下停車場", gas: "S-Oil" },
-          { type: "transport", catText: "還車搭機", name: "前往金海機場還車與搭機歸國", lat: 35.1795, lng: 128.9382, desc: "辦理還車手續與離境退稅。", driveNext: "返抵家門", parking: "機場租車還車區", gas: "SK 機場加油站 (加滿油還車)" }
+          { type: "shopping", catText: "地下街購物", name: "西面韓條地下街買韓版衣服", lat: 35.1578, lng: 129.0592, parkingLat: 35.1582, parkingLng: 129.0585, gasLat: 35.1560, gasLng: 129.0610, highlight: "必買伴手禮：流行韓系服飾", desc: "最後購物巡禮。", driveNext: "25 mins", parking: "西面地下街停車場 (700 KRW/10分鐘)", gas: "S-Oil 凡川加油站" },
+          { type: "transport", catText: "還車搭機", name: "前往金海機場還車與搭機歸國", lat: 35.1795, lng: 128.9382, parkingLat: 35.1788, parkingLng: 128.9390, gasLat: 35.1810, gasLng: 128.9370, desc: "辦理還車手續與離境退稅。", driveNext: "返抵家門", parking: "機場租車還車專用區 (免費)", gas: "SK 金海機場站 (還車前須加滿油)" }
         ]
       }
     ];
@@ -407,7 +419,7 @@
     async function renderDayContent(index) {
       const data = itineraryData[index];
 
-      document.getElementById('map-header-title').textContent = `Day ${data.day} 實際自駕路線地圖`;
+      document.getElementById('map-header-title').textContent = `Day ${data.day} 實際自駕路線與設施地圖`;
       document.getElementById('day-date-title').textContent = data.dateStr;
       document.getElementById('day-main-title').textContent = data.title;
       document.getElementById('weather-badge').querySelector('span:last-child').textContent = data.weather;
@@ -423,19 +435,77 @@
       if (polylineLayer) map.removeLayer(polylineLayer);
 
       const validSpots = filteredSpots.filter(s => s.lat && s.lng);
+      const allBoundsCoords = [];
 
+      // 繪製景點標記、停車場與加油站
       validSpots.forEach((spot, idx) => {
-        const customIcon = L.divIcon({
+        allBoundsCoords.push([spot.lat, spot.lng]);
+
+        // 🟢 1. 景點主點位標記與彈窗
+        const mainIcon = L.divIcon({
           className: 'custom-map-pin',
           html: `${idx + 1}`,
           iconSize: [24, 24],
           iconAnchor: [12, 12]
         });
+        const marker = L.marker([spot.lat, spot.lng], { icon: mainIcon }).addTo(markersGroup);
+        marker.bindPopup(`
+          <div style="font-size:12px;" class="space-y-1">
+            <b>${idx + 1}. ${spot.name}</b>
+            <div style="color:#666;">${spot.desc}</div>
+            <div style="margin-top:6px;" class="flex gap-1">
+              <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" style="color:#04c755; font-weight:bold; text-decoration:none; margin-right:8px;">🚀 Naver</a>
+              <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.name)}" target="_blank" style="color:#2563eb; font-weight:bold; text-decoration:none;">🗺️ 韓巢↗</a>
+            </div>
+          </div>
+        `);
 
-        const marker = L.marker([spot.lat, spot.lng], { icon: customIcon }).addTo(markersGroup);
-        marker.bindPopup(`<b>${idx + 1}. ${spot.name}</b><br><span style="font-size:11px;">${spot.desc}</span>`);
+        // 🅿️ 2. 停車場點位與直連導航彈窗
+        if (spot.parkingLat && spot.parkingLng) {
+          allBoundsCoords.push([spot.parkingLat, spot.parkingLng]);
+          const parkingIcon = L.divIcon({
+            className: 'facility-map-pin',
+            html: '🅿️',
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
+          });
+          const pMarker = L.marker([spot.parkingLat, spot.parkingLng], { icon: parkingIcon }).addTo(markersGroup);
+          pMarker.bindPopup(`
+            <div style="font-size:12px;" class="space-y-1">
+              <b style="color:#1d4ed8;">🅿️ 停車資訊 (${spot.name})</b>
+              <div style="color:#333; margin-top:2px;">${spot.parking || '附設/周邊停車場'}</div>
+              <div style="margin-top:6px;">
+                <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name + ' 停車場')}" target="_blank" style="color:#04c755; font-weight:bold; text-decoration:none; margin-right:8px;">🚀 Naver</a>
+                <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.name + ' 停車場')}" target="_blank" style="color:#2563eb; font-weight:bold; text-decoration:none;">🗺️ 韓巢↗</a>
+              </div>
+            </div>
+          `);
+        }
+
+        // ⛽ 3. 加油站點位與直連導航彈窗
+        if (spot.gasLat && spot.gasLng) {
+          allBoundsCoords.push([spot.gasLat, spot.gasLng]);
+          const gasIcon = L.divIcon({
+            className: 'facility-map-pin',
+            html: '⛽',
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
+          });
+          const gMarker = L.marker([spot.gasLat, spot.gasLng], { icon: gasIcon }).addTo(markersGroup);
+          gMarker.bindPopup(`
+            <div style="font-size:12px;" class="space-y-1">
+              <b style="color:#b91c1c;">⛽ 鄰近加油站</b>
+              <div style="color:#333; margin-top:2px;">${spot.gas || 'SK / GS Caltex / S-Oil'}</div>
+              <div style="margin-top:6px;">
+                <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.gas)}" target="_blank" style="color:#04c755; font-weight:bold; text-decoration:none; margin-right:8px;">🚀 Naver</a>
+                <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.gas)}" target="_blank" style="color:#2563eb; font-weight:bold; text-decoration:none;">🗺️ 韓巢↗</a>
+              </div>
+            </div>
+          `);
+        }
       });
 
+      // 自動計算實際道路軌跡
       if (validSpots.length >= 2) {
         try {
           const coordsString = validSpots.map(s => `${s.lng},${s.lat}`).join(';');
@@ -445,19 +515,20 @@
           if (routeData.routes && routeData.routes.length > 0) {
             const routeCoords = routeData.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
             polylineLayer = L.polyline(routeCoords, { color: '#5A6B5C', weight: 4, opacity: 0.85 }).addTo(map);
-            map.fitBounds(polylineLayer.getBounds(), { padding: [30, 30] });
+            map.fitBounds(L.latLngBounds(allBoundsCoords), { padding: [30, 30] });
           } else {
-            fallbackStraightLine(validSpots);
+            fallbackStraightLine(validSpots, allBoundsCoords);
           }
         } catch (e) {
-          fallbackStraightLine(validSpots);
+          fallbackStraightLine(validSpots, allBoundsCoords);
         }
       } else if (validSpots.length === 1) {
-        map.setView([validSpots[0].lat, validSpots[0].lng], 14);
+        map.fitBounds(L.latLngBounds(allBoundsCoords), { padding: [40, 40] });
       } else {
         map.setView([35.1795, 129.0756], 11);
       }
 
+      // 渲染卡片
       const container = document.getElementById('spots-container');
       if (filteredSpots.length === 0) {
         container.innerHTML = `
@@ -491,7 +562,7 @@
                     🚀 Naver
                   </a>
                   <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl font-medium flex items-center gap-1 border border-blue-200 text-[11px]">
-                    🗺️ 韓巢地圖 ↗
+                    🗺️ 韓巢 ↗
                   </a>
                 </div>
               ` : ''}
@@ -511,20 +582,47 @@
               </div>
             ` : ''}
 
-            <div class="pt-2 border-t border-jp-gray/60 space-y-1 text-[11px] text-jp-sub">
-              ${spot.driveNext ? `<div class="flex items-center gap-1.5"><span>🚗</span><span>下一步開車時間：${spot.driveNext}</span></div>` : ''}
-              ${spot.parking ? `<div class="flex items-center gap-1.5"><span>🅿️</span><span>停車費率估算：${spot.parking}</span></div>` : ''}
-              ${spot.gas ? `<div class="flex items-center gap-1.5"><span>⛽</span><span>周邊加油站：${spot.gas}</span></div>` : ''}
+            <!-- 停車費率估算與加油站資訊 (帶直接連結) -->
+            <div class="pt-2 border-t border-jp-gray/60 space-y-1.5 text-[11px] text-jp-sub">
+              ${spot.driveNext ? `<div class="flex items-center gap-1.5"><span>🚗</span><span>下一步車程：${spot.driveNext}</span></div>` : ''}
+              
+              ${spot.parking ? `
+                <div class="flex justify-between items-start gap-2">
+                  <div class="flex items-start gap-1.5 flex-1">
+                    <span>🅿️</span>
+                    <span>停車費率：<strong class="text-jp-text">${spot.parking}</strong></span>
+                  </div>
+                  <div class="flex gap-1 shrink-0 text-[10px]">
+                    <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name + ' 停車場')}" target="_blank" class="text-emerald-600 font-bold hover:underline">Naver</a>
+                    <span class="text-jp-gray">|</span>
+                    <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.name + ' 停車場')}" target="_blank" class="text-blue-600 font-bold hover:underline">韓巢</a>
+                  </div>
+                </div>
+              ` : ''}
+
+              ${spot.gas ? `
+                <div class="flex justify-between items-start gap-2">
+                  <div class="flex items-start gap-1.5 flex-1">
+                    <span>⛽</span>
+                    <span>周邊加油站：<strong class="text-jp-text">${spot.gas}</strong></span>
+                  </div>
+                  <div class="flex gap-1 shrink-0 text-[10px]">
+                    <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.gas)}" target="_blank" class="text-emerald-600 font-bold hover:underline">Naver</a>
+                    <span class="text-jp-gray">|</span>
+                    <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.gas)}" target="_blank" class="text-blue-600 font-bold hover:underline">韓巢</a>
+                  </div>
+                </div>
+              ` : ''}
             </div>
           </div>
         `;
       }).join('');
     }
 
-    function fallbackStraightLine(validSpots) {
+    function fallbackStraightLine(validSpots, allBoundsCoords) {
       const latLngs = validSpots.map(s => [s.lat, s.lng]);
       polylineLayer = L.polyline(latLngs, { color: '#5A6B5C', weight: 3, dashArray: '6, 6' }).addTo(map);
-      map.fitBounds(L.latLngBounds(latLngs), { padding: [30, 30] });
+      map.fitBounds(L.latLngBounds(allBoundsCoords), { padding: [30, 30] });
     }
 
     function switchTab(tabId) {
