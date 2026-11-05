@@ -80,7 +80,7 @@
     <!-- 視圖 1: 行程與地圖 -->
     <div id="tab-itinerary" class="space-y-4">
       
-      <!-- 上半部：無 API KEY 的標準 OpenStreetMap 地圖區塊 -->
+      <!-- 上半部：開源免費向量地圖區塊 -->
       <div class="bg-jp-card rounded-2xl p-3 border border-jp-gray shadow-sm space-y-2">
         <div class="flex justify-between items-center text-xs px-1">
           <div class="flex items-center gap-1.5 font-bold text-jp-text">
@@ -122,14 +122,14 @@
         </div>
       </div>
 
-      <!-- 卡片類別篩選按鈕 (全部 / 景點 / 美食 / 購物 / 交通 / 住宿) -->
+      <!-- 卡片類別篩選按鈕 -->
       <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
         <button onclick="filterCategory('all')" id="filter-all" class="px-3 py-1 bg-jp-accent text-white rounded-full text-xs font-medium">全部</button>
         <button onclick="filterCategory('spot')" id="filter-spot" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">⛩️ 景點</button>
         <button onclick="filterCategory('dining')" id="filter-dining" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🍜 美食</button>
         <button onclick="filterCategory('shopping')" id="filter-shopping" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🛍️ 購物</button>
-        <button onclick="filterCategory('transport')" id="filter-transport" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🚗 交通</button>
         <button onclick="filterCategory('hotel')" id="filter-hotel" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🏨 住宿</button>
+        <button onclick="filterCategory('transport')" id="filter-transport" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🚗 交通/流程</button>
       </div>
 
       <!-- 景點卡片動態列表 -->
@@ -195,12 +195,24 @@
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2">
         <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1">🏨 住宿安排</h3>
         <div class="text-xs text-jp-text space-y-2">
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray">
-            <div class="font-bold">Day 1 ~ Day 4：西面商圈飯店</div>
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray space-y-1.5">
+            <div class="flex justify-between items-center">
+              <div class="font-bold">Day 1 ~ Day 4：西面商圈飯店</div>
+              <div class="flex gap-1 text-[10px]">
+                <a href="https://map.naver.com/v5/search/%E8%A5%BF%E9%9D%A2%E9%A3%AF%E5%BA%97" target="_blank" class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200">🚀 Naver</a>
+                <a href="https://map.hanchao.com/search?keyword=%E8%A5%BF%E9%9D%A2" target="_blank" class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200">🗺️ 韓巢 ↗</a>
+              </div>
+            </div>
             <div class="text-jp-sub text-[11px]">附停車場，方便市區地下街與南浦洞交通。</div>
           </div>
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray">
-            <div class="font-bold">Day 5 ~ Day 7：廣安里橘子飯店 (Orange Hotel)</div>
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray space-y-1.5">
+            <div class="flex justify-between items-center">
+              <div class="font-bold">Day 5 ~ Day 7：廣安里橘子飯店 (Orange Hotel)</div>
+              <div class="flex gap-1 text-[10px]">
+                <a href="https://map.naver.com/v5/search/Hotel+Aqua+Palace+Busan" target="_blank" class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200">🚀 Naver</a>
+                <a href="https://map.hanchao.com/search?keyword=%E5%BB%A3%E5%AE%89%E9%87%8C%E6%A9%9B%E5%AD%90%E9%A3%AF%E5%BA%97" target="_blank" class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200">🗺️ 韓巢 ↗</a>
+              </div>
+            </div>
             <div class="text-jp-sub text-[11px]">海景第一排，方便看廣安大橋夜景與無人機表演。</div>
           </div>
         </div>
@@ -241,38 +253,21 @@
         <div id="expenses-list" class="space-y-2 max-h-60 overflow-y-auto text-xs no-scrollbar"></div>
       </div>
     </div>
-
-    <!-- 視圖 4: 部署說明 -->
-    <div id="tab-deploy" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">⚙️ 部署與同步說明</h2>
-      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2 text-xs text-jp-sub">
-        <p><strong>GitHub 網頁上傳：</strong> 建立 Repository 後將此 index.html 上傳並在 Settings ➔ Pages 開啟 GitHub Pages 免費發布。</p>
-        <p><strong>Kinsta 部署：</strong> 連結 GitHub 專案庫選擇 Static Site Hosting 免費發布為 PWA。</p>
-      </div>
-    </div>
   </main>
 
-  <!-- 底部導覽 Tab Bar -->
-  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-jp-card border-t border-jp-gray px-4 py-2 flex justify-between items-center z-30">
+  <!-- 精簡後的底部導覽 Tab Bar (僅保留行程、工具、記帳) -->
+  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-jp-card border-t border-jp-gray px-8 py-2.5 flex justify-between items-center z-30">
     <button onclick="switchTab('itinerary')" id="nav-itinerary" class="flex flex-col items-center gap-0.5 text-jp-accent font-bold">
       <span class="text-lg">📅</span>
       <span class="text-[10px]">每日行程</span>
     </button>
-    <button onclick="switchTab('itinerary')" id="nav-map" class="flex flex-col items-center gap-0.5 text-jp-sub">
-      <span class="text-lg">🧭</span>
-      <span class="text-[10px]">導航地圖</span>
-    </button>
     <button onclick="switchTab('toolkit')" id="nav-toolkit" class="flex flex-col items-center gap-0.5 text-jp-sub">
       <span class="text-lg">📚</span>
-      <span class="text-[10px]">旅程工具</span>
+      <span class="text-[10px]">隨身工具</span>
     </button>
     <button onclick="switchTab('budget')" id="nav-budget" class="flex flex-col items-center gap-0.5 text-jp-sub">
       <span class="text-lg">💳</span>
       <span class="text-[10px]">預算記帳</span>
-    </button>
-    <button onclick="switchTab('deploy')" id="nav-deploy" class="flex flex-col items-center gap-0.5 text-jp-sub">
-      <span class="text-lg">🔗</span>
-      <span class="text-[10px]">部署說明</span>
     </button>
   </nav>
 
@@ -282,9 +277,9 @@
         day: 1, dateStr: "Day 1 (二) · 2026/12/29", title: "抵達釜山 · 取車自駕 · 夜間輕裝整備",
         weather: "4°C ~ 11°C", driving: "金海機場 🚗 25 mins 🚗 西面飯店",
         spots: [
-          { type: "spot", catText: "抵達機場", name: "出關後換釜山PASS實體卡", lat: 35.1795, lng: 128.9382, highlight: "重要事項：務必檢查卡片啟用條碼與天數起算規則", desc: "於入境大廳 1 樓 Visitor Center 櫃檯出示憑證領取實體卡。", driveNext: "5 mins (1.2 km)", parking: "1級地(甲): 700KRW/10分 (日上限 21,000KRW)", gas: "SK Energy 機場前加油站 (含LPG)" },
-          { type: "transport", catText: "交通自駕", name: "釜山租車處取車與路線測試", lat: 35.1760, lng: 128.9430, desc: "確認車載 GPS 設定完好並拍照紀錄車況。", driveNext: "25 mins (14.5 km)", parking: "租車公司專屬停車場", gas: "GS Caltex 交流道前加油站" },
-          { type: "dining", catText: "美食晚餐", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596, highlight: "必吃美食：經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。", driveNext: "3 mins (0.8 km)", parking: "樂天百貨特約停車場", gas: "S-Oil 西面站加油站" },
+          { type: "transport", catText: "抵達機場", name: "出關後換釜山PASS實體卡", lat: 35.1795, lng: 128.9382, highlight: "重要事項：務必檢查卡片啟用條碼與天數起算規則", desc: "於入境大廳 1 樓 Visitor Center 櫃檯出示憑證領取實體卡。", driveNext: "5 mins (1.2 km)", parking: "1級地(甲): 700KRW/10分", gas: "SK Energy 機場前加油站" },
+          { type: "transport", catText: "交通自駕", name: "釜山租車處取車與路線測試", lat: 35.1760, lng: 128.9430, desc: "確認車載 GPS 設定完好並拍照紀錄車況。", driveNext: "25 mins (14.5 km)", parking: "租車公司專屬停車場", gas: "GS Caltex" },
+          { type: "dining", catText: "美食晚餐", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596, highlight: "必吃美食：經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。", driveNext: "3 mins (0.8 km)", parking: "樂天百貨特約停車場", gas: "S-Oil 西面站" },
           { type: "hotel", catText: "住宿安排", name: "住：西面商圈飯店", lat: 35.1578, lng: 129.0592, desc: "辦理入住登記，車輛停放於飯店停車場。", driveNext: "明日行程出發", parking: "飯店附設地下停車場", gas: "SK Energy" }
         ]
       },
@@ -323,7 +318,8 @@
         spots: [
           { type: "spot", catText: "經典景點", name: "甘川洞文化村 (小王子拍照)", lat: 35.0975, lng: 129.0106, highlight: "重要預約：09:30到！10:30開卡 Pass", desc: "彩繪山城拍照打卡。", driveNext: "15 mins", parking: "甘川洞公營停車場", gas: "GS Caltex" },
           { type: "dining", catText: "美食午餐", name: "李在模披薩本店", lat: 35.1021, lng: 129.0315, highlight: "必吃美食：滿滿起司披薩", desc: "釜山代表性披薩店。", driveNext: "15 mins", parking: "周邊特約停車場", gas: "SK Energy" },
-          { type: "spot", catText: "跨海纜車", name: "松島海上纜車 & 龍宮雲橋", lat: 35.0763, lng: 129.0234, desc: "體驗透明底纜車。", driveNext: "入住飯店", parking: "松島纜車地下停車場", gas: "S-Oil" }
+          { type: "spot", catText: "跨海纜車", name: "松島海上纜車 & 龍宮雲橋", lat: 35.0763, lng: 129.0234, desc: "體驗透明底纜車。", driveNext: "入住飯店", parking: "松島纜車地下停車場", gas: "S-Oil" },
+          { type: "hotel", catText: "住宿安排", name: "住：廣安里橘子飯店 (Orange Hotel)", lat: 35.1532, lng: 129.1189, desc: "辦理入住登記，海景第一排。", driveNext: "明日行程出發", parking: "飯店特約停車場", gas: "SK Energy" }
         ]
       },
       {
@@ -344,7 +340,7 @@
         ]
       },
       {
-        day: 8, dateStr: "Day 8 (二) · 2027/01/05", title: "西面地下街 · 還車與機場歸途",
+        day: 8, dateStr: "Day 8 (二) · 2027/01/05", title: "西面地下街巡禮與歸途",
         weather: "5°C ~ 12°C", driving: "廣安里 🚗 20 mins 🚗 西面 🚗 25 mins 🚗 金海機場",
         spots: [
           { type: "shopping", catText: "地下街購物", name: "西面韓條地下街買韓版衣服", lat: 35.1578, lng: 129.0592, highlight: "必買伴手禮：流行韓系服飾", desc: "最後購物巡禮。", driveNext: "25 mins", parking: "西面地下停車場", gas: "S-Oil" },
@@ -397,7 +393,7 @@
 
     function filterCategory(category) {
       currentCategoryFilter = category;
-      ['all', 'spot', 'dining', 'shopping', 'transport', 'hotel'].forEach(cat => {
+      ['all', 'spot', 'dining', 'shopping', 'hotel', 'transport'].forEach(cat => {
         const btn = document.getElementById(`filter-${cat}`);
         if (cat === category) {
           btn.className = 'px-3 py-1 bg-jp-accent text-white rounded-full text-xs font-medium';
@@ -421,7 +417,7 @@
         : data.spots.filter(s => s.type === currentCategoryFilter);
 
       document.getElementById('spots-count-badge').textContent = `${filteredSpots.length} 個點位`;
-      document.getElementById('summary-spot-count').textContent = `${filteredSpots.length} 個景點`;
+      document.getElementById('summary-spot-count').textContent = `${filteredSpots.length} 個項目`;
 
       markersGroup.clearLayers();
       if (polylineLayer) map.removeLayer(polylineLayer);
@@ -448,63 +444,67 @@
         map.fitBounds(L.latLngBounds(latLngs), { padding: [30, 30] });
       }
 
-      // 景點卡片渲染：已修正韓巢地圖相容 URL 格式
       const container = document.getElementById('spots-container');
-      container.innerHTML = filteredSpots.map((spot, idx) => `
-        <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
-          
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-1.5">
-              <span class="w-6 h-6 rounded-full bg-jp-accent text-white flex items-center justify-center text-xs font-bold">
-                ${idx + 1}
-              </span>
-              <span class="text-[11px] px-2 py-0.5 rounded-md font-medium bg-jp-bg text-jp-sub border border-jp-gray">
-                ${spot.catText || '景點'}
-              </span>
+      container.innerHTML = filteredSpots.map((spot, idx) => {
+        const isNavigable = ['spot', 'dining', 'shopping', 'hotel'].includes(spot.type);
+
+        return `
+          <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+            
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-1.5">
+                <span class="w-6 h-6 rounded-full bg-jp-accent text-white flex items-center justify-center text-xs font-bold">
+                  ${idx + 1}
+                </span>
+                <span class="text-[11px] px-2 py-0.5 rounded-md font-medium bg-jp-bg text-jp-sub border border-jp-gray">
+                  ${spot.catText || '景點'}
+                </span>
+              </div>
+
+              ${isNavigable ? `
+                <div class="flex gap-1.5 text-xs">
+                  <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl font-medium flex items-center gap-1 border border-emerald-200 text-[11px]">
+                    🚀 Naver
+                  </a>
+                  <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl font-medium flex items-center gap-1 border border-blue-200 text-[11px]">
+                    🗺️ 韓巢地圖 ↗
+                  </a>
+                </div>
+              ` : ''}
             </div>
 
-            <!-- Naver 導航 + 修正後的韓巢中文地圖連結 -->
-            <div class="flex gap-1.5 text-xs">
-              <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl font-medium flex items-center gap-1 border border-emerald-200 text-[11px]">
-                🚀 Naver
-              </a>
-              <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl font-medium flex items-center gap-1 border border-blue-200 text-[11px]">
-                🗺️ 韓巢地圖 ↗
-              </a>
+            <div class="font-bold text-sm text-jp-text leading-snug">
+              ${spot.name}
             </div>
-          </div>
 
-          <div class="font-bold text-sm text-jp-text leading-snug">
-            ${spot.name}
-          </div>
+            <p class="text-xs text-jp-sub leading-relaxed">
+              ${spot.desc}
+            </p>
 
-          <p class="text-xs text-jp-sub leading-relaxed">
-            ${spot.desc}
-          </p>
+            ${spot.highlight ? `
+              <div class="p-2 bg-amber-50/80 rounded-xl border border-amber-200/60 text-xs font-bold text-amber-900">
+                ${spot.highlight}
+              </div>
+            ` : ''}
 
-          ${spot.highlight ? `
-            <div class="p-2 bg-amber-50/80 rounded-xl border border-amber-200/60 text-xs font-bold text-amber-900">
-              ${spot.highlight}
+            <div class="pt-2 border-t border-jp-gray/60 space-y-1 text-[11px] text-jp-sub">
+              ${spot.driveNext ? `<div class="flex items-center gap-1.5"><span>🚗</span><span>下一步開車時間：${spot.driveNext}</span></div>` : ''}
+              ${spot.parking ? `<div class="flex items-center gap-1.5"><span>🅿️</span><span>停車費率估算：${spot.parking}</span></div>` : ''}
+              ${spot.gas ? `<div class="flex items-center gap-1.5"><span>⛽</span><span>周邊加油站：${spot.gas}</span></div>` : ''}
             </div>
-          ` : ''}
 
-          <div class="pt-2 border-t border-jp-gray/60 space-y-1 text-[11px] text-jp-sub">
-            ${spot.driveNext ? `<div class="flex items-center gap-1.5"><span>🚗</span><span>下一步開車時間：${spot.driveNext}</span></div>` : ''}
-            ${spot.parking ? `<div class="flex items-center gap-1.5"><span>🅿️</span><span>停車費率估算：${spot.parking}</span></div>` : ''}
-            ${spot.gas ? `<div class="flex items-center gap-1.5"><span>⛽</span><span>周邊加油站：${spot.gas}</span></div>` : ''}
           </div>
-
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function switchTab(tabId) {
-      ['itinerary', 'toolkit', 'budget', 'deploy'].forEach(t => {
+      ['itinerary', 'toolkit', 'budget'].forEach(t => {
         const el = document.getElementById(`tab-${t}`);
         if (el) el.classList.add('hidden');
       });
 
-      ['itinerary', 'map', 'toolkit', 'budget', 'deploy'].forEach(n => {
+      ['itinerary', 'toolkit', 'budget'].forEach(n => {
         const nav = document.getElementById(`nav-${n}`);
         if (nav) nav.className = 'flex flex-col items-center gap-0.5 text-jp-sub';
       });
@@ -515,7 +515,7 @@
       const activeNav = document.getElementById(`nav-${tabId}`);
       if (activeNav) activeNav.className = 'flex flex-col items-center gap-0.5 text-jp-accent font-bold';
 
-      if (tabId === 'itinerary' || tabId === 'map') {
+      if (tabId === 'itinerary') {
         setTimeout(() => { map.invalidateSize(); }, 200);
       }
     }
