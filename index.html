@@ -330,4 +330,232 @@
         day: 6, dateStr: "Day 6 (日) · 2027/01/03", title: "天空膠囊列車 · X the Sky · 鑽石遊艇",
         weather: "3°C ~ 10°C", driving: "廣安里 🚗 20 mins 🚗 青沙浦",
         spots: [
-          { type: "spot", catText: "熱門體驗", name: "天空膠囊列車 (青沙浦)", lat: 35.1612, lng: 129.1915, highlight: "
+          { type: "spot", catText: "熱門體驗", name: "天空膠囊列車 (青沙浦)", lat: 35.1612, lng: 129.1915, highlight: "重要預約：搭乘憑證 QRCode", desc: "沿海高空列車巡禮。", driveNext: "10 mins", parking: "青沙浦公營停車場", gas: "SK Energy" },
+          { type: "spot", catText: "高空觀景", name: "Busan X the Sky", lat: 35.1595, lng: 129.1698, desc: "韓國第二高樓看海灘。", driveNext: "20 mins", parking: "大樓停車場", gas: "GS Caltex" },
+          { type: "spot", catText: "夜間遊艇", name: "鑽石遊艇 (夜間版)", lat: 35.1540, lng: 129.1350, highlight: "重要預約：夜間搭乘班次", desc: "海上賞廣安大橋夜景。", driveNext: "回飯店", parking: "水邊公園停車場", gas: "S-Oil" }
+        ]
+      },
+      {
+        day: 7, dateStr: "Day 7 (一) · 2027/01/04", title: "樂天世界 · Outlets 採購",
+        weather: "4°C ~ 11°C", driving: "廣安里 🚗 25 mins 🚗 機張樂天世界",
+        spots: [
+          { type: "dining", catText: "特色早餐", name: "水邊最高豬肉湯飯 (民樂店)", lat: 35.1558, lng: 129.1245, highlight: "必吃美食：人氣豬肉湯飯", desc: "在地超高評價湯飯。", driveNext: "25 mins", parking: "湯飯館專用停車場", gas: "SK Energy" },
+          { type: "spot", catText: "樂園購物", name: "樂天世界 & Lotte Outlets", lat: 35.1963, lng: 129.2131, highlight: "必買伴手禮：Outlet 品牌折扣", desc: "暢遊樂園與購物。", driveNext: "回飯店", parking: "樂天世界園區停車場", gas: "GS Caltex" }
+        ]
+      },
+      {
+        day: 8, dateStr: "Day 8 (二) · 2027/01/05", title: "西面地下街 · 還車與機場歸途",
+        weather: "5°C ~ 12°C", driving: "廣安里 🚗 20 mins 🚗 西面 🚗 25 mins 🚗 金海機場",
+        spots: [
+          { type: "shopping", catText: "地下街購物", name: "西面韓條地下街買韓版衣服", lat: 35.1578, lng: 129.0592, highlight: "必買伴手禮：流行韓系服飾", desc: "最後購物巡禮。", driveNext: "25 mins", parking: "西面地下停車場", gas: "S-Oil" },
+          { type: "transport", catText: "還車搭機", name: "前往金海機場還車與搭機歸國", lat: 35.1795, lng: 128.9382, desc: "辦理還車手續與離境退稅。", driveNext: "返抵家門", parking: "機場租車還車區", gas: "SK 機場加油站 (加滿油還車)" }
+        ]
+      }
+    ];
+
+    let currentDayIndex = 0;
+    let currentCategoryFilter = 'all';
+    let map, markersGroup, polylineLayer;
+    let expenses = JSON.parse(localStorage.getItem('busan_expenses') || '[]');
+
+    window.onload = function() {
+      initMap();
+      renderDaySelector();
+      renderDayContent(0);
+      renderExpenses();
+    };
+
+    function initMap() {
+      map = L.map('map', { zoomControl: true }).setView([35.1795, 129.0756], 11);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+
+      markersGroup = L.layerGroup().addTo(map);
+    }
+
+    function renderDaySelector() {
+      const selector = document.getElementById('day-selector');
+      selector.innerHTML = itineraryData.map((d, index) => `
+        <button onclick="changeDay(${index})" class="px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all shadow-sm ${
+          index === currentDayIndex 
+            ? 'bg-jp-accent text-white' 
+            : 'bg-jp-card text-jp-sub hover:bg-jp-gray border border-jp-gray'
+        }">
+          Day ${d.day}<br><span class="text-[10px] font-normal opacity-80">${d.dateStr.split(' · ')[1]}</span>
+        </button>
+      `).join('');
+    }
+
+    function changeDay(index) {
+      currentDayIndex = index;
+      renderDaySelector();
+      renderDayContent(index);
+    }
+
+    function filterCategory(category) {
+      currentCategoryFilter = category;
+      ['all', 'spot', 'dining', 'shopping', 'transport', 'hotel'].forEach(cat => {
+        const btn = document.getElementById(`filter-${cat}`);
+        if (cat === category) {
+          btn.className = 'px-3 py-1 bg-jp-accent text-white rounded-full text-xs font-medium';
+        } else {
+          btn.className = 'px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium';
+        }
+      });
+      renderDayContent(currentDayIndex);
+    }
+
+    function renderDayContent(index) {
+      const data = itineraryData[index];
+
+      document.getElementById('map-header-title').textContent = `Day ${data.day} 開動線地圖 (免 Key 定位)`;
+      document.getElementById('day-date-title').textContent = data.dateStr;
+      document.getElementById('day-main-title').textContent = data.title;
+      document.getElementById('weather-badge').querySelector('span:last-child').textContent = data.weather;
+
+      const filteredSpots = currentCategoryFilter === 'all' 
+        ? data.spots 
+        : data.spots.filter(s => s.type === currentCategoryFilter);
+
+      document.getElementById('spots-count-badge').textContent = `${filteredSpots.length} 個點位`;
+      document.getElementById('summary-spot-count').textContent = `${filteredSpots.length} 個景點`;
+
+      markersGroup.clearLayers();
+      if (polylineLayer) map.removeLayer(polylineLayer);
+
+      const latLngs = [];
+
+      filteredSpots.forEach((spot, idx) => {
+        if (spot.lat && spot.lng) {
+          const customIcon = L.divIcon({
+            className: 'custom-map-pin',
+            html: `${idx + 1}`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+          });
+
+          const marker = L.marker([spot.lat, spot.lng], { icon: customIcon }).addTo(markersGroup);
+          marker.bindPopup(`<b>${idx + 1}. ${spot.name}</b><br><span style="font-size:11px;">${spot.desc}</span>`);
+          latLngs.push([spot.lat, spot.lng]);
+        }
+      });
+
+      if (latLngs.length > 0) {
+        polylineLayer = L.polyline(latLngs, { color: '#5A6B5C', weight: 3, dashArray: '6, 6' }).addTo(map);
+        map.fitBounds(L.latLngBounds(latLngs), { padding: [30, 30] });
+      }
+
+      // 景點卡片渲染：已修正韓巢地圖相容 URL 格式
+      const container = document.getElementById('spots-container');
+      container.innerHTML = filteredSpots.map((spot, idx) => `
+        <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+          
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-1.5">
+              <span class="w-6 h-6 rounded-full bg-jp-accent text-white flex items-center justify-center text-xs font-bold">
+                ${idx + 1}
+              </span>
+              <span class="text-[11px] px-2 py-0.5 rounded-md font-medium bg-jp-bg text-jp-sub border border-jp-gray">
+                ${spot.catText || '景點'}
+              </span>
+            </div>
+
+            <!-- Naver 導航 + 修正後的韓巢中文地圖連結 -->
+            <div class="flex gap-1.5 text-xs">
+              <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl font-medium flex items-center gap-1 border border-emerald-200 text-[11px]">
+                🚀 Naver
+              </a>
+              <a href="https://map.hanchao.com/search?keyword=${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl font-medium flex items-center gap-1 border border-blue-200 text-[11px]">
+                🗺️ 韓巢地圖 ↗
+              </a>
+            </div>
+          </div>
+
+          <div class="font-bold text-sm text-jp-text leading-snug">
+            ${spot.name}
+          </div>
+
+          <p class="text-xs text-jp-sub leading-relaxed">
+            ${spot.desc}
+          </p>
+
+          ${spot.highlight ? `
+            <div class="p-2 bg-amber-50/80 rounded-xl border border-amber-200/60 text-xs font-bold text-amber-900">
+              ${spot.highlight}
+            </div>
+          ` : ''}
+
+          <div class="pt-2 border-t border-jp-gray/60 space-y-1 text-[11px] text-jp-sub">
+            ${spot.driveNext ? `<div class="flex items-center gap-1.5"><span>🚗</span><span>下一步開車時間：${spot.driveNext}</span></div>` : ''}
+            ${spot.parking ? `<div class="flex items-center gap-1.5"><span>🅿️</span><span>停車費率估算：${spot.parking}</span></div>` : ''}
+            ${spot.gas ? `<div class="flex items-center gap-1.5"><span>⛽</span><span>周邊加油站：${spot.gas}</span></div>` : ''}
+          </div>
+
+        </div>
+      `).join('');
+    }
+
+    function switchTab(tabId) {
+      ['itinerary', 'toolkit', 'budget', 'deploy'].forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      ['itinerary', 'map', 'toolkit', 'budget', 'deploy'].forEach(n => {
+        const nav = document.getElementById(`nav-${n}`);
+        if (nav) nav.className = 'flex flex-col items-center gap-0.5 text-jp-sub';
+      });
+
+      const activeTab = document.getElementById(`tab-${tabId}`);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) activeNav.className = 'flex flex-col items-center gap-0.5 text-jp-accent font-bold';
+
+      if (tabId === 'itinerary' || tabId === 'map') {
+        setTimeout(() => { map.invalidateSize(); }, 200);
+      }
+    }
+
+    function addExpense() {
+      const title = document.getElementById('expense-title').value;
+      const amount = parseFloat(document.getElementById('expense-amount').value);
+      if (!title || !amount) return;
+
+      expenses.unshift({ id: Date.now(), title, krw: amount });
+      localStorage.setItem('busan_expenses', JSON.stringify(expenses));
+      document.getElementById('expense-title').value = '';
+      document.getElementById('expense-amount').value = '';
+      renderExpenses();
+    }
+
+    function renderExpenses() {
+      const list = document.getElementById('expenses-list');
+      const totalDisplay = document.getElementById('total-expenses-display');
+      if (expenses.length === 0) {
+        list.innerHTML = '<div class="text-center text-jp-sub py-4">目前尚無記帳紀錄</div>';
+        totalDisplay.textContent = '總計：₩0 (NT$0)';
+        return;
+      }
+
+      let totalKrw = 0;
+      list.innerHTML = expenses.map(e => {
+        totalKrw += e.krw;
+        return `
+          <div class="flex justify-between items-center bg-jp-bg p-2.5 rounded-xl border border-jp-gray">
+            <div>
+              <div class="font-medium text-jp-text">${e.title}</div>
+              <div class="text-[10px] text-jp-sub">約 NT$ ${Math.round(e.krw / 42).toLocaleString()}</div>
+            </div>
+            <span class="font-mono text-jp-warm font-bold">₩ ${e.krw.toLocaleString()}</span>
+          </div>
+        `;
+      }).join('');
+      totalDisplay.textContent = `總計：₩${totalKrw.toLocaleString()} (NT$${Math.round(totalKrw / 42).toLocaleString()})`;
+    }
+  </script>
+</body>
+</html>
