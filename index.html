@@ -3,37 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>釜山自駕旅遊手帳</title>
+  <title>釜山自駕旅遊導航手帳</title>
   
   <link rel="manifest" href="data:application/json,{
     \"name\": \"釜山自駕旅遊導航\",
     \"short_name\": \"釜山自駕\",
     \"start_url\": \".\",
     \"display\": \"standalone\",
-    \"background_color\": \"#F7F4EE\",
-    \"theme_color\": \"#D8C3B0\"
+    \"background_color\": \"#FDFBF7\",
+    \"theme_color\": \"#5A6B5C\"
   }" />
 
-  <!-- Tailwind CSS & Leaflet OpenStreetMap -->
+  <!-- Tailwind CSS & Leaflet OpenStreetMap CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet" />
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            app: {
-              bg: '#F7F4EE',       // 奶茶暖白背景
-              card: '#FFFFFF',     // 純白卡片
-              main: '#4A3E3D',     // 深焦糖灰文字
-              sub: '#8C7E7A',      // 灰褐色次要文字
-              accent: '#FF7A00',   // 暖橘色高亮 (參考圖靈感)
-              accentLight: '#FFF0E5',
-              border: '#E8E2D8',
-              brown: '#D8C3B0'     // 奶茶棕
+            jp: {
+              bg: '#FDFBF7',
+              card: '#FFFFFF',
+              text: '#2D3748',
+              sub: '#718096',
+              accent: '#5A6B5C',
+              accentLight: '#EEF2EE',
+              warm: '#C88A58',
+              gray: '#E2E8F0'
             }
           },
           fontFamily: {
@@ -46,302 +46,305 @@
 
   <style>
     body {
-      background-color: #F7F4EE;
+      background-color: #FDFBF7;
       font-family: 'Noto Sans TC', sans-serif;
-      color: #4A3E3D;
+      color: #2D3748;
       -webkit-tap-highlight-color: transparent;
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    #map { width: 100%; height: 100%; border-radius: 1.5rem; }
-    
-    /* 參考圖樣式的橘色圓形數字 Marker */
+    #map { width: 100%; height: 100%; border-radius: 1rem; }
     .custom-map-pin {
-      background-color: #FF7A00;
+      background-color: #5A6B5C;
       color: white;
-      font-weight: 800;
+      font-weight: bold;
       border-radius: 50%;
       text-align: center;
-      line-height: 26px;
-      font-size: 13px;
+      line-height: 24px;
+      font-size: 12px;
       border: 2px solid white;
-      box-shadow: 0 4px 10px rgba(255, 122, 0, 0.35);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
   </style>
 </head>
-<body class="flex flex-col h-screen max-w-md mx-auto relative shadow-2xl overflow-hidden bg-app-bg">
+<body class="flex flex-col h-screen max-w-md mx-auto relative shadow-2xl overflow-hidden bg-jp-bg">
 
-  <!-- 頂部頁眉標題與天數膠囊切換列 -->
-  <header class="bg-app-bg px-5 pt-4 pb-2 z-20 flex-shrink-0 space-y-2">
-    <div class="flex justify-between items-center">
-      <div>
-        <div class="text-[10px] tracking-widest text-app-sub uppercase font-bold">BUSAN SELF-DRIVE</div>
-        <h1 class="text-xl font-black text-app-main tracking-tight flex items-center gap-1.5">
-          說出想要的，找到剛好景點 ☕
-        </h1>
-      </div>
-      <span id="header-day-tag" class="px-3 py-1 bg-app-accent text-white font-bold rounded-full text-xs shadow-sm">
-        Day 1
-      </span>
-    </div>
-
-    <!-- 膠囊天數滑動切換列 (參考圖頂部區塊) -->
+  <!-- 頂部天數切換膠囊 -->
+  <header class="bg-jp-bg px-4 pt-3 pb-2 z-20 flex-shrink-0">
     <div id="day-selector" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
   </header>
 
-  <!-- 主內容視圖容器 -->
+  <!-- 主內容容器 -->
   <main class="flex-1 overflow-y-auto relative no-scrollbar pb-24 px-4" id="main-container">
     
-    <!-- 視圖 1: 行程與地圖 (完美對齊參考圖 layout) -->
+    <!-- 視圖 1: 每日行程與地圖 -->
     <div id="tab-itinerary" class="space-y-4">
       
-      <!-- 懸浮地圖卡片 (包含地圖內部的搜尋列與橘子標籤) -->
-      <div class="bg-app-card rounded-3xl p-2.5 border border-app-border shadow-lg space-y-2 relative">
-        
-        <!-- 地圖內部上方疊加搜尋列與探索狀態 (如參考圖) -->
-        <div class="absolute top-4 left-4 right-4 z-[1000] space-y-2">
-          <!-- 搜尋框模擬列 -->
-          <div class="bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-md border border-app-border flex items-center justify-between text-xs">
-            <div class="flex items-center gap-2 text-app-main font-bold truncate">
-              <span>⚓</span>
-              <span id="map-explore-title" class="truncate">探索中心：釜山金海國際機場</span>
-            </div>
-            <span class="text-app-sub text-[10px]">自駕導航</span>
+      <!-- 上半部：動態路線地圖區塊 -->
+      <div class="bg-jp-card rounded-2xl p-3 border border-jp-gray shadow-sm space-y-2">
+        <div class="flex justify-between items-center text-xs px-1">
+          <div class="flex items-center gap-1.5 font-bold text-jp-text">
+            <span>🗺️</span>
+            <span id="map-header-title">Day 1 開動線地圖</span>
           </div>
-
-          <!-- 橘色標籤列 (參考圖選單標籤) -->
-          <div class="flex gap-1.5 overflow-x-auto no-scrollbar">
-            <span class="px-2.5 py-1 bg-app-accent text-white rounded-xl text-[11px] font-bold shadow-sm whitespace-nowrap">⚡ 安靜舒適</span>
-            <span class="px-2.5 py-1 bg-white/90 text-app-main rounded-xl text-[11px] font-bold shadow-sm border border-app-border whitespace-nowrap">🅿️ 停車方便</span>
-            <a href="https://www.koreabycar.com/zh-hant/plan/parking" target="_blank" class="px-2.5 py-1 bg-white/90 text-app-accent rounded-xl text-[11px] font-bold shadow-sm border border-app-border whitespace-nowrap">停車攻略 ↗</a>
-          </div>
-        </div>
-
-        <!-- 互動地圖容器 -->
-        <div class="h-64 w-full rounded-2xl overflow-hidden relative">
-          <div id="map"></div>
-        </div>
-      </div>
-
-      <!-- 類別篩選器與景點計數 (參考圖 "搜尋結果 / 4 SITES") -->
-      <div class="flex justify-between items-center px-1">
-        <div class="flex items-center gap-2">
-          <h2 class="text-base font-black text-app-main">搜尋結果</h2>
-          <span id="sites-count-badge" class="px-2.5 py-0.5 bg-app-accentLight text-app-accent font-extrabold rounded-full text-[11px]">
-            4 SITES
+          <span id="spots-count-badge" class="px-2 py-0.5 bg-jp-accentLight text-jp-accent font-bold rounded-full text-[10px]">
+            4 個點位
           </span>
         </div>
 
-        <!-- 分類膠囊 -->
-        <div class="flex gap-1 text-xs">
-          <button onclick="filterCategory('all')" id="filter-all" class="px-3 py-1 bg-app-main text-white rounded-full font-bold">全部</button>
-          <button onclick="filterCategory('dining')" id="filter-dining" class="px-2.5 py-1 bg-app-card text-app-sub border border-app-border rounded-full font-medium">🍱 美食</button>
-          <button onclick="filterCategory('spot')" id="filter-spot" class="px-2.5 py-1 bg-app-card text-app-sub border border-app-border rounded-full font-medium">⛩️ 景點</button>
+        <div class="h-44 w-full rounded-xl overflow-hidden relative shadow-inner">
+          <div id="map"></div>
+        </div>
+
+        <div class="flex justify-between items-center text-[11px] text-jp-sub px-1 pt-1 border-t border-jp-gray/60">
+          <div class="flex items-center gap-1">
+            <span>⏱️</span>
+            <span>本日巡訪：<strong id="summary-spot-count" class="text-jp-text">4 個景點</strong></span>
+          </div>
+          <div class="flex items-center gap-1">
+            <span>⛽</span>
+            <span>周邊加油站：<strong class="text-jp-text">SK / GS / S-Oil</strong></span>
+          </div>
         </div>
       </div>
 
-      <!-- 下方水平/垂直彈性行程卡片 (對齊參考圖卡片風格) -->
-      <div id="spots-container" class="space-y-3.5 pb-2"></div>
+      <!-- 每日標題與即時天氣卡片 -->
+      <div class="flex justify-between items-center bg-jp-card p-3 rounded-2xl border border-jp-gray shadow-sm">
+        <div>
+          <div id="day-date-title" class="text-xs text-jp-sub font-medium">Day 1 (二) · 2026/12/29</div>
+          <div id="day-main-title" class="text-sm font-bold text-jp-text">抵達釜山 · 取車自駕 · 夜間輕裝整備</div>
+        </div>
+        <div id="weather-badge" class="flex items-center gap-1.5 bg-jp-bg px-3 py-1.5 rounded-xl border border-jp-gray">
+          <span class="text-lg">🌤️</span>
+          <span class="text-xs font-bold text-jp-text">4°C ~ 11°C</span>
+        </div>
+      </div>
+
+      <!-- 類別篩選器 -->
+      <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+        <button onclick="filterCategory('all')" id="filter-all" class="px-3 py-1 bg-jp-accent text-white rounded-full text-xs font-medium">全部</button>
+        <button onclick="filterCategory('spot')" id="filter-spot" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">⛩️ 景點</button>
+        <button onclick="filterCategory('dining')" id="filter-dining" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🍜 美食</button>
+        <button onclick="filterCategory('shopping')" id="filter-shopping" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🛍️ 購物</button>
+        <button onclick="filterCategory('transport')" id="filter-transport" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🚗 交通</button>
+        <button onclick="filterCategory('hotel')" id="filter-hotel" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🏨 住宿</button>
+      </div>
+
+      <!-- 景點卡片列表 -->
+      <div id="spots-container" class="space-y-3"></div>
     </div>
 
-    <!-- 視圖 2: 隨身工具箱 (機票、住宿、緊急電話) -->
-    <div id="tab-toolkit" class="hidden space-y-4 pt-2">
-      <h2 class="text-base font-black text-app-main border-l-4 border-app-accent pl-2.5">✈️ 隨身資訊與工具箱</h2>
+    <!-- 視圖 2: 隨身工具箱 (航班、住宿、緊急電話) -->
+    <div id="tab-toolkit" class="hidden space-y-4">
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">✈️ 隨身資訊與工具箱</h2>
       
-      <!-- 機票資訊卡片 (依照您上傳的華航機票圖片) -->
-      <div class="bg-app-card p-4 rounded-3xl border border-app-border shadow-sm space-y-3">
-        <h3 class="text-xs font-bold text-app-accent flex items-center gap-1.5">
-          <span>✈️</span> 中華航空 來回機票行程 (CI186 / CI187)
+      <!-- 航班資訊 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
+        <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
+          <span>✈️</span> 中華航空 往返機票明細
         </h3>
         
-        <!-- 去程 -->
-        <div class="p-3 bg-app-bg rounded-2xl border border-app-border space-y-2 text-xs">
-          <div class="flex justify-between items-center border-b border-app-border pb-1.5">
-            <span class="font-bold text-app-main">🛫 去程：台北 - 釜山 | 2026 年 12 月 29 日</span>
+        <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
+          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
+            <span class="font-bold text-jp-text">🛫 去程：台北 (TPE) ➔ 釜山 (PUS)</span>
+            <span class="text-jp-sub font-mono">2026/12/29 (二)</span>
           </div>
-          <div class="flex justify-between items-center text-app-main font-medium pt-1">
+          <div class="flex justify-between items-center text-jp-text font-medium">
             <div>
-              <div class="text-sm font-black font-mono">15:40</div>
-              <div class="text-[11px] text-app-sub">TPE 桃園國際機場 T1</div>
+              <div class="text-sm font-bold font-mono">15:40</div>
+              <div class="text-[11px] text-jp-sub">桃園機場 T1</div>
             </div>
-            <div class="text-center text-app-sub text-[10px]">
-              <div>中華航空 CI186</div>
-              <div>經濟艙 | A321neo | 🍱 餐點</div>
+            <div class="text-center text-jp-sub text-[10px]">
+              <div>CI186 | A321neo</div>
+              <div>經濟艙 · 🍱 含餐</div>
             </div>
             <div class="text-right">
-              <div class="text-sm font-black font-mono">18:50</div>
-              <div class="text-[11px] text-app-sub">PUS 金海國際機場 I</div>
+              <div class="text-sm font-bold font-mono">18:50</div>
+              <div class="text-[11px] text-jp-sub">金海機場 I</div>
             </div>
           </div>
         </div>
 
-        <!-- 回程 -->
-        <div class="p-3 bg-app-bg rounded-2xl border border-app-border space-y-2 text-xs">
-          <div class="flex justify-between items-center border-b border-app-border pb-1.5">
-            <span class="font-bold text-app-main">🛬 返回：釜山 - 台北 | 2027 年 1 月 5 日</span>
+        <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
+          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
+            <span class="font-bold text-jp-text">🛬 返回：釜山 (PUS) ➔ 台北 (TPE)</span>
+            <span class="text-jp-sub font-mono">2027/01/05 (二)</span>
           </div>
-          <div class="flex justify-between items-center text-app-main font-medium pt-1">
+          <div class="flex justify-between items-center text-jp-text font-medium">
             <div>
-              <div class="text-sm font-black font-mono">19:50</div>
-              <div class="text-[11px] text-app-sub">PUS 金海國際機場 I</div>
+              <div class="text-sm font-bold font-mono">19:50</div>
+              <div class="text-[11px] text-jp-sub">金海機場 I</div>
             </div>
-            <div class="text-center text-app-sub text-[10px]">
-              <div>中華航空 CI187</div>
-              <div>經濟艙 | A321neo | 🍱 餐點</div>
+            <div class="text-center text-jp-sub text-[10px]">
+              <div>CI187 | A321neo</div>
+              <div>經濟艙 · 🍱 含餐</div>
             </div>
             <div class="text-right">
-              <div class="text-sm font-black font-mono">21:30</div>
-              <div class="text-[11px] text-app-sub">TPE 桃園國際機場 T1</div>
+              <div class="text-sm font-bold font-mono">21:30</div>
+              <div class="text-[11px] text-jp-sub">桃園機場 T1</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 🏨 住宿資訊卡片 -->
-      <div class="bg-app-card p-4 rounded-3xl border border-app-border shadow-sm space-y-2">
-        <h3 class="text-xs font-bold text-app-brown flex items-center gap-1">🏨 住宿安排</h3>
-        <div class="text-xs text-app-main space-y-2">
-          <div class="p-3 bg-app-bg rounded-2xl border border-app-border">
+      <!-- 住宿安排 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2">
+        <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1">🏨 住宿安排</h3>
+        <div class="text-xs text-jp-text space-y-2">
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray">
             <div class="font-bold">Day 1 ~ Day 4：西面商圈飯店</div>
-            <div class="text-app-sub text-[11px]">附停車場，方便市區地下街與南浦洞交通。</div>
+            <div class="text-jp-sub text-[11px]">附停車場，方便市區地下街與南浦洞交通。</div>
           </div>
-          <div class="p-3 bg-app-bg rounded-2xl border border-app-border">
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray">
             <div class="font-bold">Day 5 ~ Day 7：廣安里橘子飯店 (Orange Hotel)</div>
-            <div class="text-app-sub text-[11px]">海景第一排，方便看廣安大橋夜景與無人機表演。</div>
+            <div class="text-jp-sub text-[11px]">海景第一排，方便看廣安大橋夜景與無人機表演。</div>
           </div>
         </div>
       </div>
 
-      <!-- 🚨 緊急聯絡電話 -->
-      <div class="bg-app-card p-4 rounded-3xl border border-app-border shadow-sm space-y-2">
+      <!-- 緊急電話 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2">
         <h3 class="text-xs font-bold text-red-600 flex items-center gap-1">🚨 韓國自駕緊急電話</h3>
         <div class="grid grid-cols-2 gap-2 text-xs">
-          <a href="tel:112" class="p-2.5 bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold text-center">📞 警察局：112</a>
-          <a href="tel:119" class="p-2.5 bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold text-center">🚑 救護車：119</a>
-          <a href="tel:1330" class="p-2.5 bg-app-bg text-app-main rounded-2xl border border-app-border text-center col-span-2 font-medium">🗣️ 觀光公社中文專線：1330</a>
+          <a href="tel:112" class="p-2 bg-red-50 text-red-700 rounded-xl border border-red-100 font-medium text-center">📞 警察局：112</a>
+          <a href="tel:119" class="p-2 bg-red-50 text-red-700 rounded-xl border border-red-100 font-medium text-center">🚑 救護車：119</a>
+          <a href="tel:1330" class="p-2 bg-jp-bg text-jp-text rounded-xl border border-jp-gray text-center col-span-2">🗣️ 中文觀光專線：1330</a>
         </div>
       </div>
     </div>
 
     <!-- 視圖 3: 離線記帳與換算 -->
-    <div id="tab-budget" class="hidden space-y-4 pt-2">
-      <h2 class="text-base font-black text-app-main border-l-4 border-app-accent pl-2.5">💰 記帳與匯率換算</h2>
-      <div class="bg-app-card p-4 rounded-3xl border border-app-border shadow-sm space-y-3">
-        <div class="text-xs text-app-sub flex justify-between">
+    <div id="tab-budget" class="hidden space-y-4">
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 記帳與匯率換算</h2>
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
+        <div class="text-xs text-jp-sub flex justify-between">
           <span>匯率參考：1 TWD ≈ 42 KRW</span>
-          <span class="text-app-accent font-bold">離線自動儲存</span>
+          <span class="text-jp-accent font-medium">離線自動儲存 (LocalStorage)</span>
         </div>
         <div class="space-y-2">
-          <input type="text" id="expense-title" placeholder="消費項目（如：豚笑午餐、油錢）" class="w-full text-xs p-3 bg-app-bg rounded-2xl border border-app-border focus:outline-none" />
+          <input type="text" id="expense-title" placeholder="消費項目（如：豚笑午餐、油錢）" class="w-full text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none" />
           <div class="flex gap-2">
-            <input type="number" id="expense-amount" placeholder="金額 (韓元 KRW)" class="flex-1 text-xs p-3 bg-app-bg rounded-2xl border border-app-border focus:outline-none" />
-            <button onclick="addExpense()" class="bg-app-accent text-white px-5 py-3 rounded-2xl text-xs font-bold shadow-md">記一筆</button>
+            <input type="number" id="expense-amount" placeholder="金額 (韓元 KRW)" class="flex-1 text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none" />
+            <button onclick="addExpense()" class="bg-jp-accent text-white px-4 py-2.5 rounded-xl text-xs font-medium">記一筆</button>
           </div>
         </div>
       </div>
-      <div class="bg-app-card p-4 rounded-3xl border border-app-border shadow-sm space-y-3">
-        <div class="flex justify-between items-center border-b border-app-border pb-2">
-          <h3 class="text-xs font-bold text-app-main">消費明細</h3>
-          <div class="text-xs text-app-accent font-black" id="total-expenses-display">總計：₩0</div>
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
+        <div class="flex justify-between items-center border-b border-jp-gray pb-2">
+          <h3 class="text-xs font-bold text-jp-text">消費明細</h3>
+          <div class="text-xs text-jp-warm font-bold" id="total-expenses-display">總計：₩0</div>
         </div>
         <div id="expenses-list" class="space-y-2 max-h-60 overflow-y-auto text-xs no-scrollbar"></div>
       </div>
     </div>
+
+    <!-- 視圖 4: 部署說明 -->
+    <div id="tab-deploy" class="hidden space-y-4">
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">⚙️ 部署說明</h2>
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2 text-xs text-jp-sub">
+        <p><strong>GitHub 上傳：</strong> 將此 index.html 上傳至您的 GitHub Repository。</p>
+        <p><strong>Kinsta 部署：</strong> 於 Kinsta 後台選擇 Static Site Hosting，連結 GitHub 專案即可一鍵發布為行動 PWA 網頁 App。</p>
+      </div>
+    </div>
   </main>
 
-  <!-- 底部原生 App 導覽列 (對齊參考圖底部圖示與高亮樣式) -->
-  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-app-card/95 backdrop-blur-md border-t border-app-border px-6 py-2.5 flex justify-between items-center z-30 shadow-2xl">
-    <button onclick="switchTab('itinerary')" id="nav-itinerary" class="flex flex-col items-center gap-1 text-app-accent font-bold">
-      <span class="text-xl">📖</span>
-      <span class="text-[10px]">探索</span>
+  <!-- 底部導覽 Tab Bar -->
+  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-jp-card border-t border-jp-gray px-4 py-2 flex justify-between items-center z-30">
+    <button onclick="switchTab('itinerary')" id="nav-itinerary" class="flex flex-col items-center gap-0.5 text-jp-accent font-bold">
+      <span class="text-lg">📅</span>
+      <span class="text-[10px]">每日行程</span>
     </button>
-    <button onclick="switchTab('itinerary')" id="nav-map" class="flex flex-col items-center gap-1 text-app-sub">
-      <span class="text-xl">🗺️</span>
-      <span class="text-[10px]">地圖</span>
+    <button onclick="switchTab('itinerary')" id="nav-map" class="flex flex-col items-center gap-0.5 text-jp-sub">
+      <span class="text-lg">🧭</span>
+      <span class="text-[10px]">導航地圖</span>
     </button>
-    <button onclick="switchTab('toolkit')" id="nav-toolkit" class="flex flex-col items-center gap-1 text-app-sub">
-      <span class="text-xl">🧰</span>
-      <span class="text-[10px]">工具</span>
+    <button onclick="switchTab('toolkit')" id="nav-toolkit" class="flex flex-col items-center gap-0.5 text-jp-sub">
+      <span class="text-lg">📚</span>
+      <span class="text-[10px]">旅程工具</span>
     </button>
-    <button onclick="switchTab('budget')" id="nav-budget" class="flex flex-col items-center gap-1 text-app-sub">
-      <span class="text-xl">💳</span>
-      <span class="text-[10px]">記帳</span>
+    <button onclick="switchTab('budget')" id="nav-budget" class="flex flex-col items-center gap-0.5 text-jp-sub">
+      <span class="text-lg">💳</span>
+      <span class="text-[10px]">預算記帳</span>
+    </button>
+    <button onclick="switchTab('deploy')" id="nav-deploy" class="flex flex-col items-center gap-0.5 text-jp-sub">
+      <span class="text-lg">🔗</span>
+      <span class="text-[10px]">部署說明</span>
     </button>
   </nav>
 
   <script>
     const itineraryData = [
       {
-        day: 1, dateStr: "12/29 (二)", title: "抵達釜山 · 取車自駕 · 夜間輕裝整備",
+        day: 1, dateStr: "Day 1 (二) · 2026/12/29", title: "抵達釜山 · 取車自駕 · 夜間輕裝整備",
         weather: "4°C ~ 11°C", driving: "金海機場 🚗 25 mins 🚗 西面飯店",
         spots: [
-          { type: "transport", catText: "抵達機場", distance: "0km", name: "出關後換釜山PASS實體卡", lat: 35.1795, lng: 128.9382, highlight: "【重要預約代號】務必檢查卡片啟用條碼與天數起算規則", desc: "於入境大廳 1 樓 Visitor Center 櫃檯出示憑證領取實體卡。", driveNext: "5 mins (1.2 km)", parking: "1級地(甲): 700KRW/10分", gas: "SK Energy 機場前加油站" },
-          { type: "transport", catText: "交通自駕", distance: "1.2km", name: "釜山租車處取車與路線測試", lat: 35.1760, lng: 128.9430, desc: "確認車載 GPS 設定完好並拍照紀錄車況。", driveNext: "25 mins (14.5 km)", parking: "租車公司專屬停車場", gas: "GS Caltex" },
-          { type: "dining", catText: "美食晚餐", distance: "15.7km", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596, highlight: "【必吃美食】經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。", driveNext: "3 mins (0.8 km)", parking: "樂天百貨特約停車場", gas: "S-Oil 西面站" },
-          { type: "hotel", catText: "住宿安排", distance: "16.5km", name: "住：西面商圈飯店", lat: 35.1578, lng: 129.0592, desc: "辦理入住登記，車輛停放於飯店停車場。", driveNext: "明日行程出發", parking: "飯店附設地下停車場", gas: "SK Energy" }
+          { type: "transport", catText: "抵達機場", name: "出關後換釜山PASS實體卡", lat: 35.1795, lng: 128.9382, highlight: "【重要預約代號】務必檢查卡片啟用條碼與天數起算規則", desc: "於入境大廳 1 樓 Visitor Center 櫃檯出示憑證領取實體卡。", driveNext: "下一步開車時間：5 mins (1.2 km)", parking: "1級地(甲): 700KRW/10分 (日上限 21,000KRW)", gas: "SK Energy 機場前加油站 (含LPG)" },
+          { type: "transport", catText: "交通自駕", name: "釜山租車處取車與路線測試", lat: 35.1760, lng: 128.9430, desc: "確認車載 GPS 設定完好並拍照紀錄車況。", driveNext: "下一步開車時間：25 mins (14.5 km)", parking: "租車公司專屬停車場", gas: "GS Caltex 交流道前加油站" },
+          { type: "dining", catText: "美食晚餐", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596, highlight: "【必吃美食】經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。", driveNext: "下一步開車時間：3 mins (0.8 km)", parking: "樂天百貨特約停車場", gas: "S-Oil 西面站加油站" },
+          { type: "hotel", catText: "住宿安排", name: "住：西面商圈飯店", lat: 35.1578, lng: 129.0592, desc: "辦理入住登記，車輛停放於飯店停車場。", driveNext: "明日行程出發", parking: "飯店附設地下停車場", gas: "SK Energy" }
         ]
       },
       {
-        day: 2, dateStr: "12/30 (三)", title: "南浦洞 · 樂天百貨 · 札嘎其市場",
+        day: 2, dateStr: "Day 2 (三) · 2026/12/30", title: "南浦洞 · 樂天百貨 · 札嘎其市場",
         weather: "2°C ~ 9°C", driving: "西面 🚗 20 mins 🚗 南浦洞",
         spots: [
-          { type: "dining", catText: "早餐美食", distance: "0.5km", name: "Eggdrop / 田浦咖啡街", lat: 35.1542, lng: 129.0645, highlight: "【必點菜單】厚切起司三明治與特調拿鐵", desc: "晨間漫步田浦咖啡街。", driveNext: "20 mins", parking: "田浦公營停車場", gas: "SK Energy" },
-          { type: "dining", catText: "美食午餐", distance: "8.2km", name: "豚笑-南浦店 (11:00點預約)", lat: 35.0991, lng: 129.0305, highlight: "【重要預約代號】12:00 線上預約確認", desc: "人氣極高黑豬肉炸豬排。", driveNext: "5 mins", parking: "南浦洞公營停車場", gas: "GS Caltex" },
-          { type: "shopping", catText: "購物巡禮", distance: "8.8km", name: "樂天百貨南浦店 & 柯達專賣店", lat: 35.0976, lng: 129.0368, highlight: "【必買伴手禮】韓國限定柯達底片相機與周邊", desc: "辦理 VIP 會員卡與購物。", driveNext: "5 mins", parking: "樂天百貨停車場", gas: "S-Oil" },
-          { type: "dining", catText: "美食晚餐", distance: "9.5km", name: "札嘎其市場帝王蟹 100號", lat: 35.0967, lng: 129.0306, highlight: "【必吃美食】現撈帝王蟹蒸鍋與海鮮拉麵", desc: "享用新鮮海鮮大餐。", driveNext: "20 mins", parking: "札嘎其市場地下停車場", gas: "SK Energy" }
+          { type: "dining", catText: "早餐美食", name: "Eggdrop / 田浦咖啡街", lat: 35.1542, lng: 129.0645, highlight: "【必點菜單】厚切起司三明治與特調拿鐵", desc: "晨間漫步田浦咖啡街。", driveNext: "20 mins", parking: "田浦公營停車場", gas: "SK Energy" },
+          { type: "dining", catText: "美食午餐", name: "豚笑-南浦店 (11:00點預約)", lat: 35.0991, lng: 129.0305, highlight: "【重要預約代號】12:00 線上預約確認", desc: "人氣極高黑豬肉炸豬排。", driveNext: "5 mins", parking: "南浦洞公營停車場", gas: "GS Caltex" },
+          { type: "shopping", catText: "購物巡禮", name: "樂天百貨南浦店 & 柯達專賣店", lat: 35.0976, lng: 129.0368, highlight: "【必買伴手禮】韓國限定柯達底片相機與周邊", desc: "辦理 VIP 會員卡與購物。", driveNext: "5 mins", parking: "樂天百貨停車場", gas: "S-Oil" },
+          { type: "dining", catText: "美食晚餐", name: "札嘎其市場帝王蟹 100號", lat: 35.0967, lng: 129.0306, highlight: "【必吃美食】現撈帝王蟹蒸鍋與海鮮拉麵", desc: "享用新鮮海鮮大餐。", driveNext: "20 mins", parking: "札嘎其市場地下停車場", gas: "SK Energy" }
         ]
       },
       {
-        day: 3, dateStr: "12/31 (四)", title: "白淺灘文化村 · 影島 · 廣安里無人機",
+        day: 3, dateStr: "Day 3 (四) · 2026/12/31", title: "白淺灘文化村 · 影島 · 廣安里無人機",
         weather: "1°C ~ 8°C", driving: "西面 🚗 25 mins 🚗 影島 🚗 30 mins 🚗 廣安里",
         spots: [
-          { type: "spot", catText: "熱門景點", distance: "11.2km", name: "白淺灘文化村 / 海岸隧道", lat: 35.0786, lng: 129.0445, highlight: "【必買伴手禮】手作明信片與文創小物", desc: "早上去避開排隊人潮。", driveNext: "15 mins", parking: "白淺灘公營停車場", gas: "GS Caltex" },
-          { type: "dining", catText: "美食午餐", distance: "14.5km", name: "影島海女村吃海鮮", lat: 35.0612, lng: 129.0805, highlight: "【必吃美食】現切海膽配辛拉麵", desc: "坐在岸邊享受海鮮。", driveNext: "20 mins", parking: "海女村專用停車位", gas: "SK Energy" },
-          { type: "spot", catText: "景點漫步", distance: "21.0km", name: "五六島天空步道", lat: 35.1017, lng: 129.1234, desc: "懸崖峭壁玻璃步道。", driveNext: "30 mins", parking: "五六島旅遊中心停車場", gas: "S-Oil" },
-          { type: "spot", catText: "跨年重點", distance: "28.5km", name: "廣安里無人機表演", lat: 35.1532, lng: 129.1189, highlight: "【重要預約代號】飯店房間直播或海灘觀賞", desc: "震撼夜間無人機跨年秀。", driveNext: "入住飯店", parking: "廣安里公營停車場", gas: "SK Energy" }
+          { type: "spot", catText: "熱門景點", name: "白淺灘文化村 / 海岸隧道", lat: 35.0786, lng: 129.0445, highlight: "【必買伴手禮】手作明信片與文創小物", desc: "早上去避開排隊人潮。", driveNext: "15 mins", parking: "白淺灘公營停車場", gas: "GS Caltex" },
+          { type: "dining", catText: "美食午餐", name: "影島海女村吃海鮮", lat: 35.0612, lng: 129.0805, highlight: "【必吃美食】現切海膽配辛拉麵", desc: "坐在岸邊享受海鮮。", driveNext: "20 mins", parking: "海女村專用停車位", gas: "SK Energy" },
+          { type: "spot", catText: "景點漫步", name: "五六島天空步道", lat: 35.1017, lng: 129.1234, desc: "懸崖峭壁玻璃步道。", driveNext: "30 mins", parking: "五六島旅遊中心停車場", gas: "S-Oil" },
+          { type: "spot", catText: "跨年重點", name: "廣安里無人機表演", lat: 35.1532, lng: 129.1189, highlight: "【重要預約代號】飯店房間直播或海灘觀賞", desc: "震撼夜間無人機跨年秀。", driveNext: "入住飯店", parking: "廣安里公營停車場", gas: "SK Energy" }
         ]
       },
       {
-        day: 4, dateStr: "01/01 (五)", title: "海雲台 · 新世界百貨 · 荒嶺山夜景",
+        day: 4, dateStr: "Day 4 (五) · 2027/01/01", title: "海雲台 · 新世界百貨 · 荒嶺山夜景",
         weather: "3°C ~ 10°C", driving: "西面 🚗 30 mins 🚗 海雲台",
         spots: [
-          { type: "spot", catText: "傳統市場", distance: "4.5km", name: "海雲台傳統市場與海水浴場", lat: 35.1606, lng: 129.1632, highlight: "【必買伴手禮】傳統糖餅與烤盲鰻", desc: "元旦沿海散步購物。", driveNext: "15 mins", parking: "海雲台地下停車場", gas: "GS Caltex" },
-          { type: "shopping", catText: "百貨購物", distance: "8.1km", name: "新世界百貨 Centum City 店", lat: 35.1689, lng: 129.1297, highlight: "【必買伴手禮】頂級美妝與伴手禮盒", desc: "全球最大百貨公司巡禮。", driveNext: "20 mins", parking: "百貨顧客停車場", gas: "S-Oil" },
-          { type: "spot", catText: "夜景首選", distance: "14.2km", name: "荒嶺山觀景台", lat: 35.1565, lng: 129.0831, desc: "開車直達俯瞰 360 度釜山夜景。", driveNext: "20 mins", parking: "觀景台免費停車場", gas: "SK Energy" }
+          { type: "spot", catText: "傳統市場", name: "海雲台傳統市場與海水浴場", lat: 35.1606, lng: 129.1632, highlight: "【必買伴手禮】傳統糖餅與烤盲鰻", desc: "元旦沿海散步購物。", driveNext: "15 mins", parking: "海雲台地下停車場", gas: "GS Caltex" },
+          { type: "shopping", catText: "百貨購物", name: "新世界百貨 Centum City 店", lat: 35.1689, lng: 129.1297, highlight: "【必買伴手禮】頂級美妝與伴手禮盒", desc: "全球最大百貨公司巡禮。", driveNext: "20 mins", parking: "百貨顧客停車場", gas: "S-Oil" },
+          { type: "spot", catText: "夜景首選", name: "荒嶺山觀景台", lat: 35.1565, lng: 129.0831, desc: "開車直達俯瞰 360 度釜山夜景。", driveNext: "20 mins", parking: "觀景台免費停車場", gas: "SK Energy" }
         ]
       },
       {
-        day: 5, dateStr: "01/02 (六)", title: "甘川洞文化村 · 松島纜車 · 釜山塔",
+        day: 5, dateStr: "Day 5 (六) · 2027/01/02", title: "甘川洞文化村 · 松島纜車 · 釜山塔",
         weather: "2°C ~ 9°C", driving: "西面 🚗 20 mins 🚗 甘川洞 🚗 15 mins 🚗 松島",
         spots: [
-          { type: "spot", catText: "經典景點", distance: "12.0km", name: "甘川洞文化村 (小王子拍照)", lat: 35.0975, lng: 129.0106, highlight: "【重要預約代號】09:30到！10:30開卡 Pass", desc: "彩繪山城拍照打卡。", driveNext: "15 mins", parking: "甘川洞公營停車場", gas: "GS Caltex" },
-          { type: "dining", catText: "美食午餐", distance: "14.1km", name: "李在模披薩本店", lat: 35.1021, lng: 129.0315, highlight: "【必吃美食】滿滿起司手工披薩", desc: "釜山代表性披薩店。", driveNext: "15 mins", parking: "周邊特約停車場", gas: "SK Energy" },
-          { type: "spot", catText: "跨海纜車", distance: "17.8km", name: "松島海上纜車 & 龍宮雲橋", lat: 35.0763, lng: 129.0234, desc: "體驗透明底纜車。", driveNext: "入住飯店", parking: "松島纜車地下停車場", gas: "S-Oil" }
+          { type: "spot", catText: "經典景點", name: "甘川洞文化村 (小王子拍照)", lat: 35.0975, lng: 129.0106, highlight: "【重要預約代號】09:30到！10:30開卡 Pass", desc: "彩繪山城拍照打卡。", driveNext: "15 mins", parking: "甘川洞公營停車場", gas: "GS Caltex" },
+          { type: "dining", catText: "美食午餐", name: "李在模披薩本店", lat: 35.1021, lng: 129.0315, highlight: "【必吃美食】滿滿起司手工披薩", desc: "釜山代表性披薩店。", driveNext: "15 mins", parking: "周邊特約停車場", gas: "SK Energy" },
+          { type: "spot", catText: "跨海纜車", name: "松島海上纜車 & 龍宮雲橋", lat: 35.0763, lng: 129.0234, desc: "體驗透明底纜車。", driveNext: "入住飯店", parking: "松島纜車地下停車場", gas: "S-Oil" }
         ]
       },
       {
-        day: 6, dateStr: "01/03 (日)", title: "天空膠囊列車 · X the Sky · 鑽石遊艇",
+        day: 6, dateStr: "Day 6 (日) · 2027/01/03", title: "天空膠囊列車 · X the Sky · 鑽石遊艇",
         weather: "3°C ~ 10°C", driving: "廣安里 🚗 20 mins 🚗 青沙浦",
         spots: [
-          { type: "spot", catText: "熱門體驗", distance: "8.5km", name: "天空膠囊列車 (青沙浦)", lat: 35.1612, lng: 129.1915, highlight: "【重要預約代號】搭乘憑證 QRCode", desc: "沿海高空列車巡禮。", driveNext: "10 mins", parking: "青沙浦公營停車場", gas: "SK Energy" },
-          { type: "spot", catText: "高空觀景", distance: "10.8km", name: "Busan X the Sky", lat: 35.1595, lng: 129.1698, desc: "韓國第二高樓看海灘。", driveNext: "20 mins", parking: "大樓停車場", gas: "GS Caltex" },
-          { type: "spot", catText: "夜間遊艇", distance: "15.2km", name: "鑽石遊艇 (夜間版)", lat: 35.1540, lng: 129.1350, highlight: "【重要預約代號】夜間搭乘班次與煙火秀", desc: "海上賞廣安大橋夜景。", driveNext: "回飯店", parking: "水邊公園停車場", gas: "S-Oil" }
+          { type: "spot", catText: "熱門體驗", name: "天空膠囊列車 (青沙浦)", lat: 35.1612, lng: 129.1915, highlight: "【重要預約代號】搭乘憑證 QRCode", desc: "沿海高空列車巡禮。", driveNext: "10 mins", parking: "青沙浦公營停車場", gas: "SK Energy" },
+          { type: "spot", catText: "高空觀景", name: "Busan X the Sky", lat: 35.1595, lng: 129.1698, desc: "韓國第二高樓看海灘。", driveNext: "20 mins", parking: "大樓停車場", gas: "GS Caltex" },
+          { type: "spot", catText: "夜間遊艇", name: "鑽石遊艇 (夜間版)", lat: 35.1540, lng: 129.1350, highlight: "【重要預約代號】夜間搭乘班次與煙火秀", desc: "海上賞廣安大橋夜景。", driveNext: "回飯店", parking: "水邊公園停車場", gas: "S-Oil" }
         ]
       },
       {
-        day: 7, dateStr: "01/04 (一)", title: "樂天世界 · Outlets 採購",
+        day: 7, dateStr: "Day 7 (一) · 2027/01/04", title: "樂天世界 · Outlets 採購",
         weather: "4°C ~ 11°C", driving: "廣安里 🚗 25 mins 🚗 機張樂天世界",
         spots: [
-          { type: "dining", catText: "特色早餐", distance: "1.2km", name: "水邊最高豬肉湯飯 (民樂店)", lat: 35.1558, lng: 129.1245, highlight: "【必吃美食】濃郁豚骨湯頭豬肉湯飯", desc: "在地超高評價湯飯。", driveNext: "25 mins", parking: "湯飯館專用停車場", gas: "SK Energy" },
-          { type: "spot", catText: "樂園購物", distance: "18.5km", name: "樂天世界 & Lotte Outlets", lat: 35.1963, lng: 129.2131, highlight: "【必買伴手禮】Outlet 國際精品與服飾", desc: "暢遊樂園與購物。", driveNext: "回飯店", parking: "樂天世界園區停車場", gas: "GS Caltex" }
+          { type: "dining", catText: "特色早餐", name: "水邊最高豬肉湯飯 (民樂店)", lat: 35.1558, lng: 129.1245, highlight: "【必吃美食】濃郁豚骨湯頭豬肉湯飯", desc: "在地超高評價湯飯。", driveNext: "25 mins", parking: "湯飯館專用停車場", gas: "SK Energy" },
+          { type: "spot", catText: "樂園購物", name: "樂天世界 & Lotte Outlets", lat: 35.1963, lng: 129.2131, highlight: "【必買伴手禮】Outlet 國際精品與服飾", desc: "暢遊樂園與購物。", driveNext: "回飯店", parking: "樂天世界園區停車場", gas: "GS Caltex" }
         ]
       },
       {
-        day: 8, dateStr: "01/05 (二)", title: "西面地下街 · 還車與機場歸途",
+        day: 8, dateStr: "Day 8 (二) · 2027/01/05", title: "西面地下街 · 還車與機場歸途",
         weather: "5°C ~ 12°C", driving: "廣安里 🚗 20 mins 🚗 西面 🚗 25 mins 🚗 金海機場",
         spots: [
-          { type: "shopping", catText: "地下街購物", distance: "6.5km", name: "西面韓條地下街買韓版衣服", lat: 35.1578, lng: 129.0592, highlight: "【必買伴手禮】流行韓系服飾與飾品", desc: "最後購物巡禮。", driveNext: "25 mins", parking: "西面地下停車場", gas: "S-Oil" },
-          { type: "transport", catText: "還車搭機", distance: "21.0km", name: "前往金海機場還車與搭機歸國", lat: 35.1795, lng: 128.9382, desc: "辦理還車手續與離境退稅。", driveNext: "返抵家門", parking: "機場租車還車區", gas: "SK 機場加油站 (加滿油還車)" }
+          { type: "shopping", catText: "地下街購物", name: "西面韓條地下街買韓版衣服", lat: 35.1578, lng: 129.0592, highlight: "【必買伴手禮】流行韓系服飾與飾品", desc: "最後購物巡禮。", driveNext: "25 mins", parking: "西面地下停車場", gas: "S-Oil" },
+          { type: "transport", catText: "還車搭機", name: "前往金海機場還車與搭機歸國", lat: 35.1795, lng: 128.9382, desc: "辦理還車手續與離境退稅。", driveNext: "返抵家門", parking: "機場租車還車區", gas: "SK 機場加油站 (加滿油還車)" }
         ]
       }
     ];
@@ -359,7 +362,7 @@
     };
 
     function initMap() {
-      map = L.map('map', { zoomControl: false }).setView([35.1795, 128.9382], 12);
+      map = L.map('map', { zoomControl: true }).setView([35.1795, 129.0756], 11);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
@@ -370,12 +373,10 @@
     function renderDaySelector() {
       const selector = document.getElementById('day-selector');
       selector.innerHTML = itineraryData.map((d, index) => `
-        <button onclick="changeDay(${index})" class="px-4 py-2 rounded-2xl text-xs font-black whitespace-nowrap transition-all ${
-          index === currentDayIndex 
-            ? 'bg-app-accent text-white shadow-md' 
-            : 'bg-app-card text-app-sub hover:bg-app-border border border-app-border'
+        <button onclick="changeDay(${index})" class="px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all shadow-sm ${
+          index === currentDayIndex ? 'bg-jp-accent text-white' : 'bg-jp-card text-jp-sub hover:bg-jp-gray border border-jp-gray'
         }">
-          Day ${d.day} <span class="font-normal opacity-80 text-[11px]">${d.dateStr}</span>
+          Day ${d.day}<br><span class="text-[10px] font-normal opacity-80">${d.dateStr.split(' · ')[1]}</span>
         </button>
       `).join('');
     }
@@ -386,14 +387,14 @@
       renderDayContent(index);
     }
 
-    function filterCategory(cat) {
-      currentCategoryFilter = cat;
-      ['all', 'dining', 'spot'].forEach(c => {
-        const btn = document.getElementById(`filter-${c}`);
-        if (c === cat) {
-          btn.className = 'px-3 py-1 bg-app-main text-white rounded-full font-bold text-xs';
+    function filterCategory(category) {
+      currentCategoryFilter = category;
+      ['all', 'spot', 'dining', 'shopping', 'transport', 'hotel'].forEach(cat => {
+        const btn = document.getElementById(`filter-${cat}`);
+        if (cat === category) {
+          btn.className = 'px-3 py-1 bg-jp-accent text-white rounded-full text-xs font-medium';
         } else {
-          btn.className = 'px-2.5 py-1 bg-app-card text-app-sub border border-app-border rounded-full font-medium text-xs';
+          btn.className = 'px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium';
         }
       });
       renderDayContent(currentDayIndex);
@@ -402,14 +403,17 @@
     function renderDayContent(index) {
       const data = itineraryData[index];
 
-      document.getElementById('header-day-tag').textContent = `Day ${data.day}`;
-      document.getElementById('map-explore-title').textContent = `探索中心：${data.spots[0].name.split(' ')[0]}`;
+      document.getElementById('map-header-title').textContent = `Day ${data.day} 開動線地圖`;
+      document.getElementById('day-date-title').textContent = data.dateStr;
+      document.getElementById('day-main-title').textContent = data.title;
+      document.getElementById('weather-badge').querySelector('span:last-child').textContent = data.weather;
 
       const filteredSpots = currentCategoryFilter === 'all' 
         ? data.spots 
         : data.spots.filter(s => s.type === currentCategoryFilter);
 
-      document.getElementById('sites-count-badge').textContent = `${filteredSpots.length} SITES`;
+      document.getElementById('spots-count-badge').textContent = `${filteredSpots.length} 個點位`;
+      document.getElementById('summary-spot-count').textContent = `${filteredSpots.length} 個景點`;
 
       markersGroup.clearLayers();
       if (polylineLayer) map.removeLayer(polylineLayer);
@@ -420,82 +424,83 @@
           const customIcon = L.divIcon({
             className: 'custom-map-pin',
             html: `${idx + 1}`,
-            iconSize: [26, 26],
-            iconAnchor: [13, 13]
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
           });
           const marker = L.marker([spot.lat, spot.lng], { icon: customIcon }).addTo(markersGroup);
-          marker.bindPopup(`<b>${idx + 1}. ${spot.name}</b>`);
+          marker.bindPopup(`<b>${idx + 1}. ${spot.name}</b><br><span style="font-size:11px;">${spot.desc}</span>`);
           latLngs.push([spot.lat, spot.lng]);
         }
       });
 
       if (latLngs.length > 0) {
-        polylineLayer = L.polyline(latLngs, { color: '#FF7A00', weight: 3.5, dashArray: '6, 6' }).addTo(map);
-        map.fitBounds(L.latLngBounds(latLngs), { padding: [40, 40] });
+        polylineLayer = L.polyline(latLngs, { color: '#5A6B5C', weight: 3, dashArray: '6, 6' }).addTo(map);
+        map.fitBounds(L.latLngBounds(latLngs), { padding: [30, 30] });
       }
 
-      // 渲染卡片 (對齊參考圖卡片結構：標籤標註距離 + 純白精緻影 + 橘色狀態)
       const container = document.getElementById('spots-container');
       container.innerHTML = filteredSpots.map((spot, idx) => `
-        <div class="bg-app-card p-4 rounded-3xl border border-app-border shadow-sm space-y-3 relative">
-          
-          <!-- 參考圖橘色距離標籤 -->
+        <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
           <div class="flex justify-between items-center">
-            <span class="px-2.5 py-0.5 bg-app-accent text-white font-black text-[10px] rounded-lg shadow-sm">
-              📍 ${spot.distance || '0km'}
-            </span>
-            <div class="flex gap-1.5">
-              <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-xl font-bold text-[11px] border border-emerald-100">
-                🚀 Naver 導航
+            <div class="flex items-center gap-1.5">
+              <span class="w-6 h-6 rounded-full bg-jp-accent text-white flex items-center justify-center text-xs font-bold">
+                ${idx + 1}
+              </span>
+              <span class="text-[11px] px-2 py-0.5 rounded-md font-medium bg-jp-bg text-jp-sub border border-jp-gray">
+                ${spot.catText || '景點'}
+              </span>
+            </div>
+
+            <!-- 自動偵測導航按鈕 (Naver & Kakao) -->
+            <div class="flex gap-1.5 text-xs">
+              <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl font-medium flex items-center gap-1 border border-emerald-200 text-[11px]">
+                🚀 Naver
               </a>
-              <a href="https://map.kakao.com/link/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-amber-50 text-amber-800 rounded-xl font-bold text-[11px] border border-amber-100">
+              <a href="https://map.kakao.com/link/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-amber-50 text-amber-800 hover:bg-amber-100 rounded-xl font-medium flex items-center gap-1 border border-amber-200 text-[11px]">
                 📍 Kakao
               </a>
             </div>
           </div>
 
-          <!-- 景點名稱與說明 (參考圖黑色粗體字樣) -->
-          <div>
-            <div class="font-black text-base text-app-main leading-tight flex items-center gap-1.5">
-              <span class="text-app-accent font-extrabold text-sm">${idx + 1}.</span>
-              <span>${spot.name}</span>
-            </div>
-            <p class="text-xs text-app-sub mt-1 leading-relaxed">
-              ${spot.desc}
-            </p>
+          <div class="font-bold text-sm text-jp-text leading-snug">
+            ${spot.name}
           </div>
 
+          <p class="text-xs text-jp-sub leading-relaxed">
+            ${spot.desc}
+          </p>
+
           ${spot.highlight ? `
-            <div class="p-2.5 bg-app-accentLight rounded-2xl border border-orange-200/60 text-xs font-black text-app-accent">
+            <div class="p-2 bg-amber-50/80 rounded-xl border border-amber-200/60 text-xs font-bold text-amber-900">
               ${spot.highlight}
             </div>
           ` : ''}
 
-          <!-- 下方自駕補充條 -->
-          <div class="pt-2 border-t border-app-border flex justify-between items-center text-[11px] text-app-sub">
-            <span>🚗 行程車程：${spot.driveNext || '到達'}</span>
-            <span class="text-app-main font-medium">🅿️ ${spot.parking ? spot.parking.split(':')[0] : '免費/特約'}</span>
+          <div class="pt-2 border-t border-jp-gray/60 space-y-1 text-[11px] text-jp-sub">
+            ${spot.driveNext ? `<div class="flex items-center gap-1.5"><span>🚗</span><span>下一步開車時間：${spot.driveNext}</span></div>` : ''}
+            ${spot.parking ? `<div class="flex items-center gap-1.5"><span>🅿️</span><span>停車費率估算：${spot.parking}</span></div>` : ''}
+            ${spot.gas ? `<div class="flex items-center gap-1.5"><span>⛽</span><span>周邊加油站：${spot.gas}</span></div>` : ''}
           </div>
         </div>
       `).join('');
     }
 
     function switchTab(tabId) {
-      ['itinerary', 'toolkit', 'budget'].forEach(t => {
+      ['itinerary', 'toolkit', 'budget', 'deploy'].forEach(t => {
         const el = document.getElementById(`tab-${t}`);
         if (el) el.classList.add('hidden');
       });
 
-      ['itinerary', 'map', 'toolkit', 'budget'].forEach(n => {
+      ['itinerary', 'map', 'toolkit', 'budget', 'deploy'].forEach(n => {
         const nav = document.getElementById(`nav-${n}`);
-        if (nav) nav.className = 'flex flex-col items-center gap-1 text-app-sub';
+        if (nav) nav.className = 'flex flex-col items-center gap-0.5 text-jp-sub';
       });
 
       const activeTab = document.getElementById(`tab-${tabId}`);
       if (activeTab) activeTab.classList.remove('hidden');
 
       const activeNav = document.getElementById(`nav-${tabId}`);
-      if (activeNav) activeNav.className = 'flex flex-col items-center gap-1 text-app-accent font-bold';
+      if (activeNav) activeNav.className = 'flex flex-col items-center gap-0.5 text-jp-accent font-bold';
 
       if (tabId === 'itinerary' || tabId === 'map') {
         setTimeout(() => { map.invalidateSize(); }, 200);
@@ -518,7 +523,7 @@
       const list = document.getElementById('expenses-list');
       const totalDisplay = document.getElementById('total-expenses-display');
       if (expenses.length === 0) {
-        list.innerHTML = '<div class="text-center text-app-sub py-4">目前尚無記帳紀錄</div>';
+        list.innerHTML = '<div class="text-center text-jp-sub py-4">目前尚無記帳紀錄</div>';
         totalDisplay.textContent = '總計：₩0 (NT$0)';
         return;
       }
@@ -527,12 +532,12 @@
       list.innerHTML = expenses.map(e => {
         totalKrw += e.krw;
         return `
-          <div class="flex justify-between items-center bg-app-bg p-3 rounded-2xl border border-app-border">
+          <div class="flex justify-between items-center bg-jp-bg p-2.5 rounded-xl border border-jp-gray">
             <div>
-              <div class="font-bold text-app-main">${e.title}</div>
-              <div class="text-[10px] text-app-sub">約 NT$ ${Math.round(e.krw / 42).toLocaleString()}</div>
+              <div class="font-medium text-jp-text">${e.title}</div>
+              <div class="text-[10px] text-jp-sub">約 NT$ ${Math.round(e.krw / 42).toLocaleString()}</div>
             </div>
-            <span class="font-mono text-app-accent font-black">₩ ${e.krw.toLocaleString()}</span>
+            <span class="font-mono text-jp-warm font-bold">₩ ${e.krw.toLocaleString()}</span>
           </div>
         `;
       }).join('');
