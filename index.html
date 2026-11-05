@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>釜山自駕手帳 2026-2027</title>
+  
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="data:application/json,{
+    \"name\": \"釜山自駕旅遊導航\",
+    \"short_name\": \"釜山自駕\",
+    \"start_url\": \".\",
+    \"display\": \"standalone\",
+    \"background_color\": \"#FBF9F5\",
+    \"theme_color\": \"#5B7065\"
+  }" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            jp: {
+              bg: '#FBF9F5',
+              card: '#FFFFFF',
+              text: '#333333',
+              sub: '#666666',
+              accent: '#5B7065',
+              accentLight: '#E8EDE9',
+              warm: '#C88A58',
+              gray: '#F0EFEA'
+            }
+          },
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FBF9F5;
+      font-family: 'Noto Sans TC', sans-serif;
+      color: #333333;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="flex flex-col h-screen max-w-md mx-auto relative shadow-2xl overflow-hidden bg-jp-bg">
+
+  <!-- 頂部標頭與天數選擇器 -->
+  <header class="bg-jp-card px-4 pt-3 pb-2 border-b border-jp-gray z-20 flex-shrink-0">
+    <div class="flex justify-between items-center mb-2">
+      <h1 class="text-lg font-bold tracking-wide text-jp-text flex items-center gap-1.5">
+        <span>🚗</span> 釜山自駕手帳
+      </h1>
+      <span class="text-xs px-2 py-0.5 bg-jp-accentLight text-jp-accent rounded-full font-medium">
+        8 天行程
+      </span>
+    </div>
+
+    <!-- 天數切換按鈕 -->
+    <div id="day-selector" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
+  </header>
+
+  <!-- 主內容分頁容器 -->
+  <main class="flex-1 overflow-y-auto relative no-scrollbar pb-20" id="main-container">
+    
+    <!-- 視圖 1: 每日行程 -->
+    <div id="tab-itinerary" class="block">
+      <!-- 每日標題與自駕路段說明 -->
+      <div class="bg-jp-card p-4 border-b border-jp-gray space-y-2">
+        <div class="flex justify-between items-center">
+          <span id="day-title" class="font-bold text-sm text-jp-text">Day 1 抵達釜山</span>
+          <a href="https://www.koreabycar.com/zh-hant/plan/parking" target="_blank" class="text-xs text-jp-warm underline font-medium">
+            🅿️ 韓國自駕停車攻略 ↗
+          </a>
+        </div>
+        <div id="daily-driving" class="text-xs text-jp-accent font-medium bg-jp-accentLight p-2 rounded-lg">
+          🚗 車程規劃中...
+        </div>
+      </div>
+
+      <!-- 天氣與景點卡片列表 -->
+      <div class="p-4 space-y-4">
+        <div class="flex items-center justify-between bg-jp-card p-3 rounded-xl border border-jp-gray shadow-sm">
+          <div class="flex items-center gap-2">
+            <span id="weather-icon" class="text-2xl">☀️</span>
+            <div>
+              <div id="weather-temp" class="text-sm font-bold text-jp-text">--°C</div>
+              <div id="weather-desc" class="text-xs text-jp-sub">--</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="spots-container" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- 視圖 2: 隨身工具箱 (包含剛新增的機票資訊) -->
+    <div id="tab-toolkit" class="hidden p-4 space-y-4">
+      <h2 class="text-base font-bold text-jp-text border-l-4 border-jp-accent pl-2">✈️ 隨身資訊與工具箱</h2>
+      
+      <!-- ✈️ 航班資訊卡片 -->
+      <div class="bg-jp-card p-4 rounded-xl border border-jp-gray shadow-sm space-y-3">
+        <h3 class="text-sm font-bold text-jp-accent flex items-center gap-1.5">
+          <span>✈️</span> 航班資訊
+        </h3>
+        
+        <!-- 去程 -->
+        <div class="p-3 bg-jp-bg rounded-lg border border-jp-gray space-y-2 text-xs">
+          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
+            <span class="font-bold text-jp-text">🛫 去程：台北 (TPE) ➔ 釜山 (PUS)</span>
+            <span class="text-jp-sub font-mono">2026/12/29 (二)</span>
+          </div>
+          <div class="flex justify-between items-center text-jp-text font-medium">
+            <div>
+              <div class="text-sm font-bold font-mono">15:40</div>
+              <div class="text-[11px] text-jp-sub">桃園國際機場 T1</div>
+            </div>
+            <div class="text-center text-jp-sub text-[10px]">
+              <div>中華航空 CI186</div>
+              <div>A321neo | 經濟艙 | 🍱 含餐</div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-bold font-mono">18:50</div>
+              <div class="text-[11px] text-jp-sub">金海國際機場 I</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 回程 -->
+        <div class="p-3 bg-jp-bg rounded-lg border border-jp-gray space-y-2 text-xs">
+          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
+            <span class="font-bold text-jp-text">🛬 回程：釜山 (PUS) ➔ 台北 (TPE)</span>
+            <span class="text-jp-sub font-mono">2027/01/05 (二)</span>
+          </div>
+          <div class="flex justify-between items-center text-jp-text font-medium">
+            <div>
+              <div class="text-sm font-bold font-mono">19:50</div>
+              <div class="text-[11px] text-jp-sub">金海國際機場 I</div>
+            </div>
+            <div class="text-center text-jp-sub text-[10px]">
+              <div>中華航空 CI187</div>
+              <div>A321neo | 經濟艙 | 🍱 含餐</div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-bold font-mono">21:30</div>
+              <div class="text-[11px] text-jp-sub">桃園國際機場 T1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🏨 住宿資訊 -->
+      <div class="bg-jp-card p-4 rounded-xl border border-jp-gray shadow-sm space-y-2">
+        <h3 class="text-sm font-bold text-jp-warm flex items-center gap-1">🏨 住宿安排</h3>
+        <div class="text-xs text-jp-text space-y-1.5">
+          <div class="p-2 bg-jp-bg rounded border border-jp-gray">
+            <div class="font-bold">Day 1 ~ Day 4：西面商圈飯店</div>
+            <div class="text-jp-sub text-[11px]">設有停車場，鄰近西面地下街與美食區。</div>
+          </div>
+          <div class="p-2 bg-jp-bg rounded border border-jp-gray">
+            <div class="font-bold">Day 5 ~ Day 7：廣安里橘子飯店 (Orange Hotel / Hotel Aqua spa)</div>
+            <div class="text-jp-sub text-[11px]">海景第一排，方便欣賞廣安大橋夜景與無人機表演。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🚨 緊急電話 -->
+      <div class="bg-jp-card p-4 rounded-xl border border-jp-gray shadow-sm space-y-2">
+        <h3 class="text-sm font-bold text-red-600 flex items-center gap-1">🚨 緊急聯絡專線</h3>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <a href="tel:112" class="p-2 bg-red-50 text-red-700 rounded border border-red-100 font-medium text-center">📞 警察局：112</a>
+          <a href="tel:119" class="p-2 bg-red-50 text-red-700 rounded border border-red-100 font-medium text-center">🚑 救護/消防：119</a>
+          <a href="tel:1330" class="p-2 bg-jp-bg text-jp-text rounded border border-jp-gray text-center col-span-2">🗣️ 韓國觀光公社中文專線：1330</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 視圖 3: 離線記帳與換算 -->
+    <div id="tab-budget" class="hidden p-4 space-y-4">
+      <h2 class="text-base font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 記帳與匯率換算</h2>
+      <div class="bg-jp-card p-4 rounded-xl border border-jp-gray shadow-sm space-y-3">
+        <div class="text-xs text-jp-sub flex justify-between">
+          <span>參考匯率：1 TWD ≈ 42 KRW</span>
+          <span class="text-jp-accent font-medium">離線自動儲存</span>
+        </div>
+        <div class="space-y-2">
+          <input type="text" id="expense-title" placeholder="消費項目（如：豚笑午餐、油錢）" class="w-full text-xs p-2.5 bg-jp-bg rounded border border-jp-gray focus:outline-none" />
+          <div class="flex gap-2">
+            <input type="number" id="expense-amount" placeholder="金額 (韓元 KRW)" class="flex-1 text-xs p-2.5 bg-jp-bg rounded border border-jp-gray focus:outline-none" />
+            <button onclick="addExpense()" class="bg-jp-accent text-white px-4 py-2.5 rounded text-xs font-medium">記一筆</button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-jp-card p-4 rounded-xl border border-jp-gray shadow-sm space-y-3">
+        <div class="flex justify-between items-center border-b border-jp-gray pb-2">
+          <h3 class="text-xs font-bold text-jp-text">消費明細</h3>
+          <div class="text-xs text-jp-warm font-bold" id="total-expenses-display">總計：₩0</div>
+        </div>
+        <div id="expenses-list" class="space-y-2 max-h-60 overflow-y-auto text-xs no-scrollbar"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部導覽 Tab Bar -->
+  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-jp-card border-t border-jp-gray px-6 py-2 flex justify-between items-center z-30">
+    <button onclick="switchTab('itinerary')" id="nav-itinerary" class="flex flex-col items-center gap-0.5 text-jp-accent font-bold">
+      <span class="text-lg">🗺️</span>
+      <span class="text-[10px]">行程</span>
+    </button>
+    <button onclick="switchTab('toolkit')" id="nav-toolkit" class="flex flex-col items-center gap-0.5 text-jp-sub">
+      <span class="text-lg">🧰</span>
+      <span class="text-[10px]">工具箱</span>
+    </button>
+    <button onclick="switchTab('budget')" id="nav-budget" class="flex flex-col items-center gap-0.5 text-jp-sub">
+      <span class="text-lg">💰</span>
+      <span class="text-[10px]">記帳換算</span>
+    </button>
+  </nav>
+
+  <script>
+    const itineraryData = [
+      {
+        day: 1, title: "抵達釜山與自駕租車",
+        weather: { icon: "🌤️", temp: "4°C ~ 11°C", desc: "晴時多雲 · 海風較強" },
+        driving: "金海機場 🚗 25 mins 🚗 西面飯店",
+        spots: [
+          { name: "金海國際機場出關與領 Visit Busan Pass", highlight: "重要預約代號", details: "出關領取實體卡。" },
+          { name: "釜山租車處取車", details: "檢查車輛外觀與 GPS 導航。" },
+          { name: "Shake Shack (20:30~21:30)", highlight: "必吃美食", details: "晚餐享用經典漢堡。" },
+          { name: "住：西面商圈飯店", details: "辦理入住與停放車輛。" }
+        ]
+      },
+      {
+        day: 2, title: "南浦洞與札嘎其市場",
+        weather: { icon: "☀️", temp: "2°C ~ 9°C", desc: "晴朗 · 體感溫度較低" },
+        driving: "西面 🚗 20 mins 🚗 南浦洞",
+        spots: [
+          { name: "早餐：Eggdrop / 田浦咖啡街", highlight: "必點菜單", details: "厚吐司蛋餅與特調咖啡。" },
+          { name: "午餐：豚笑-南浦店 (11:00點預約)", highlight: "重要預約代號", details: "12:00 線上預約確認。" },
+          { name: "樂天百貨南浦店 & 柯達專賣店", highlight: "必買伴手禮", details: "辦理 VIP 會員卡與買紀念品。" },
+          { name: "晚餐：札嘎其市場帝王蟹 100號", highlight: "必吃美食", details: "享用現撈帝王蟹蒸鍋。" }
+        ]
+      },
+      {
+        day: 3, title: "白淺灘文化村與廣安里無人機",
+        weather: { icon: "🌤️", temp: "1°C ~ 8°C", desc: "跨年夜 · 留意夜間防寒" },
+        driving: "西面 🚗 25 mins 🚗 影島 🚗 30 mins 🚗 廣安里",
+        spots: [
+          { name: "白淺灘文化村 / 海岸隧道", details: "建議早上早點抵達拍攝彩虹階梯。" },
+          { name: "午餐：影島海女村吃海鮮", highlight: "必吃美食", details: "現切海膽拉麵。" },
+          { name: "五六島天空步道", details: "懸崖玻璃步道。" },
+          { name: "廣安里無人機跨年表演", highlight: "重要預約代號", details: "海灘觀賞無人機秀。" }
+        ]
+      },
+      {
+        day: 4, title: "海雲台與荒嶺山夜景",
+        weather: { icon: "☀️", temp: "3°C ~ 10°C", desc: "元旦新年 · 沿海晴朗" },
+        driving: "西面 🚗 30 mins 🚗 海雲台",
+        spots: [
+          { name: "海雲台傳統市場與海水浴場", highlight: "必買伴手禮", details: "盲鰻與糖餅小吃。" },
+          { name: "新世界百貨 Centum City 店", details: "世界最大百貨購物。" },
+          { name: "荒嶺山觀景台", details: "開車直達俯瞰釜山 360 度夜景。" }
