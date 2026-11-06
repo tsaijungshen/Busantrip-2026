@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>釜山自駕旅遊導航手帳 (獨立韓文懶人包版)</title>
+  <title>釜山自駕旅遊導航手帳 (極簡韓文懶人包版)</title>
   
   <link rel="manifest" href="data:application/json,{
     \"name\": \"釜山自駕旅遊導航\",
@@ -82,7 +82,7 @@
 </head>
 <body class="flex flex-col h-screen max-w-md mx-auto relative shadow-2xl overflow-hidden bg-jp-bg">
 
-  <!-- 頂部天數切換膠囊按鈕 (僅在行程分頁顯示或常駐) -->
+  <!-- 頂部天數切換膠囊按鈕 -->
   <header id="day-header" class="bg-jp-bg px-4 pt-3 pb-2 z-20 flex-shrink-0">
     <div id="day-selector" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
   </header>
@@ -147,21 +147,35 @@
       <div id="spots-container" class="space-y-3"></div>
     </div>
 
-    <!-- 視圖 2: 獨立韓文懶人包 (全新獨立分頁) -->
+    <!-- 視圖 2: 獨立韓文懶人包 -->
     <div id="tab-korean" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">🗣️ 常用韓文與空耳懶人包</h2>
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">🗣️ 常用韓文與即時翻譯</h2>
 
-      <!-- 🚖 Uber 特別推薦 -->
-      <div class="bg-amber-50 p-3.5 rounded-2xl border border-amber-200 space-y-1.5">
-        <div class="text-xs font-bold text-amber-900 flex items-center gap-1">
-          <span>🚖</span> 坐 Uber 前的小技巧
+      <!-- 🌐 Google 即時翻譯工具箱 (置頂第一順位) -->
+      <div class="bg-jp-card p-3.5 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+        <div class="flex justify-between items-center border-b border-jp-gray pb-2">
+          <div class="flex items-center gap-1.5 font-bold text-xs text-jp-text">
+            <span>🌐</span> Google 韓中即時翻譯
+          </div>
+          <span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">韓文 ⇄ 中文</span>
         </div>
-        <div class="text-[11px] text-amber-800 leading-relaxed">
-          坐 Uber 前先把名字改成：<strong class="text-jp-text bg-white px-1.5 py-0.5 rounded border border-amber-300">勇書俊秋誰呦~</strong>（請給我收據），司機看到就會主動提供收據給您！
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <!-- 文字打字翻譯 -->
+          <a href="https://translate.google.com/?sl=ko&tl=zh-TW&op=translate" target="_blank" class="p-2.5 bg-jp-bg hover:bg-jp-accentLight rounded-xl border border-jp-gray flex flex-col items-center justify-center gap-1 transition-all">
+            <span class="text-base">⌨️</span>
+            <span class="font-bold text-jp-text">文字輸入翻譯</span>
+          </a>
+
+          <!-- 拍照與圖片翻譯 -->
+          <a href="https://translate.google.com/?sl=ko&tl=zh-TW&op=images" target="_blank" class="p-2.5 bg-jp-bg hover:bg-jp-accentLight rounded-xl border border-jp-gray flex flex-col items-center justify-center gap-1 transition-all">
+            <span class="text-base">📷</span>
+            <span class="font-bold text-jp-text">拍照 / 圖片翻譯</span>
+          </a>
         </div>
       </div>
 
-      <!-- 餐廳與點餐篇 (圖上內容) -->
+      <!-- 餐廳與點餐篇 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
         <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
           <span>🍜</span> 餐廳篇 (點餐與結帳)
@@ -267,7 +281,7 @@
         </div>
       </div>
 
-      <!-- 問路、自駕與收據篇 -->
+      <!-- 問路、自駕與常用對話篇 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
         <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
           <span>🚗</span> 問路、自駕與交通篇
@@ -276,7 +290,7 @@
           
           <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
             <div>
-              <div class="font-bold text-jp-text">請給我收據 (Uber改名用)</div>
+              <div class="font-bold text-jp-text">請給我收據</div>
               <div class="text-jp-accent text-[11px]">영수증 주세요</div>
             </div>
             <span class="text-jp-warm font-bold text-[11px]">(勇書俊 啾塞呦)</span>
@@ -311,7 +325,7 @@
 
     </div>
 
-    <!-- 視圖 3: 隨身工具箱 (機票、住宿、緊急電話) -->
+    <!-- 視圖 3: 隨身工具箱 -->
     <div id="tab-toolkit" class="hidden space-y-4">
       <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">✈️ 隨身資訊與工具箱</h2>
 
@@ -426,7 +440,7 @@
     </div>
   </main>
 
-  <!-- 底部導覽 Tab Bar (擴充為 4 個分頁) -->
+  <!-- 底部導覽 Tab Bar -->
   <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-jp-card border-t border-jp-gray px-6 py-2.5 flex justify-between items-center z-30">
     <button onclick="switchTab('itinerary')" id="nav-itinerary" class="flex flex-col items-center gap-0.5 text-jp-accent font-bold">
       <span class="text-lg">📅</span>
@@ -972,7 +986,6 @@
       const activeNav = document.getElementById(`nav-${tabId}`);
       if (activeNav) activeNav.className = 'flex flex-col items-center gap-0.5 text-jp-accent font-bold';
 
-      // 只有在行程分頁時顯示頂部天數切換
       const dayHeader = document.getElementById('day-header');
       if (tabId === 'itinerary') {
         dayHeader.classList.remove('hidden');
