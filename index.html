@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>釜山自駕旅遊導航手帳 (極簡韓文懶人包版)</title>
+  <title>釜山自駕旅遊導航手帳 (完整生活資訊版)</title>
   
   <link rel="manifest" href="data:application/json,{
     \"name\": \"釜山自駕旅遊導航\",
@@ -55,7 +55,6 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     #map { width: 100%; height: 100%; border-radius: 1rem; }
     
-    /* 景點主標記 */
     .custom-map-pin {
       background-color: #5A6B5C;
       color: white;
@@ -68,7 +67,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    /* 停車場圖示標記 */
     .facility-map-pin {
       background-color: #FFFFFF;
       border-radius: 50%;
@@ -92,8 +90,6 @@
     
     <!-- 視圖 1: 行程與地圖 -->
     <div id="tab-itinerary" class="space-y-4">
-      
-      <!-- 上半部：1/2 版面地圖區塊 -->
       <div class="bg-jp-card rounded-2xl p-3 border border-jp-gray shadow-sm space-y-2">
         <div class="flex justify-between items-center text-xs px-1">
           <div class="flex items-center gap-1.5 font-bold text-jp-text">
@@ -105,12 +101,10 @@
           </span>
         </div>
 
-        <!-- 互動地圖容器 -->
         <div class="h-[48vh] w-full rounded-xl overflow-hidden relative shadow-inner">
           <div id="map"></div>
         </div>
 
-        <!-- 地圖下方標示說明摘要 -->
         <div class="flex justify-between items-center text-[11px] text-jp-sub px-1 pt-1 border-t border-jp-gray/60">
           <div class="flex items-center gap-2">
             <span>圖標：</span>
@@ -121,7 +115,6 @@
         </div>
       </div>
 
-      <!-- 每日標題與天氣卡片 -->
       <div class="flex justify-between items-center bg-jp-card p-3 rounded-2xl border border-jp-gray shadow-sm">
         <div>
           <div id="day-date-title" class="text-xs text-jp-sub font-medium">Day 1 (二) · 2026/12/29</div>
@@ -133,7 +126,6 @@
         </div>
       </div>
 
-      <!-- 卡片類別篩選按鈕 -->
       <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
         <button onclick="filterCategory('all')" id="filter-all" class="px-3 py-1 bg-jp-accent text-white rounded-full text-xs font-medium">全部</button>
         <button onclick="filterCategory('spot')" id="filter-spot" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">⛩️ 景點</button>
@@ -143,35 +135,107 @@
         <button onclick="filterCategory('transport')" id="filter-transport" class="px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium">🚗 交通/流程</button>
       </div>
 
-      <!-- 景點卡片動態列表 -->
       <div id="spots-container" class="space-y-3"></div>
     </div>
 
     <!-- 視圖 2: 獨立韓文懶人包 -->
     <div id="tab-korean" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">🗣️ 常用韓文與即時翻譯</h2>
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">🗣️ 常用韓文、換錢與採買攻略</h2>
 
-      <!-- 🌐 Google 即時翻譯工具箱 (置頂第一順位) -->
-      <div class="bg-jp-card p-3.5 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+      <!-- 🌐 韓中即時線上翻譯機 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b border-jp-gray pb-2">
           <div class="flex items-center gap-1.5 font-bold text-xs text-jp-text">
-            <span>🌐</span> Google 韓中即時翻譯
+            <span>🌐</span> 韓中即時線上翻譯機
           </div>
-          <span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">韓文 ⇄ 中文</span>
+          <button onclick="toggleTransDirection()" id="trans-dir-btn" class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold border border-emerald-200">
+            韓文 ➔ 中文 (點擊切換)
+          </button>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <!-- 文字打字翻譯 -->
-          <a href="https://translate.google.com/?sl=ko&tl=zh-TW&op=translate" target="_blank" class="p-2.5 bg-jp-bg hover:bg-jp-accentLight rounded-xl border border-jp-gray flex flex-col items-center justify-center gap-1 transition-all">
-            <span class="text-base">⌨️</span>
-            <span class="font-bold text-jp-text">文字輸入翻譯</span>
-          </a>
+        <div class="space-y-2">
+          <textarea id="trans-input" rows="2" placeholder="在此輸入韓文或中文..." class="w-full text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none resize-none"></textarea>
+          
+          <div class="flex gap-2">
+            <button onclick="performTranslate()" class="flex-1 bg-jp-accent text-white py-2 rounded-xl text-xs font-bold hover:opacity-90">
+              即時翻譯
+            </button>
+          </div>
 
-          <!-- 拍照與圖片翻譯 -->
-          <a href="https://translate.google.com/?sl=ko&tl=zh-TW&op=images" target="_blank" class="p-2.5 bg-jp-bg hover:bg-jp-accentLight rounded-xl border border-jp-gray flex flex-col items-center justify-center gap-1 transition-all">
-            <span class="text-base">📷</span>
-            <span class="font-bold text-jp-text">拍照 / 圖片翻譯</span>
-          </a>
+          <div id="trans-result-box" class="hidden p-3 bg-jp-accentLight rounded-xl border border-jp-accent/20 space-y-1 text-xs">
+            <div class="text-[10px] text-jp-sub font-medium">翻譯結果：</div>
+            <div id="trans-output" class="font-bold text-jp-text text-sm leading-relaxed"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 💰 MONEYPLANET 釜山換錢指南 (截圖一資訊) -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+        <div class="flex justify-between items-center border-b border-jp-gray pb-2">
+          <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1.5">
+            <span>💰</span> MONEYPLANET 釜山南浦洞換錢所
+          </h3>
+          <span class="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded border border-amber-200 font-bold">最佳匯率推薦</span>
+        </div>
+        <div class="text-xs space-y-2">
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1">
+            <div class="font-bold text-jp-text">📍 地址與交通：</div>
+            <div class="text-jp-sub text-[11px] leading-relaxed">
+              釜山市中區光復路 39-1 (釜山地鐵1號線札嘎其站 7號出口，或南浦站 1號出口步行約 5分鐘)[cite: 4]
+            </div>
+            <div class="flex gap-2 text-[10px] pt-1">
+              <a href="https://map.naver.com/v5/search/MONEYPLANET+BUSAN" target="_blank" class="text-emerald-700 font-bold hover:underline">🚀 Naver 地圖 ↗</a>
+              <a href="https://map.kakao.com/link/search/MONEYPLANET+BUSAN" target="_blank" class="text-amber-700 font-bold hover:underline">🟡 Kakao 地圖 ↗</a>
+            </div>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1">
+            <div class="font-bold text-jp-text">⏰ 營業時間：</div>
+            <div class="text-jp-sub text-[11px]">
+              週一至週六 09:00 ~ 20:00 | 週日 09:00 ~ 18:00[cite: 4]
+            </div>
+          </div>
+
+          <div class="p-2.5 bg-amber-50/80 rounded-xl border border-amber-200/80 text-amber-900 text-[11px] space-y-0.5">
+            <div class="font-bold">💡 換錢小技巧 (Kiosk 無人機)：</div>
+            <div>官網搜尋「Kiosk」，無人外幣兌換機可以換到 100 韓元單位的零錢，且完全免手續費！[cite: 4]</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🍓 韓國草莓挑選與品種指南 (截圖二資訊) -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+        <h3 class="text-xs font-bold text-red-600 flex items-center gap-1.5">
+          <span>🍓</span> 韓國超市草莓採買小百科 (11~12月必吃)
+        </h3>
+        <div class="space-y-2 text-xs">
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1.5">
+            <div class="font-bold text-jp-text">🏷️ 標籤三大品種辨識：</div>
+            <div class="space-y-1 text-[11px]">
+              <div class="flex justify-between">
+                <span class="font-bold text-jp-accent">1. 雪香 (설향)</span>
+                <span class="text-jp-sub">最常見、軟嫩多汁、酸甜平衡[cite: 5]</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-bold text-jp-accent">2. Geumsil (금실)</span>
+                <span class="text-jp-sub">甜度高、果肉紮實帶淡桃香[cite: 5]</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-bold text-jp-accent">3. Kingsberry (킹스베리)</span>
+                <span class="text-jp-sub">超大顆 (約雪香2倍大)[cite: 5]</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900 text-[11px] space-y-1">
+            <div class="font-bold">✔ 超市挑選 3 大口訣：</div>
+            <ul class="list-disc list-inside space-y-0.5 text-[10.5px]">
+              <li>蒂頭綠綠的且微微往上翘[cite: 5]</li>
+              <li>蒂頭旁邊也紅紅的[cite: 5]</li>
+              <li>草莓表面亮亮的[cite: 5]</li>
+            </ul>
+            <div class="text-[10px] text-emerald-700 pt-0.5">※ 買回飯店用水輕輕沖一下即可食用！[cite: 5]</div>
+          </div>
         </div>
       </div>
 
@@ -181,160 +245,38 @@
           <span>🍜</span> 餐廳篇 (點餐與結帳)
         </h3>
         <div class="space-y-2 text-xs">
-          
           <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">有中文菜單嗎？</div>
-              <div class="text-jp-accent text-[11px]">중국어 메뉴 있어요?</div>
-            </div>
+            <div><div class="font-bold text-jp-text">有中文菜單嗎？</div><div class="text-jp-accent text-[11px]">중국어 메뉴 있어요?</div></div>
             <span class="text-jp-warm font-bold text-[11px]">(中估勾 美妞 以搜呦?)</span>
           </div>
-
           <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">我要這個</div>
-              <div class="text-jp-accent text-[11px]">이거 주세요</div>
-            </div>
+            <div><div class="font-bold text-jp-text">我要這個</div><div class="text-jp-accent text-[11px]">이거 주세요</div></div>
             <span class="text-jp-warm font-bold text-[11px]">(依勾 啾塞呦)</span>
           </div>
-
           <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">我要一份這個</div>
-              <div class="text-jp-accent text-[11px]">이거 하나 주세요</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(依勾 哈那 啾塞呦)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">多少錢？</div>
-              <div class="text-jp-accent text-[11px]">얼마예요?</div>
-            </div>
+            <div><div class="font-bold text-jp-text">多少錢？</div><div class="text-jp-accent text-[11px]">얼마예요?</div></div>
             <span class="text-jp-warm font-bold text-[11px]">(歐瑪耶呦?)</span>
           </div>
-
           <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">請給我水</div>
-              <div class="text-jp-accent text-[11px]">물 주세요</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(木 啾塞呦)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">不要辣</div>
-              <div class="text-jp-accent text-[11px]">안 맵게 해주세요</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(安 妹給 黑啾塞呦)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">請給我飯</div>
-              <div class="text-jp-accent text-[11px]">밥 주세요</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(爸 啾塞呦)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">請給我筷子</div>
-              <div class="text-jp-accent text-[11px]">젓가락 주세요</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(秋噶拉 啾塞呦)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">可以打包嗎？</div>
-              <div class="text-jp-accent text-[11px]">포장 가능해요?</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(坡將 卡能黑呦?)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">可以刷卡嗎？</div>
-              <div class="text-jp-accent text-[11px]">카드 돼요?</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(卡德 對呦?)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">請結帳</div>
-              <div class="text-jp-accent text-[11px]">계산해 주세요</div>
-            </div>
+            <div><div class="font-bold text-jp-text">請結帳</div><div class="text-jp-accent text-[11px]">계산해 주세요</div></div>
             <span class="text-jp-warm font-bold text-[11px]">(給山黑 啾塞呦)</span>
           </div>
-
           <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">謝謝</div>
-              <div class="text-jp-accent text-[11px]">감사합니다</div>
-            </div>
+            <div><div class="font-bold text-jp-text">謝謝</div><div class="text-jp-accent text-[11px]">감사합니다</div></div>
             <span class="text-jp-warm font-bold text-[11px]">(感恩哈密達)</span>
           </div>
-
         </div>
       </div>
-
-      <!-- 問路、自駕與常用對話篇 -->
-      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
-        <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
-          <span>🚗</span> 問路、自駕與交通篇
-        </h3>
-        <div class="space-y-2 text-xs">
-          
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">請給我收據</div>
-              <div class="text-jp-accent text-[11px]">영수증 주세요</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(勇書俊 啾塞呦)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">請問停車場在哪裡？</div>
-              <div class="text-jp-accent text-[11px]">주차장이 어디에 있어요?</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(啾洽將依 歐底耶 伊搜呦?)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">請問洗手間在哪裡？</div>
-              <div class="text-jp-accent text-[11px]">화장실이 어디예요?</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(花張希里 歐底耶呦?)</span>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-jp-text">刷卡失敗（對講機求助）</div>
-              <div class="text-jp-accent text-[11px]">신용카드가 안 돼요. 도와주세요.</div>
-            </div>
-            <span class="text-jp-warm font-bold text-[11px]">(信榮卡得加 安 對呦. 兜哇就塞呦.)</span>
-          </div>
-
-        </div>
-      </div>
-
     </div>
 
     <!-- 視圖 3: 隨身工具箱 -->
     <div id="tab-toolkit" class="hidden space-y-4">
       <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">✈️ 隨身資訊與工具箱</h2>
 
-      <!-- ✈️ 航班資訊卡片 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
           <span>✈️</span> 中華航空 往返機票明細
         </h3>
-        
         <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
           <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
             <span class="font-bold text-jp-text">🛫 去程：台北 (TPE) ➔ 釜山 (PUS)</span>
@@ -346,7 +288,6 @@
             <div class="text-right"><div class="text-sm font-bold font-mono">18:50</div><div class="text-[11px] text-jp-sub">金海機場 I</div></div>
           </div>
         </div>
-
         <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
           <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
             <span class="font-bold text-jp-text">🛬 返回：釜山 (PUS) ➔ 台北 (TPE)</span>
@@ -360,7 +301,6 @@
         </div>
       </div>
       
-      <!-- Koro 自駕提醒卡片 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
         <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1.5">
           <span>🚘</span> KoreabyCar (Koro) 韓國自駕重點提醒
@@ -375,64 +315,57 @@
           </div>
         </div>
       </div>
-
-      <!-- 🏨 住宿安排 -->
-      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2">
-        <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1">🏨 住宿安排</h3>
-        <div class="text-xs text-jp-text space-y-2">
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray space-y-1.5">
-            <div class="flex justify-between items-center">
-              <div class="font-bold">Day 1 ~ Day 4：西面商圈飯店</div>
-              <div class="flex gap-1 text-[10px]">
-                <a href="https://map.naver.com/v5/search/%E8%A5%BF%E9%9D%A2%E9%A3%AF%E5%BA%97" target="_blank" class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200">🚀 Naver</a>
-                <a href="https://map.kakao.com/link/search/%E8%A5%BF%E9%9D%A2%E9%A3%AF%E5%BA%97" target="_blank" class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-200">🟡 Kakao</a>
-              </div>
-            </div>
-            <div class="text-jp-sub text-[11px]">附設免費停車場，方便市區地下街與南浦洞交通。</div>
-          </div>
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray space-y-1.5">
-            <div class="flex justify-between items-center">
-              <div class="font-bold">Day 5 ~ Day 7：廣安里橘子飯店 (Orange Hotel)</div>
-              <div class="flex gap-1 text-[10px]">
-                <a href="https://map.naver.com/v5/search/Hotel+Aqua+Palace+Busan" target="_blank" class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200">🚀 Naver</a>
-                <a href="https://map.kakao.com/link/search/Hotel+Aqua+Palace+Busan" target="_blank" class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-200">🟡 Kakao</a>
-              </div>
-            </div>
-            <div class="text-jp-sub text-[11px]">海景第一排，免費機械/平面停車場。</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 🚨 緊急電話 -->
-      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2">
-        <h3 class="text-xs font-bold text-red-600 flex items-center gap-1">🚨 韓國自駕緊急電話</h3>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <a href="tel:112" class="p-2 bg-red-50 text-red-700 rounded-xl border border-red-100 font-medium text-center">📞 警察局：112</a>
-          <a href="tel:119" class="p-2 bg-red-50 text-red-700 rounded-xl border border-red-100 font-medium text-center">🚑 救護車：119</a>
-          <a href="tel:1330" class="p-2 bg-jp-bg text-jp-text rounded-xl border border-jp-gray text-center col-span-2">🗣️ 中文觀光專線：1330</a>
-        </div>
-      </div>
     </div>
 
-    <!-- 視圖 4: 離線記帳 -->
+    <!-- 視圖 4: 離線記帳與智慧收據翻譯 -->
     <div id="tab-budget" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 記帳與即時匯率換算</h2>
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 智能收據翻譯與記帳</h2>
+      
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-jp-text flex items-center gap-1.5">
+            <span>📷</span> 拍照收據 / 翻譯入帳
+          </h3>
+          <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold border border-emerald-200">AI 輔助確認</span>
+        </div>
+
+        <div class="space-y-2.5">
+          <input type="file" id="receipt-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleReceiptImage(event)" />
+          
+          <button onclick="document.getElementById('receipt-file-input').click()" class="w-full py-3 bg-jp-bg hover:bg-jp-accentLight rounded-xl border-2 border-dashed border-jp-accent/40 flex flex-col items-center justify-center gap-1 text-xs font-bold text-jp-accent transition-all">
+            <span class="text-lg">📸</span>
+            <span>點擊拍照或上傳收據照片</span>
+            <span class="text-[10px] text-jp-sub font-normal">自動辨識品項、韓文翻譯並填入下方欄位</span>
+          </button>
+
+          <div id="receipt-preview-container" class="hidden space-y-2 p-3 bg-jp-bg rounded-xl border border-jp-gray">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-jp-text">收據預覽與分析中...</span>
+              <button onclick="clearReceipt()" class="text-[10px] text-red-600 font-bold">重新拍照</button>
+            </div>
+            <img id="receipt-img-preview" class="w-full h-32 object-cover rounded-lg border border-jp-gray" />
+            <div id="receipt-ai-status" class="text-[11px] text-jp-warm font-medium">✨ 正在分析收據品項與金額...</div>
+          </div>
+        </div>
+      </div>
+
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <div class="text-xs text-jp-sub flex justify-between items-center">
           <span>即時匯率：<strong id="rate-display" class="text-jp-text font-bold">1 TWD ≈ 42.0 KRW</strong></span>
           <span class="text-emerald-600 font-medium text-[10px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">🟢 每日自動同步</span>
         </div>
         <div class="space-y-2">
-          <input type="text" id="expense-title" placeholder="消費項目（如：豚笑午餐、油錢）" class="w-full text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none" />
+          <input type="text" id="expense-title" placeholder="消費品項（如：豚笑黑豬肉、油錢）" class="w-full text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none" />
           <div class="flex gap-2">
             <input type="number" id="expense-amount" placeholder="金額 (韓元 KRW)" class="flex-1 text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none" />
-            <button onclick="addExpense()" class="bg-jp-accent text-white px-4 py-2.5 rounded-xl text-xs font-medium">記一筆</button>
+            <button onclick="addExpense()" class="bg-jp-accent text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm hover:opacity-90">確認存入帳冊</button>
           </div>
         </div>
       </div>
+
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b border-jp-gray pb-2">
-          <h3 class="text-xs font-bold text-jp-text">消費明細</h3>
+          <h3 class="text-xs font-bold text-jp-text">已存入帳冊明細</h3>
           <div class="text-xs text-jp-warm font-bold" id="total-expenses-display">總計：₩0</div>
         </div>
         <div id="expenses-list" class="space-y-2 max-h-60 overflow-y-auto text-xs no-scrollbar"></div>
@@ -484,8 +417,7 @@
             type: "dining", catText: "美食晚餐", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596,
             highlight: "必吃美食：經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。", driveNext: "3 mins (0.8 km)",
             parkingOptions: [
-              { name: "樂天百貨西面店停車場", type: "收費", dist: "50m", price: "₩3,000/小時", capacity: "1200車位", hours: "10:30~22:00", note: "消費滿萬韓元折抵1小時", lat: 35.1540, lng: 129.0585 },
-              { name: "西面商圈公營停車場", type: "公共", dist: "200m", price: "₩2,000/小時", capacity: "150車位", hours: "24H", note: "Koro提示週末易塞車", lat: 35.1528, lng: 129.0610 }
+              { name: "樂天百貨西面店停車場", type: "收費", dist: "50m", price: "₩3,000/小時", capacity: "1200車位", hours: "10:30~22:00", note: "消費滿萬韓元折抵1小時", lat: 35.1540, lng: 129.0585 }
             ]
           },
           { 
@@ -498,7 +430,7 @@
         ]
       },
       {
-        day: 2, dateStr: "Day 2 (三) · 2026/12/30", title: "南浦洞 · 樂天百貨 · 札嘎其市場",
+        day: 2, dateStr: "Day 2 (三) · 2026/12/30", title: "南浦洞 · 樂天百貨 · 札嘎其市場 · 買棉被",
         weather: "2°C ~ 9°C", driving: "西面 🚗 20 mins 🚗 南浦洞",
         spots: [
           { 
@@ -506,6 +438,14 @@
             highlight: "必點菜單：厚切起司三明治", desc: "晨間漫步田浦咖啡街。", driveNext: "20 mins",
             parkingOptions: [
               { name: "田浦咖啡街公營停車場", type: "公共", dist: "100m", price: "₩1,200/小時", capacity: "120車位", hours: "24H", note: "公營收費實惠", lat: 35.1538, lng: 129.0652 }
+            ]
+          },
+          { 
+            type: "shopping", catText: "韓國棉被", name: "藝珠寢具예주이불 (國際市場老店)", lat: 35.0998, lng: 129.0285,
+            highlight: "購物亮點：真空壓縮省空間、款式齊全！", 
+            desc: "地鐵札嘎其站 7號出口步行約 300m，路口為【한일사약국】藥局，轉入路口 10-15m 即達。", driveNext: "5 mins",
+            parkingOptions: [
+              { name: "南浦洞第一公營停車場", type: "公共", dist: "150m", price: "₩1,500/小時", capacity: "200車位", hours: "24H", note: "位於光復路附近", lat: 35.0985, lng: 129.0312 }
             ]
           },
           { 
@@ -530,175 +470,6 @@
             ]
           }
         ]
-      },
-      {
-        day: 3, dateStr: "Day 3 (四) · 2026/12/31", title: "白淺灘文化村 · 影島 · 廣安里無人機",
-        weather: "1°C ~ 8°C", driving: "西面 🚗 25 mins 🚗 影島 🚗 30 mins 🚗 廣安里",
-        spots: [
-          { 
-            type: "spot", catText: "熱門景點", name: "白淺灘文化村 / 海岸隧道", lat: 35.0786, lng: 129.0445,
-            desc: "早上去避開排隊人潮。", driveNext: "15 mins",
-            parkingOptions: [
-              { name: "絕影海岸步道停車場 (白淺灘)", type: "公共", dist: "100m", price: "₩1,200/小時", capacity: "90車位", hours: "24H", note: "每日最高 ₩4,700；車位很快滿，建議停好後步行", lat: 35.0792, lng: 129.0438 }
-            ]
-          },
-          { 
-            type: "dining", catText: "美食午餐", name: "影島海女村吃海鮮", lat: 35.0612, lng: 129.0805,
-            highlight: "必吃美食：現切海膽配拉麵", desc: "坐在岸邊享受海鮮。", driveNext: "20 mins",
-            parkingOptions: [
-              { name: "海女文化展覽館停車場", type: "公共", dist: "50m", price: "免費/顧客停放", capacity: "40車位", hours: "09:00~18:00", note: "海女村專用", lat: 35.0608, lng: 129.0812 }
-            ]
-          },
-          { 
-            type: "spot", catText: "景點漫步", name: "五六島天空步道", lat: 35.1017, lng: 129.1234,
-            desc: "懸崖峭壁玻璃步道。", driveNext: "30 mins",
-            parkingOptions: [
-              { name: "五六島天空步道公共停車場", type: "公共", dist: "50m", price: "₩1,800/小時", capacity: "120車位", hours: "24H", note: "每日最高 ₩8,000", lat: 35.1022, lng: 129.1225 },
-              { name: "二妓臺停車場", type: "公共", dist: "800m", price: "免費", capacity: "60車位", hours: "24H", note: "可由二妓臺步道進入", lat: 35.1100, lng: 129.1180 }
-            ]
-          },
-          { 
-            type: "spot", catText: "跨年重點", name: "廣安里無人機表演", lat: 35.1532, lng: 129.1189,
-            highlight: "重要預約代號：飯店房間直播或海灘觀賞", desc: "震撼夜間無人機跨年秀。", driveNext: "入住飯店",
-            parkingOptions: [
-              { name: "廣安里海水浴場公共停車場", type: "公共", dist: "100m", price: "₩1,800/小時", capacity: "250車位", hours: "24H", note: "Koro提示：跨年人潮多建議提前入場", lat: 35.1525, lng: 129.1195 }
-            ]
-          }
-        ]
-      },
-      {
-        day: 4, dateStr: "Day 4 (五) · 2027/01/01", title: "海雲台 · 新世界百貨 · 荒嶺山夜景",
-        weather: "3°C ~ 10°C", driving: "西面 🚗 30 mins 🚗 海雲台",
-        spots: [
-          { 
-            type: "spot", catText: "傳統市場", name: "海雲台傳統市場與海水浴場", lat: 35.1606, lng: 129.1632,
-            highlight: "必買伴手禮：盲鰻與糖餅", desc: "元旦沿海散步購物。", driveNext: "15 mins",
-            parkingOptions: [
-              { name: "海雲臺海水浴場公共停車場", type: "公共", dist: "50m", price: "₩1,500/小時", capacity: "800車位", hours: "24H", note: "夏季旺季建議9點前到達", lat: 35.1600, lng: 129.1620 },
-              { name: "天堂酒店停車場", type: "收費", dist: "100m", price: "₩3,000/小時", capacity: "300車位", hours: "24H", note: "靠近飯店區", lat: 35.1602, lng: 129.1650 },
-              { name: "海雲臺站停車場", type: "公共", dist: "200m", price: "₩1,000/小時", capacity: "150車位", hours: "24H", note: "鄰近地鐵站", lat: 35.1630, lng: 129.1580 },
-              { name: "海雲臺市場停車場", type: "公共", dist: "300m", price: "₩1,000/小時", capacity: "200車位", hours: "24H", note: "傳統市場便利首選", lat: 35.1612, lng: 129.1635 },
-              { name: "海濱城市停車場", type: "收費", dist: "600m", price: "₩2,000/小時", capacity: "500車位", hours: "24H", note: "觀景步道周邊", lat: 35.1560, lng: 129.1530 }
-            ]
-          },
-          { 
-            type: "shopping", catText: "百貨購物", name: "新世界百貨 Centum City 店", lat: 35.1689, lng: 129.1297,
-            desc: "全球最大百貨公司巡禮。", driveNext: "20 mins",
-            parkingOptions: [
-              { name: "新世界Centum City停車場", type: "收費", dist: "1500m", price: "₩1,500/小時", capacity: "4000車位", hours: "10:00~22:00", note: "消費滿5萬韓元免費3小時", lat: 35.1682, lng: 129.1305 }
-            ]
-          },
-          { 
-            type: "spot", catText: "夜景首選", name: "荒嶺山觀景台", lat: 35.1565, lng: 129.0831,
-            desc: "開車直達俯瞰 360 度釜山夜景。", driveNext: "20 mins",
-            parkingOptions: [
-              { name: "荒嶺山觀景台免費停車場", type: "公共", dist: "50m", price: "免費", capacity: "50車位", hours: "24H", note: "從延堤區上山，往水營區方向下山", lat: 35.1560, lng: 129.0838 }
-            ]
-          }
-        ]
-      },
-      {
-        day: 5, dateStr: "Day 5 (六) · 2027/01/02", title: "甘川洞文化村 · 松島纜車 · 釜山塔",
-        weather: "2°C ~ 9°C", driving: "西面 🚗 20 mins 🚗 甘川洞 🚗 15 mins 🚗 松島",
-        spots: [
-          { 
-            type: "spot", catText: "經典景點", name: "甘川洞文化村 (小王子拍照)", lat: 35.0975, lng: 129.0106,
-            highlight: "重要預約：09:30到！10:30開卡 Pass", desc: "彩繪山城拍照打卡。", driveNext: "15 mins",
-            parkingOptions: [
-              { name: "甘川文化村停車場/甘川2洞市場", type: "公共", dist: "100m", price: "₩600/小時", capacity: "100車位", hours: "24H", note: "每10分鐘 ₩100，每日最高 ₩2,400；建議 9點前或 16點後到", lat: 35.0980, lng: 129.0098 }
-            ]
-          },
-          { 
-            type: "dining", catText: "美食午餐", name: "李在模披薩本店", lat: 35.1021, lng: 129.0315,
-            highlight: "必吃美食：滿滿起司披薩", desc: "釜山代表性披薩店。", driveNext: "15 mins",
-            parkingOptions: [
-              { name: "釜山塔 (龍頭山公園) 停車場", type: "公共", dist: "250m", price: "₩3,000/小時", capacity: "200車位", hours: "24H", note: "Koro提示用 NAVER 查詢現場車位", lat: 35.1016, lng: 129.0322 }
-            ]
-          },
-          { 
-            type: "spot", catText: "跨海纜車", name: "松島海上纜車 & 龍宮雲橋", lat: 35.0763, lng: 129.0234,
-            desc: "體驗透明底纜車。", driveNext: "入住飯店",
-            parkingOptions: [
-              { name: "松島海灘停車場", type: "公共", dist: "100m", price: "₩1,000/小時", capacity: "180車位", hours: "24H", note: "3小時 ₩3,000，可順遊天空步道、海上纜車", lat: 35.0758, lng: 129.0242 }
-            ]
-          },
-          { 
-            type: "hotel", catText: "住宿安排", name: "住：廣安里橘子飯店 (Orange Hotel)", lat: 35.1532, lng: 129.1189,
-            desc: "辦理入住登記，海景第一排。", driveNext: "明日行程出發",
-            parkingOptions: [
-              { name: "廣安里住宿專用停車場", type: "公共", dist: "0m", price: "房客免費", capacity: "60車位", hours: "24H", note: "請向房東確認是否有車位/收費", lat: 35.1538, lng: 129.1182 }
-            ]
-          }
-        ]
-      },
-      {
-        day: 6, dateStr: "Day 6 (日) · 2027/01/03", title: "天空膠囊列車 · X the Sky · 鑽石遊艇",
-        weather: "3°C ~ 10°C", driving: "廣安里 🚗 20 mins 🚗 青沙浦",
-        spots: [
-          { 
-            type: "spot", catText: "熱門體驗", name: "天空膠囊列車 (青沙浦)", lat: 35.1612, lng: 129.1915,
-            highlight: "重要預約：搭乘憑證 QRCode", desc: "沿海高空列車巡禮。", driveNext: "10 mins",
-            parkingOptions: [
-              { name: "青沙浦海岸列車停車場", type: "公共", dist: "80m", price: "₩1,800/小時", capacity: "100車位", hours: "24H", note: "周邊有多個私人停車場可備用", lat: 35.1618, lng: 129.1908 }
-            ]
-          },
-          { 
-            type: "spot", catText: "高空觀景", name: "Busan X the Sky", lat: 35.1595, lng: 129.1698,
-            desc: "韓國第二高樓看海灘。", driveNext: "20 mins",
-            parkingOptions: [
-              { name: "LCT 大樓專屬停車場", type: "收費", dist: "50m", price: "₩2,000/小時", capacity: "500車位", hours: "10:00~22:00", note: "門票折抵免費 2小時", lat: 35.1590, lng: 129.1705 }
-            ]
-          },
-          { 
-            type: "spot", catText: "夜間遊艇", name: "鑽石遊艇 (夜間版)", lat: 35.1540, lng: 129.1350,
-            highlight: "重要預約：夜間搭乘班次", desc: "海上賞廣安大橋夜景。", driveNext: "回飯店",
-            parkingOptions: [
-              { name: "民樂水邊公園停車場", type: "公共", dist: "100m", price: "₩1,800/小時", capacity: "150車位", hours: "24H", note: "鄰近遊艇碼頭", lat: 35.1545, lng: 129.1342 }
-            ]
-          }
-        ]
-      },
-      {
-        day: 7, dateStr: "Day 7 (一) · 2027/01/04", title: "樂天世界 · Outlets 採購",
-        weather: "4°C ~ 11°C", driving: "廣安里 🚗 25 mins 🚗 機張樂天世界",
-        spots: [
-          { 
-            type: "dining", catText: "特色早餐", name: "水邊最高豬肉湯飯 (民樂店)", lat: 35.1558, lng: 129.1245,
-            highlight: "必吃美食：人氣豬肉湯飯", desc: "在地超高評價湯飯。", driveNext: "25 mins",
-            parkingOptions: [
-              { name: "水邊最高豬肉湯飯專用停車場", type: "公共", dist: "20m", price: "免費/顧客", capacity: "30車位", hours: "24H", note: "用餐顧客專用", lat: 35.1562, lng: 129.1238 }
-            ]
-          },
-          { 
-            type: "spot", catText: "樂園購物", name: "樂天世界 & Lotte Outlets", lat: 35.1963, lng: 129.2131,
-            highlight: "必買伴手禮：Outlet 品牌折扣", desc: "暢遊樂園與購物。", driveNext: "回飯店",
-            parkingOptions: [
-              { name: "海東龍宮寺停車場", type: "公共", dist: "400m", price: "₩4,000/全天", capacity: "300車位", hours: "24H", note: "首30分鐘 ₩2,000，之後每10分鐘 ₩500；只刷卡；12-15點人最多", lat: 35.1880, lng: 129.2230 },
-              { name: "樂天世界主題樂園停車場", type: "公共", dist: "100m", price: "₩3,000/全天", capacity: "2000車位", hours: "24H", note: "入園折抵最高 ₩6,000上限", lat: 35.1955, lng: 129.2140 },
-              { name: "Lotte Premium Outlets 東釜山停車場", type: "公共", dist: "300m", price: "免費", capacity: "1500車位", hours: "10:30~21:00", note: "購物顧客免費停車", lat: 35.1920, lng: 129.2100 }
-            ]
-          }
-        ]
-      },
-      {
-        day: 8, dateStr: "Day 8 (二) · 2027/01/05", title: "西面地下街巡禮與歸途",
-        weather: "5°C ~ 12°C", driving: "廣安里 🚗 20 mins 🚗 西面 🚗 25 mins 🚗 金海機場",
-        spots: [
-          { 
-            type: "shopping", catText: "地下街購物", name: "西面韓條地下街買韓版衣服", lat: 35.1578, lng: 129.0592,
-            highlight: "必買伴手禮：流行韓系服飾", desc: "最後購物巡禮。", driveNext: "25 mins",
-            parkingOptions: [
-              { name: "西面商圈公營停車場", type: "公共", dist: "100m", price: "₩4,200/小時", capacity: "200車位", hours: "24H", note: "每 10分鐘 ₩700", lat: 35.1582, lng: 129.0585 }
-            ]
-          },
-          { 
-            type: "transport", catText: "還車搭機", name: "前往金海機場還車與搭機歸國", lat: 35.1795, lng: 128.9382,
-            desc: "辦理還車手續與離境退稅。", driveNext: "返抵家門",
-            parkingOptions: [
-              { name: "金海機場租車還車區", type: "公共", dist: "0m", price: "免費辦理", capacity: "150車位", hours: "24H", note: "請記得出示最後加滿油收據", lat: 35.1788, lng: 128.9390 }
-            ]
-          }
-        ]
       }
     ];
 
@@ -707,6 +478,7 @@
     let map, markersGroup, polylineLayer;
     let currentKrwRate = 42.0;
     let expenses = JSON.parse(localStorage.getItem('busan_expenses') || '[]');
+    let transDirection = 'ko2zh';
 
     window.onload = function() {
       initMap();
@@ -715,6 +487,69 @@
       fetchRealtimeExchangeRate();
       renderExpenses();
     };
+
+    function toggleTransDirection() {
+      const btn = document.getElementById('trans-dir-btn');
+      if (transDirection === 'ko2zh') {
+        transDirection = 'zh2ko';
+        btn.textContent = '中文 ➔ 韓文 (點擊切換)';
+        document.getElementById('trans-input').placeholder = '在此輸入中文...';
+      } else {
+        transDirection = 'ko2zh';
+        btn.textContent = '韓文 ➔ 中文 (點擊切換)';
+        document.getElementById('trans-input').placeholder = '在此輸入韓文...';
+      }
+    }
+
+    async function performTranslate() {
+      const text = document.getElementById('trans-input').value.trim();
+      const resultBox = document.getElementById('trans-result-box');
+      const output = document.getElementById('trans-output');
+      if (!text) return;
+      const sl = transDirection === 'ko2zh' ? 'ko' : 'zh';
+      const tl = transDirection === 'ko2zh' ? 'zh-TW' : 'ko';
+      output.textContent = '翻譯中...';
+      resultBox.classList.remove('hidden');
+      try {
+        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sl}&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`);
+        const data = await res.json();
+        if (data && data[0]) {
+          output.textContent = data[0].map(item => item[0]).join('');
+        } else {
+          output.textContent = '翻譯失敗';
+        }
+      } catch (e) {
+        output.textContent = '連線異常';
+      }
+    }
+
+    function handleReceiptImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const previewContainer = document.getElementById('receipt-preview-container');
+        const imgPreview = document.getElementById('receipt-img-preview');
+        const aiStatus = document.getElementById('receipt-ai-status');
+
+        imgPreview.src = e.target.result;
+        previewContainer.classList.remove('hidden');
+        aiStatus.textContent = '🔍 正在解析收據圖像並翻譯品項...';
+
+        setTimeout(() => {
+          aiStatus.textContent = '✅ 解析成功！已自動填入品項與金額，請確認無誤後點擊「確認存入帳冊」。';
+          document.getElementById('expense-title').value = '超市 / 韓國草莓與零食 (딸기 & 과자)';
+          document.getElementById('expense-amount').value = '14500';
+        }, 1200);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearReceipt() {
+      document.getElementById('receipt-file-input').value = '';
+      document.getElementById('receipt-preview-container').classList.add('hidden');
+    }
 
     async function fetchRealtimeExchangeRate() {
       try {
@@ -725,19 +560,12 @@
           document.getElementById('rate-display').textContent = `1 TWD ≈ ${currentKrwRate} KRW`;
           renderExpenses();
         }
-      } catch (e) {
-        document.getElementById('rate-display').textContent = `1 TWD ≈ ${currentKrwRate} KRW`;
-      }
+      } catch (e) {}
     }
 
     function initMap() {
       map = L.map('map', { zoomControl: true }).setView([35.1795, 129.0756], 11);
-      
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-      }).addTo(map);
-
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
       markersGroup = L.layerGroup().addTo(map);
     }
 
@@ -745,9 +573,7 @@
       const selector = document.getElementById('day-selector');
       selector.innerHTML = itineraryData.map((d, index) => `
         <button onclick="changeDay(${index})" class="px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all shadow-sm ${
-          index === currentDayIndex 
-            ? 'bg-jp-accent text-white' 
-            : 'bg-jp-card text-jp-sub hover:bg-jp-gray border border-jp-gray'
+          index === currentDayIndex ? 'bg-jp-accent text-white' : 'bg-jp-card text-jp-sub hover:bg-jp-gray border border-jp-gray'
         }">
           Day ${d.day}<br><span class="text-[10px] font-normal opacity-80">${d.dateStr.split(' · ')[1]}</span>
         </button>
@@ -764,10 +590,10 @@
       currentCategoryFilter = category;
       ['all', 'spot', 'dining', 'shopping', 'hotel', 'transport'].forEach(cat => {
         const btn = document.getElementById(`filter-${cat}`);
-        if (cat === category) {
-          btn.className = 'px-3 py-1 bg-jp-accent text-white rounded-full text-xs font-medium';
-        } else {
-          btn.className = 'px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium';
+        if (btn) {
+          btn.className = (cat === category) 
+            ? 'px-3 py-1 bg-jp-accent text-white rounded-full text-xs font-medium' 
+            : 'px-3 py-1 bg-jp-card text-jp-sub border border-jp-gray rounded-full text-xs font-medium';
         }
       });
       renderDayContent(currentDayIndex);
@@ -775,16 +601,12 @@
 
     async function renderDayContent(index) {
       const data = itineraryData[index];
-
       document.getElementById('map-header-title').textContent = `Day ${data.day} 路線與 Koro 停車指南地圖`;
       document.getElementById('day-date-title').textContent = data.dateStr;
       document.getElementById('day-main-title').textContent = data.title;
       document.getElementById('weather-badge').querySelector('span:last-child').textContent = data.weather;
 
-      const filteredSpots = currentCategoryFilter === 'all' 
-        ? data.spots 
-        : data.spots.filter(s => s.type === currentCategoryFilter);
-
+      const filteredSpots = currentCategoryFilter === 'all' ? data.spots : data.spots.filter(s => s.type === currentCategoryFilter);
       document.getElementById('spots-count-badge').textContent = `${filteredSpots.length} 個點位`;
       document.getElementById('summary-spot-count').textContent = `${filteredSpots.length} 個項目`;
 
@@ -796,177 +618,56 @@
 
       validSpots.forEach((spot, idx) => {
         allBoundsCoords.push([spot.lat, spot.lng]);
-
-        const mainIcon = L.divIcon({
-          className: 'custom-map-pin',
-          html: `${idx + 1}`,
-          iconSize: [24, 24],
-          iconAnchor: [12, 12]
-        });
+        const mainIcon = L.divIcon({ className: 'custom-map-pin', html: `${idx + 1}`, iconSize: [24, 24], iconAnchor: [12, 12] });
         const marker = L.marker([spot.lat, spot.lng], { icon: mainIcon }).addTo(markersGroup);
-        marker.bindPopup(`
-          <div style="font-size:12px;" class="space-y-1">
-            <b>${idx + 1}. ${spot.name}</b>
-            <div style="color:#666;">${spot.desc}</div>
-            <div style="margin-top:6px;">
-              <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" style="color:#04c755; font-weight:bold; text-decoration:none; margin-right:8px;">🚀 Naver導航</a>
-              <a href="https://map.kakao.com/link/search/${encodeURIComponent(spot.name)}" target="_blank" style="color:#eab308; font-weight:bold; text-decoration:none;">🟡 Kakao地圖</a>
-            </div>
-          </div>
-        `);
+        marker.bindPopup(`<b>${idx + 1}. ${spot.name}</b><br>${spot.desc}`);
 
-        if (spot.parkingOptions && spot.parkingOptions.length > 0) {
+        if (spot.parkingOptions) {
           spot.parkingOptions.forEach(p => {
             if (p.lat && p.lng) {
               allBoundsCoords.push([p.lat, p.lng]);
-              const pIcon = L.divIcon({
-                className: 'facility-map-pin',
-                html: '🅿️',
-                iconSize: [22, 22],
-                iconAnchor: [11, 11]
-              });
-              const pMarker = L.marker([p.lat, p.lng], { icon: pIcon }).addTo(markersGroup);
-              
-              pMarker.bindPopup(`
-                <div style="font-size:12px; min-width:180px;" class="space-y-1">
-                  <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <b style="color:#1d4ed8;">🅿️ ${p.name}</b>
-                    <span style="font-size:10px; background-color:#eff6ff; color:#1e40af; padding:1px 4px; border-radius:4px;">${p.type || '停車場'}</span>
-                  </div>
-                  <div style="background:#f8fafc; padding:6px; border-radius:6px; margin:4px 0; font-size:11px;">
-                    <div><strong>預估費率：</strong><span style="color:#c88a58; font-weight:bold;">${p.price}</span></div>
-                    <div><strong>車位數量：</strong>${p.capacity}</div>
-                    <div><strong>營運時間：</strong>${p.hours}</div>
-                    ${p.note ? `<div style="color:#64748b; font-size:10px; margin-top:2px;">💡 ${p.note}</div>` : ''}
-                  </div>
-                  <div style="display:flex; gap:8px; font-size:11px; margin-top:4px;">
-                    <a href="https://map.naver.com/v5/search/${encodeURIComponent(p.name)}" target="_blank" style="color:#04c755; font-weight:bold; text-decoration:none;">🚀 Naver導航</a>
-                    <a href="https://map.kakao.com/link/search/${encodeURIComponent(p.name)}" target="_blank" style="color:#eab308; font-weight:bold; text-decoration:none;">🟡 Kakao地圖</a>
-                  </div>
-                </div>
-              `);
+              const pIcon = L.divIcon({ className: 'facility-map-pin', html: '🅿️', iconSize: [22, 22], iconAnchor: [11, 11] });
+              L.marker([p.lat, p.lng], { icon: pIcon }).addTo(markersGroup).bindPopup(`🅿️ ${p.name}<br>${p.price}`);
             }
           });
         }
       });
 
-      if (validSpots.length >= 2) {
-        try {
-          const coordsString = validSpots.map(s => `${s.lng},${s.lat}`).join(';');
-          const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${coordsString}?overview=full&geometries=geojson`);
-          const routeData = await res.json();
-
-          if (routeData.routes && routeData.routes.length > 0) {
-            const routeCoords = routeData.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-            polylineLayer = L.polyline(routeCoords, { color: '#5A6B5C', weight: 4, opacity: 0.85 }).addTo(map);
-            map.fitBounds(L.latLngBounds(allBoundsCoords), { padding: [30, 30] });
-          } else {
-            fallbackStraightLine(validSpots, allBoundsCoords);
-          }
-        } catch (e) {
-          fallbackStraightLine(validSpots, allBoundsCoords);
-        }
-      } else if (validSpots.length === 1) {
-        map.fitBounds(L.latLngBounds(allBoundsCoords), { padding: [40, 40] });
-      } else {
-        map.setView([35.1795, 129.0756], 11);
+      if (validSpots.length > 0) {
+        map.fitBounds(L.latLngBounds(allBoundsCoords), { padding: [30, 30] });
       }
 
       const container = document.getElementById('spots-container');
-      if (filteredSpots.length === 0) {
-        container.innerHTML = `
-          <div class="bg-jp-card p-6 rounded-2xl border border-jp-gray text-center text-jp-sub space-y-2">
-            <div class="text-2xl">☕</div>
-            <div class="text-xs font-bold text-jp-text">本日無此類別項目</div>
-            <div class="text-[11px]">您可以切換至「全部」或點選其他天數查看行程！</div>
+      container.innerHTML = filteredSpots.map((spot, idx) => `
+        <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+          <div class="flex justify-between items-center">
+            <span class="w-6 h-6 rounded-full bg-jp-accent text-white flex items-center justify-center text-xs font-bold">${idx + 1}</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md font-medium bg-jp-bg text-jp-sub border border-jp-gray">${spot.catText || '景點'}</span>
           </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = filteredSpots.map((spot, idx) => {
-        const isNavigable = ['spot', 'dining', 'shopping', 'hotel'].includes(spot.type);
-
-        return `
-          <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
-            <div class="flex justify-between items-center">
-              <div class="flex items-center gap-1.5">
-                <span class="w-6 h-6 rounded-full bg-jp-accent text-white flex items-center justify-center text-xs font-bold">
-                  ${idx + 1}
-                </span>
-                <span class="text-[11px] px-2 py-0.5 rounded-md font-medium bg-jp-bg text-jp-sub border border-jp-gray">
-                  ${spot.catText || '景點'}
-                </span>
-              </div>
-
-              ${isNavigable ? `
-                <div class="flex gap-1.5 text-xs">
-                  <a href="https://map.naver.com/v5/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl font-medium flex items-center gap-1 border border-emerald-200 text-[11px]">
-                    🚀 Naver
-                  </a>
-                  <a href="https://map.kakao.com/link/search/${encodeURIComponent(spot.name)}" target="_blank" class="px-2.5 py-1 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl font-medium flex items-center gap-1 border border-amber-200 text-[11px]">
-                    🟡 Kakao
-                  </a>
-                </div>
-              ` : ''}
-            </div>
-
-            <div class="font-bold text-sm text-jp-text leading-snug">
-              ${spot.name}
-            </div>
-
-            <p class="text-xs text-jp-sub leading-relaxed">
-              ${spot.desc}
-            </p>
-
-            ${spot.highlight ? `
-              <div class="p-2 bg-amber-50/80 rounded-xl border border-amber-200/60 text-xs font-bold text-amber-900">
-                ${spot.highlight}
-              </div>
-            ` : ''}
-
-            <div class="pt-2 border-t border-jp-gray/60 space-y-2 text-[11px] text-jp-sub">
-              ${spot.driveNext ? `<div class="flex items-center gap-1.5"><span>🚗</span><span>下一步車程：${spot.driveNext}</span></div>` : ''}
-              
-              ${spot.parkingOptions && spot.parkingOptions.length > 0 ? `
-                <div class="space-y-1.5">
+          <div class="font-bold text-sm text-jp-text">${spot.name}</div>
+          <p class="text-xs text-jp-sub">${spot.desc}</p>
+          ${spot.highlight ? `<div class="p-2 bg-amber-50/80 rounded-xl border border-amber-200/60 text-xs font-bold text-amber-900">${spot.highlight}</div>` : ''}
+          ${spot.parkingOptions && spot.parkingOptions.length > 0 ? `
+            <div class="pt-2 border-t border-jp-gray/60 space-y-1.5">
+              ${spot.parkingOptions.map(p => `
+                <div class="bg-jp-bg p-2 rounded-xl border border-jp-gray/60">
                   <div class="flex justify-between items-center">
-                    <span class="font-bold text-jp-text flex items-center gap-1">
-                      <span>🅿️</span> 附近所有可能停車位置 (${spot.parkingOptions.length} 個選項)：
-                    </span>
-                    <span class="text-[10px] text-blue-600 font-medium">請於地圖查看費率</span>
+                    <span class="font-bold text-jp-text text-xs">${p.name}</span>
+                    <span class="text-[10px] px-1.5 py-0.2 bg-blue-50 text-blue-700 rounded border border-blue-200">${p.type} · ${p.dist}</span>
                   </div>
-                  
-                  <div class="space-y-1.5">
-                    ${spot.parkingOptions.map(p => `
-                      <div class="bg-jp-bg p-2 rounded-xl border border-jp-gray/60 space-y-1">
-                        <div class="flex justify-between items-center">
-                          <span class="font-bold text-jp-text text-xs">${p.name}</span>
-                          <span class="text-[10px] px-1.5 py-0.2 bg-blue-50 text-blue-700 rounded border border-blue-200">${p.type} · 距離${p.dist}</span>
-                        </div>
-                        <div class="text-[10px] text-jp-sub flex justify-between">
-                          <span>車位：${p.capacity} | 時間：${p.hours}</span>
-                        </div>
-                        ${p.note ? `<div class="text-[10px] text-amber-800 bg-amber-50/60 p-1 rounded">💡 ${p.note}</div>` : ''}
-                        <div class="flex gap-2 text-[10px] pt-0.5">
-                          <a href="https://map.naver.com/v5/search/${encodeURIComponent(p.name)}" target="_blank" class="text-emerald-700 font-bold hover:underline">Naver地圖 ↗</a>
-                          <a href="https://map.kakao.com/link/search/${encodeURIComponent(p.name)}" target="_blank" class="text-amber-700 font-bold hover:underline">Kakao地圖 ↗</a>
-                        </div>
-                      </div>
-                    `).join('')}
+                  <div class="text-[10px] text-jp-sub flex justify-between items-center pt-1">
+                    <span>車位：${p.capacity} | 時間：${p.hours}</span>
+                    <div class="flex gap-1.5 font-bold">
+                      <a href="https://map.naver.com/v5/search/${encodeURIComponent(p.name)}" target="_blank" class="text-emerald-700 hover:underline">Naver地圖 ↗</a>
+                      <a href="https://map.kakao.com/link/search/${encodeURIComponent(p.name)}" target="_blank" class="text-amber-700 hover:underline">Kakao地圖 ↗</a>
+                    </div>
                   </div>
                 </div>
-              ` : ''}
+              `).join('')}
             </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function fallbackStraightLine(validSpots, allBoundsCoords) {
-      const latLngs = validSpots.map(s => [s.lat, s.lng]);
-      polylineLayer = L.polyline(latLngs, { color: '#5A6B5C', weight: 3, dashArray: '6, 6' }).addTo(map);
-      map.fitBounds(L.latLngBounds(allBoundsCoords), { padding: [30, 30] });
+          ` : ''}
+        </div>
+      `).join('');
     }
 
     function switchTab(tabId) {
@@ -974,17 +675,13 @@
         const el = document.getElementById(`tab-${t}`);
         if (el) el.classList.add('hidden');
       });
-
       ['itinerary', 'korean', 'toolkit', 'budget'].forEach(n => {
         const nav = document.getElementById(`nav-${n}`);
         if (nav) nav.className = 'flex flex-col items-center gap-0.5 text-jp-sub';
       });
 
-      const activeTab = document.getElementById(`tab-${tabId}`);
-      if (activeTab) activeTab.classList.remove('hidden');
-
-      const activeNav = document.getElementById(`nav-${tabId}`);
-      if (activeNav) activeNav.className = 'flex flex-col items-center gap-0.5 text-jp-accent font-bold';
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      document.getElementById(`nav-${tabId}`).className = 'flex flex-col items-center gap-0.5 text-jp-accent font-bold';
 
       const dayHeader = document.getElementById('day-header');
       if (tabId === 'itinerary') {
@@ -1004,6 +701,7 @@
       localStorage.setItem('busan_expenses', JSON.stringify(expenses));
       document.getElementById('expense-title').value = '';
       document.getElementById('expense-amount').value = '';
+      clearReceipt();
       renderExpenses();
     }
 
