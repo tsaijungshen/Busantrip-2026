@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>釜山自駕旅遊導航手帳 (匯率即時連線與韓文對話版)</title>
+  <title>釜山自駕旅遊導航手帳 (獨立韓文懶人包版)</title>
   
   <link rel="manifest" href="data:application/json,{
     \"name\": \"釜山自駕旅遊導航\",
@@ -82,8 +82,8 @@
 </head>
 <body class="flex flex-col h-screen max-w-md mx-auto relative shadow-2xl overflow-hidden bg-jp-bg">
 
-  <!-- 頂部天數切換膠囊按鈕 -->
-  <header class="bg-jp-bg px-4 pt-3 pb-2 z-20 flex-shrink-0">
+  <!-- 頂部天數切換膠囊按鈕 (僅在行程分頁顯示或常駐) -->
+  <header id="day-header" class="bg-jp-bg px-4 pt-3 pb-2 z-20 flex-shrink-0">
     <div id="day-selector" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
   </header>
 
@@ -115,7 +115,7 @@
           <div class="flex items-center gap-2">
             <span>圖標：</span>
             <span class="text-jp-text font-medium">🟢 行程點</span>
-            <span class="text-blue-600 font-bold">🅿️ 停車場 (點擊地圖顯示費率)</span>
+            <span class="text-blue-600 font-bold">🅿️ 停車場</span>
           </div>
           <span id="summary-spot-count" class="font-bold text-jp-text">4 個項目</span>
         </div>
@@ -147,59 +147,201 @@
       <div id="spots-container" class="space-y-3"></div>
     </div>
 
-    <!-- 視圖 2: 隨身工具箱 (包含點餐/問路韓語對話) -->
+    <!-- 視圖 2: 獨立韓文懶人包 (全新獨立分頁) -->
+    <div id="tab-korean" class="hidden space-y-4">
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">🗣️ 常用韓文與空耳懶人包</h2>
+
+      <!-- 🚖 Uber 特別推薦 -->
+      <div class="bg-amber-50 p-3.5 rounded-2xl border border-amber-200 space-y-1.5">
+        <div class="text-xs font-bold text-amber-900 flex items-center gap-1">
+          <span>🚖</span> 坐 Uber 前的小技巧
+        </div>
+        <div class="text-[11px] text-amber-800 leading-relaxed">
+          坐 Uber 前先把名字改成：<strong class="text-jp-text bg-white px-1.5 py-0.5 rounded border border-amber-300">勇書俊秋誰呦~</strong>（請給我收據），司機看到就會主動提供收據給您！
+        </div>
+      </div>
+
+      <!-- 餐廳與點餐篇 (圖上內容) -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+        <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
+          <span>🍜</span> 餐廳篇 (點餐與結帳)
+        </h3>
+        <div class="space-y-2 text-xs">
+          
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">有中文菜單嗎？</div>
+              <div class="text-jp-accent text-[11px]">중국어 메뉴 있어요?</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(中估勾 美妞 以搜呦?)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">我要這個</div>
+              <div class="text-jp-accent text-[11px]">이거 주세요</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(依勾 啾塞呦)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">我要一份這個</div>
+              <div class="text-jp-accent text-[11px]">이거 하나 주세요</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(依勾 哈那 啾塞呦)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">多少錢？</div>
+              <div class="text-jp-accent text-[11px]">얼마예요?</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(歐瑪耶呦?)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">請給我水</div>
+              <div class="text-jp-accent text-[11px]">물 주세요</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(木 啾塞呦)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">不要辣</div>
+              <div class="text-jp-accent text-[11px]">안 맵게 해주세요</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(安 妹給 黑啾塞呦)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">請給我飯</div>
+              <div class="text-jp-accent text-[11px]">밥 주세요</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(爸 啾塞呦)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">請給我筷子</div>
+              <div class="text-jp-accent text-[11px]">젓가락 주세요</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(秋噶拉 啾塞呦)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">可以打包嗎？</div>
+              <div class="text-jp-accent text-[11px]">포장 가능해요?</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(坡將 卡能黑呦?)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">可以刷卡嗎？</div>
+              <div class="text-jp-accent text-[11px]">카드 돼요?</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(卡德 對呦?)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">請結帳</div>
+              <div class="text-jp-accent text-[11px]">계산해 주세요</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(給山黑 啾塞呦)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">謝謝</div>
+              <div class="text-jp-accent text-[11px]">감사합니다</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(感恩哈密達)</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 問路、自駕與收據篇 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+        <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
+          <span>🚗</span> 問路、自駕與交通篇
+        </h3>
+        <div class="space-y-2 text-xs">
+          
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">請給我收據 (Uber改名用)</div>
+              <div class="text-jp-accent text-[11px]">영수증 주세요</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(勇書俊 啾塞呦)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">請問停車場在哪裡？</div>
+              <div class="text-jp-accent text-[11px]">주차장이 어디에 있어요?</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(啾洽將依 歐底耶 伊搜呦?)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">請問洗手間在哪裡？</div>
+              <div class="text-jp-accent text-[11px]">화장실이 어디예요?</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(花張希里 歐底耶呦?)</span>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-jp-text">刷卡失敗（對講機求助）</div>
+              <div class="text-jp-accent text-[11px]">신용카드가 안 돼요. 도와주세요.</div>
+            </div>
+            <span class="text-jp-warm font-bold text-[11px]">(信榮卡得加 安 對呦. 兜哇就塞呦.)</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 視圖 3: 隨身工具箱 (機票、住宿、緊急電話) -->
     <div id="tab-toolkit" class="hidden space-y-4">
       <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">✈️ 隨身資訊與工具箱</h2>
 
-      <!-- 🗣️ 實用韓語對話卡片 (點餐與問路) -->
+      <!-- ✈️ 航班資訊卡片 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
-          <span>🗣️</span> 實用韓文對話 (點餐、問路與自駕)
+          <span>✈️</span> 中華航空 往返機票明細
         </h3>
-
-        <!-- 點餐情境 -->
-        <div class="space-y-2">
-          <div class="text-[11px] font-bold text-jp-warm border-b border-jp-gray pb-1">🍜 餐廳點餐與結帳</div>
-          
-          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
-            <div class="font-bold text-jp-text">請給我這個：</div>
-            <div class="text-jp-accent font-medium">이거 주세요.</div>
-            <div class="text-[10px] text-jp-sub italic">發音：I-geo ju-se-yo.</div>
+        
+        <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
+          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
+            <span class="font-bold text-jp-text">🛫 去程：台北 (TPE) ➔ 釜山 (PUS)</span>
+            <span class="text-jp-sub font-mono">2026/12/29 (二)</span>
           </div>
-
-          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
-            <div class="font-bold text-jp-text">請給我菜單 / 小菜：</div>
-            <div class="text-jp-accent font-medium">메뉴판 / 반찬 좀 주세요.</div>
-            <div class="text-[10px] text-jp-sub italic">發音：Me-nyu-pan / Ban-chan jom ju-se-yo.</div>
-          </div>
-
-          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
-            <div class="font-bold text-jp-text">請問能算便宜一點嗎 / 請結帳：</div>
-            <div class="text-jp-accent font-medium">계산해 주세요.</div>
-            <div class="text-[10px] text-jp-sub italic">發音：Gye-san-hae ju-se-yo.</div>
+          <div class="flex justify-between items-center text-jp-text font-medium">
+            <div><div class="text-sm font-bold font-mono">15:40</div><div class="text-[11px] text-jp-sub">桃園機場 T1</div></div>
+            <div class="text-center text-jp-sub text-[10px]"><div>CI186 | A321neo</div><div>經濟艙 · 🍱 含餐</div></div>
+            <div class="text-right"><div class="text-sm font-bold font-mono">18:50</div><div class="text-[11px] text-jp-sub">金海機場 I</div></div>
           </div>
         </div>
 
-        <!-- 問路與自駕情境 -->
-        <div class="space-y-2 pt-1">
-          <div class="text-[11px] font-bold text-jp-warm border-b border-jp-gray pb-1">🚗 問路與停車求助</div>
-          
-          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
-            <div class="font-bold text-jp-text">請問停車場在哪裡？</div>
-            <div class="text-jp-accent font-medium">주차장이 어디에 있어요?</div>
-            <div class="text-[10px] text-jp-sub italic">發音：Ju-cha-jang-i eo-di-e is-seo-yo?</div>
+        <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
+          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
+            <span class="font-bold text-jp-text">🛬 返回：釜山 (PUS) ➔ 台北 (TPE)</span>
+            <span class="text-jp-sub font-mono">2027/01/05 (二)</span>
           </div>
-
-          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
-            <div class="font-bold text-jp-text">請問洗手間在哪裡？</div>
-            <div class="text-jp-accent font-medium">화장실이 어디예요?</div>
-            <div class="text-[10px] text-jp-sub italic">發音：Hwa-jang-sil-i eo-di-ye-yo?</div>
-          </div>
-
-          <div class="bg-jp-bg p-2.5 rounded-xl border border-jp-gray/60 space-y-1 text-xs">
-            <div class="font-bold text-jp-text">刷卡失敗時（對講機求助）：</div>
-            <div class="text-jp-accent font-medium">신용카드가 안 돼요. 도와주세요.</div>
-            <div class="text-[10px] text-jp-sub italic">發音：Sin-yong-ka-deu-ga an dwae-yo. Do-wa-ju-se-yo.</div>
+          <div class="flex justify-between items-center text-jp-text font-medium">
+            <div><div class="text-sm font-bold font-mono">19:50</div><div class="text-[11px] text-jp-sub">金海機場 I</div></div>
+            <div class="text-center text-jp-sub text-[10px]"><div>CI187 | A321neo</div><div>經濟艙 · 🍱 含餐</div></div>
+            <div class="text-right"><div class="text-sm font-bold font-mono">21:30</div><div class="text-[11px] text-jp-sub">桃園機場 T1</div></div>
           </div>
         </div>
       </div>
@@ -220,31 +362,29 @@
         </div>
       </div>
 
-      <!-- 航班資訊 -->
-      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
-        <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
-          <span>✈️</span> 中華航空 往返機票明細
-        </h3>
-        <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
-          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
-            <span class="font-bold text-jp-text">🛫 去程：台北 (TPE) ➔ 釜山 (PUS)</span>
-            <span class="text-jp-sub font-mono">2026/12/29 (二)</span>
+      <!-- 🏨 住宿安排 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2">
+        <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1">🏨 住宿安排</h3>
+        <div class="text-xs text-jp-text space-y-2">
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray space-y-1.5">
+            <div class="flex justify-between items-center">
+              <div class="font-bold">Day 1 ~ Day 4：西面商圈飯店</div>
+              <div class="flex gap-1 text-[10px]">
+                <a href="https://map.naver.com/v5/search/%E8%A5%BF%E9%9D%A2%E9%A3%AF%E5%BA%97" target="_blank" class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200">🚀 Naver</a>
+                <a href="https://map.kakao.com/link/search/%E8%A5%BF%E9%9D%A2%E9%A3%AF%E5%BA%97" target="_blank" class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-200">🟡 Kakao</a>
+              </div>
+            </div>
+            <div class="text-jp-sub text-[11px]">附設免費停車場，方便市區地下街與南浦洞交通。</div>
           </div>
-          <div class="flex justify-between items-center text-jp-text font-medium">
-            <div><div class="text-sm font-bold font-mono">15:40</div><div class="text-[11px] text-jp-sub">桃園機場 T1</div></div>
-            <div class="text-center text-jp-sub text-[10px]"><div>CI186 | A321neo</div><div>經濟艙 · 🍱 含餐</div></div>
-            <div class="text-right"><div class="text-sm font-bold font-mono">18:50</div><div class="text-[11px] text-jp-sub">金海機場 I</div></div>
-          </div>
-        </div>
-        <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
-          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
-            <span class="font-bold text-jp-text">🛬 返回：釜山 (PUS) ➔ 台北 (TPE)</span>
-            <span class="text-jp-sub font-mono">2027/01/05 (二)</span>
-          </div>
-          <div class="flex justify-between items-center text-jp-text font-medium">
-            <div><div class="text-sm font-bold font-mono">19:50</div><div class="text-[11px] text-jp-sub">金海機場 I</div></div>
-            <div class="text-center text-jp-sub text-[10px]"><div>CI187 | A321neo</div><div>經濟艙 · 🍱 含餐</div></div>
-            <div class="text-right"><div class="text-sm font-bold font-mono">21:30</div><div class="text-[11px] text-jp-sub">桃園機場 T1</div></div>
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray space-y-1.5">
+            <div class="flex justify-between items-center">
+              <div class="font-bold">Day 5 ~ Day 7：廣安里橘子飯店 (Orange Hotel)</div>
+              <div class="flex gap-1 text-[10px]">
+                <a href="https://map.naver.com/v5/search/Hotel+Aqua+Palace+Busan" target="_blank" class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200">🚀 Naver</a>
+                <a href="https://map.kakao.com/link/search/Hotel+Aqua+Palace+Busan" target="_blank" class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-200">🟡 Kakao</a>
+              </div>
+            </div>
+            <div class="text-jp-sub text-[11px]">海景第一排，免費機械/平面停車場。</div>
           </div>
         </div>
       </div>
@@ -260,7 +400,7 @@
       </div>
     </div>
 
-    <!-- 視圖 3: 離線記帳 (即時自動更新匯率) -->
+    <!-- 視圖 4: 離線記帳 -->
     <div id="tab-budget" class="hidden space-y-4">
       <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 記帳與即時匯率換算</h2>
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
@@ -286,11 +426,15 @@
     </div>
   </main>
 
-  <!-- 底部導覽 Tab Bar -->
-  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-jp-card border-t border-jp-gray px-8 py-2.5 flex justify-between items-center z-30">
+  <!-- 底部導覽 Tab Bar (擴充為 4 個分頁) -->
+  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-jp-card border-t border-jp-gray px-6 py-2.5 flex justify-between items-center z-30">
     <button onclick="switchTab('itinerary')" id="nav-itinerary" class="flex flex-col items-center gap-0.5 text-jp-accent font-bold">
       <span class="text-lg">📅</span>
       <span class="text-[10px]">每日行程</span>
+    </button>
+    <button onclick="switchTab('korean')" id="nav-korean" class="flex flex-col items-center gap-0.5 text-jp-sub">
+      <span class="text-lg">🗣️</span>
+      <span class="text-[10px]">韓文懶人包</span>
     </button>
     <button onclick="switchTab('toolkit')" id="nav-toolkit" class="flex flex-col items-center gap-0.5 text-jp-sub">
       <span class="text-lg">📚</span>
@@ -547,7 +691,7 @@
     let currentDayIndex = 0;
     let currentCategoryFilter = 'all';
     let map, markersGroup, polylineLayer;
-    let currentKrwRate = 42.0; // 預設匯率
+    let currentKrwRate = 42.0;
     let expenses = JSON.parse(localStorage.getItem('busan_expenses') || '[]');
 
     window.onload = function() {
@@ -558,7 +702,6 @@
       renderExpenses();
     };
 
-    // 連線更新即時匯率
     async function fetchRealtimeExchangeRate() {
       try {
         const res = await fetch('https://api.exchangerate-api.com/v4/latest/TWD');
@@ -637,11 +780,9 @@
       const validSpots = filteredSpots.filter(s => s.lat && s.lng);
       const allBoundsCoords = [];
 
-      // 繪製景點與地圖上的所有停車場標記（只保留 Naver 與 Kakao 地圖）
       validSpots.forEach((spot, idx) => {
         allBoundsCoords.push([spot.lat, spot.lng]);
 
-        // 🟢 1. 景點主標記
         const mainIcon = L.divIcon({
           className: 'custom-map-pin',
           html: `${idx + 1}`,
@@ -660,7 +801,6 @@
           </div>
         `);
 
-        // 🅿️ 2. 地圖中呈現附近停車場（含費率）
         if (spot.parkingOptions && spot.parkingOptions.length > 0) {
           spot.parkingOptions.forEach(p => {
             if (p.lat && p.lng) {
@@ -675,7 +815,7 @@
               
               pMarker.bindPopup(`
                 <div style="font-size:12px; min-width:180px;" class="space-y-1">
-                  <div style="display:flex; justify-size:space-between; align-items:center;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
                     <b style="color:#1d4ed8;">🅿️ ${p.name}</b>
                     <span style="font-size:10px; background-color:#eff6ff; color:#1e40af; padding:1px 4px; border-radius:4px;">${p.type || '停車場'}</span>
                   </div>
@@ -696,7 +836,6 @@
         }
       });
 
-      // 自動計算路線軌跡
       if (validSpots.length >= 2) {
         try {
           const coordsString = validSpots.map(s => `${s.lng},${s.lat}`).join(';');
@@ -719,7 +858,6 @@
         map.setView([35.1795, 129.0756], 11);
       }
 
-      // 渲染行程卡片（只保留 Naver 與 Kakao 地圖）
       const container = document.getElementById('spots-container');
       if (filteredSpots.length === 0) {
         container.innerHTML = `
@@ -773,7 +911,6 @@
               </div>
             ` : ''}
 
-            <!-- 附近所有可能停車位置清單 -->
             <div class="pt-2 border-t border-jp-gray/60 space-y-2 text-[11px] text-jp-sub">
               ${spot.driveNext ? `<div class="flex items-center gap-1.5"><span>🚗</span><span>下一步車程：${spot.driveNext}</span></div>` : ''}
               
@@ -819,12 +956,12 @@
     }
 
     function switchTab(tabId) {
-      ['itinerary', 'toolkit', 'budget'].forEach(t => {
+      ['itinerary', 'korean', 'toolkit', 'budget'].forEach(t => {
         const el = document.getElementById(`tab-${t}`);
         if (el) el.classList.add('hidden');
       });
 
-      ['itinerary', 'toolkit', 'budget'].forEach(n => {
+      ['itinerary', 'korean', 'toolkit', 'budget'].forEach(n => {
         const nav = document.getElementById(`nav-${n}`);
         if (nav) nav.className = 'flex flex-col items-center gap-0.5 text-jp-sub';
       });
@@ -835,8 +972,13 @@
       const activeNav = document.getElementById(`nav-${tabId}`);
       if (activeNav) activeNav.className = 'flex flex-col items-center gap-0.5 text-jp-accent font-bold';
 
+      // 只有在行程分頁時顯示頂部天數切換
+      const dayHeader = document.getElementById('day-header');
       if (tabId === 'itinerary') {
+        dayHeader.classList.remove('hidden');
         setTimeout(() => { map.invalidateSize(); }, 200);
+      } else {
+        dayHeader.classList.add('hidden');
       }
     }
 
