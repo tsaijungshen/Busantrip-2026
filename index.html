@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>釜山自駕旅遊導航手帳 (多品項拍照收據批量入帳版)</title>
+  <title>釜山自駕旅遊導航手帳 (8天地圖分佈卡片版)</title>
   
   <link rel="manifest" href="data:application/json,{
     \"name\": \"釜山自駕旅遊導航\",
@@ -66,16 +66,6 @@
       border: 2px solid white;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-
-    .facility-map-pin {
-      background-color: #FFFFFF;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 22px;
-      font-size: 13px;
-      border: 2px solid #3B82F6;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-    }
   </style>
 </head>
 <body class="flex flex-col h-screen max-w-md mx-auto relative shadow-2xl overflow-hidden bg-jp-bg">
@@ -109,7 +99,6 @@
           <div class="flex items-center gap-2">
             <span>圖標：</span>
             <span class="text-jp-text font-medium">🟢 行程點</span>
-            <span class="text-blue-600 font-bold">🅿️ 停車場</span>
           </div>
           <span id="summary-spot-count" class="font-bold text-jp-text">4 個項目</span>
         </div>
@@ -142,7 +131,6 @@
     <div id="tab-korean" class="hidden space-y-4">
       <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">🗣️ 實用韓文與韓國旅遊攻略大全</h2>
 
-      <!-- 🌐 韓中即時線上翻譯機 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b border-jp-gray pb-2">
           <div class="flex items-center gap-1.5 font-bold text-xs text-jp-text">
@@ -168,82 +156,13 @@
           </div>
         </div>
       </div>
-
-      <!-- 💰 MONEYPLANET 釜山換錢指南 -->
-      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
-        <div class="flex justify-between items-center border-b border-jp-gray pb-2">
-          <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1.5">
-            <span>💰</span> MONEYPLANET 釜山南浦洞換錢所
-          </h3>
-          <span class="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded border border-amber-200 font-bold">最佳匯率推薦</span>
-        </div>
-        <div class="text-xs space-y-2">
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1">
-            <div class="font-bold text-jp-text">📍 地址與交通：</div>
-            <div class="text-jp-sub text-[11px] leading-relaxed">
-              釜山市中區光復路 39-1 (釜山地鐵1號線札嘎其站 7號出口，或南浦站 1號出口步行約 5分鐘)
-            </div>
-            <div class="flex gap-2 text-[10px] pt-1">
-              <a href="https://map.naver.com/v5/search/MONEYPLANET+BUSAN" target="_blank" class="text-emerald-700 font-bold hover:underline">🚀 Naver 地圖 ↗</a>
-              <a href="https://map.kakao.com/link/search/MONEYPLANET+BUSAN" target="_blank" class="text-amber-700 font-bold hover:underline">🟡 Kakao 地圖 ↗</a>
-            </div>
-          </div>
-
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1">
-            <div class="font-bold text-jp-text">⏰ 營業時間：</div>
-            <div class="text-jp-sub text-[11px]">
-              週一至週六 09:00 ~ 20:00 | 週日 09:00 ~ 18:00
-            </div>
-          </div>
-
-          <div class="p-2.5 bg-amber-50/80 rounded-xl border border-amber-200/80 text-amber-900 text-[11px] space-y-0.5">
-            <div class="font-bold">💡 換錢小技巧 (Kiosk 無人機)：</div>
-            <div>官網搜尋「Kiosk」，無人外幣兌換機可以換到 100 韓元單位的零錢，且完全免手續費！</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 🍓 韓國草莓挑選與品種指南 -->
-      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
-        <h3 class="text-xs font-bold text-red-600 flex items-center gap-1.5">
-          <span>🍓</span> 韓國超市草莓採買小百科 (11~12月必吃)
-        </h3>
-        <div class="space-y-2 text-xs">
-          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1.5">
-            <div class="font-bold text-jp-text">🏷️ 標籤三大品種辨識：</div>
-            <div class="space-y-1 text-[11px]">
-              <div class="flex justify-between">
-                <span class="font-bold text-jp-accent">1. 雪香 (설향)</span>
-                <span class="text-jp-sub">最常見、軟嫩多汁、酸甜平衡</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="font-bold text-jp-accent">2. Geumsil (금실)</span>
-                <span class="text-jp-sub">甜度高、果肉紮實帶淡桃香</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="font-bold text-jp-accent">3. Kingsberry (킹스베리)</span>
-                <span class="text-jp-sub">超大顆 (約雪香2倍大)</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900 text-[11px] space-y-1">
-            <div class="font-bold">✔ 超市挑選 3 大口訣：</div>
-            <ul class="list-disc list-inside space-y-0.5 text-[10.5px]">
-              <li>蒂頭綠綠的且微微往上翘</li>
-              <li>蒂頭旁邊也紅紅的</li>
-              <li>草莓表面亮亮的</li>
-            </ul>
-            <div class="text-[10px] text-emerald-700 pt-0.5">※ 買回飯店用水輕輕沖一下即可食用！</div>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- 視圖 3: 隨身工具箱 -->
+    <!-- 視圖 3: 隨身工具箱 (機票下方放地圖卡片) -->
     <div id="tab-toolkit" class="hidden space-y-4">
       <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">✈️ 隨身資訊與工具箱</h2>
 
+      <!-- 1. 中華航空 往返機票明細 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
           <span>✈️</span> 中華航空 往返機票明細
@@ -271,7 +190,109 @@
           </div>
         </div>
       </div>
-      
+
+      <!-- 2. 🗺️ 釜山 12/29 - 1/5 旅遊景點分佈圖 (新增卡片：位在機票正下方) -->
+      <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200/80 shadow-sm space-y-3">
+        <div class="text-center border-b border-amber-200/60 pb-2">
+          <div class="text-xl font-extrabold text-red-600 tracking-wider">釜山 12/29 - 1/5</div>
+          <div class="text-sm font-bold text-jp-text tracking-widest">旅遊景點分佈圖</div>
+        </div>
+
+        <!-- 擬真幾何區域地圖卡 -->
+        <div class="bg-jp-card p-3 rounded-xl border border-jp-gray shadow-inner relative space-y-2 overflow-hidden">
+          <div class="text-[10px] text-jp-sub text-center font-bold">🗺️ 釜山各大分區地理簡圖</div>
+          
+          <div class="grid grid-cols-2 gap-2 text-[11px] pt-1">
+            <div class="p-2 bg-amber-100/70 rounded-lg border border-amber-300/60 text-amber-900 font-medium">
+              <div class="font-bold flex items-center gap-1">🟡 1 【西面商圈】</div>
+              <div class="text-[10px] text-amber-800">田浦咖啡街 · Shake Shack · 飯店專區</div>
+            </div>
+
+            <div class="p-2 bg-emerald-100/70 rounded-lg border border-emerald-300/60 text-emerald-900 font-medium">
+              <div class="font-bold flex items-center gap-1">🟢 9 【海雲台區】</div>
+              <div class="text-[10px] text-emerald-800">藍線膠囊列車 · X the SKY · 迎月路</div>
+            </div>
+
+            <div class="p-2 bg-pink-100/70 rounded-lg border border-pink-300/60 text-pink-900 font-medium">
+              <div class="font-bold flex items-center gap-1">🩷 6 【廣安里】</div>
+              <div class="text-[10px] text-pink-800">廣安大橋夜景 · 跨年煙火 · Orange Hotel</div>
+            </div>
+
+            <div class="p-2 bg-purple-100/70 rounded-lg border border-purple-300/60 text-purple-900 font-medium">
+              <div class="font-bold flex items-center gap-1">🟣 10 【機張 / 東釜山】</div>
+              <div class="text-[10px] text-purple-800">海東龍宮寺 · 樂天世界 · 機張海鮮蟹</div>
+            </div>
+
+            <div class="p-2 bg-blue-100/70 rounded-lg border border-blue-300/60 text-blue-900 font-medium col-span-2">
+              <div class="font-bold flex items-center gap-1">🔵 5 【南浦 & 影島 & 松島】</div>
+              <div class="text-[10px] text-blue-800">藝珠寢具棉被 · 豚笑豬排 · 札嘎其帝王蟹 · 太宗台 · 松島纜車</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 景點與美食細節對照清單 (參考圖片樣式) -->
+        <div class="space-y-2 text-xs pt-1">
+          <div class="bg-jp-card p-2.5 rounded-xl border border-jp-gray space-y-1">
+            <div class="font-bold text-amber-800">🟡 1【西面】</div>
+            <ul class="list-disc list-inside text-[11px] text-jp-text space-y-0.5">
+              <li>1. 西面商圈飯店 (宿 Day 1-4)</li>
+              <li>2. Eggdrop & 田浦咖啡街早餐</li>
+              <li>3. Shake Shack 首夜晚餐</li>
+              <li>4. 西面地下街商圈採購</li>
+            </ul>
+          </div>
+
+          <div class="bg-jp-card p-2.5 rounded-xl border border-jp-gray space-y-1">
+            <div class="font-bold text-blue-800">🔵 5【南浦洞 & 影島 & 松島】</div>
+            <ul class="list-disc list-inside text-[11px] text-jp-text space-y-0.5">
+              <li>1. MONEYPLANET 釜山南浦洞換錢所 (必去最佳匯率)</li>
+              <li>2. 藝珠寢具예주이불 (國際市場買棉被)</li>
+              <li>3. 豚笑-南浦店黑豬肉炸豬排</li>
+              <li>4. 札嘎其市場帝王蟹 100號</li>
+              <li>5. 太宗台遊園車 & 白淺灘文化村</li>
+              <li>6. 松島海上纜車 & 龍宮雲橋</li>
+            </ul>
+          </div>
+
+          <div class="bg-jp-card p-2.5 rounded-xl border border-jp-gray space-y-1">
+            <div class="font-bold text-emerald-800">🟢 9【海雲台 & Centum City】</div>
+            <ul class="list-disc list-inside text-[11px] text-jp-text space-y-0.5">
+              <li>1. 海雲台藍線公園 (海岸膠囊列車)</li>
+              <li>2. BUSAN X the SKY (99F 高空咖啡觀景)</li>
+              <li>3. 新世界 SPA LAND 頂級汗蒸幕</li>
+              <li>4. 迎月路景景觀咖啡廳</li>
+            </ul>
+          </div>
+
+          <div class="bg-jp-card p-2.5 rounded-xl border border-jp-gray space-y-1">
+            <div class="font-bold text-pink-800">🩷 6【廣安里】</div>
+            <ul class="list-disc list-inside text-[11px] text-jp-text space-y-0.5">
+              <li>1. 廣安里 Orange Hotel (宿 Day 5-7 海景第一排)</li>
+              <li>2. 廣安大橋跨年煙火 & 無人機表演</li>
+              <li>3. 廣安里沙灘晨漫 & 韓式烤肉</li>
+            </ul>
+          </div>
+
+          <div class="bg-jp-card p-2.5 rounded-xl border border-jp-gray space-y-1">
+            <div class="font-bold text-purple-800">🟣 10【機張 & 東釜山】</div>
+            <ul class="list-disc list-inside text-[11px] text-jp-text space-y-0.5">
+              <li>1. 海東龍宮寺 (韓國唯一海邊寺廟新年祈福)</li>
+              <li>2. 釜山樂天世界冒險樂園 & 樂天 Outlet</li>
+              <li>3. 機張海鮮市場現蒸長腳蟹</li>
+            </ul>
+          </div>
+
+          <div class="bg-jp-card p-2.5 rounded-xl border border-jp-gray space-y-1">
+            <div class="font-bold text-gray-700">✈️ 8【金海國際機場】</div>
+            <ul class="list-disc list-inside text-[11px] text-jp-text space-y-0.5">
+              <li>1. CI186 / CI187 華航航班出入境</li>
+              <li>2. KoreabyCar (Koro) 釜山租車與還車處</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Koro 自駕提醒 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
         <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1.5">
           <span>🚘</span> KoreabyCar (Koro) 韓國自駕重點提醒
@@ -292,7 +313,6 @@
     <div id="tab-budget" class="hidden space-y-4">
       <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 智能拍照收據多品項入帳</h2>
       
-      <!-- 📸 拍照收據與多品項拆解面板 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-jp-text flex items-center gap-1.5">
@@ -310,12 +330,9 @@
             <span class="text-[10px] text-jp-sub font-normal">自動辨識所有明細、品項翻譯與單價</span>
           </button>
 
-          <!-- 辨識結果與批量確認清單 -->
           <div id="receipt-preview-container" class="hidden space-y-3 p-3 bg-jp-bg rounded-xl border border-jp-gray">
             <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-jp-text flex items-center gap-1">
-                <span>🧾</span> 收據明細分析結果
-              </span>
+              <span class="text-xs font-bold text-jp-text flex items-center gap-1">🧾 收據明細分析結果</span>
               <button onclick="clearReceipt()" class="text-[10px] text-red-600 font-bold">重新拍照</button>
             </div>
             
@@ -324,7 +341,6 @@
               <div id="receipt-ai-status" class="text-[11px] text-jp-warm font-medium">✨ 正在解析收據明細...</div>
             </div>
 
-            <!-- 品項清單列表 (動態生成) -->
             <div id="parsed-items-list" class="space-y-2 pt-1 border-t border-jp-gray/80"></div>
 
             <div id="batch-save-btn-container" class="hidden pt-1">
@@ -337,7 +353,6 @@
         </div>
       </div>
 
-      <!-- 手動單筆補充輸入 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <div class="text-xs text-jp-sub flex justify-between items-center">
           <span>即時匯率：<strong id="rate-display" class="text-jp-text font-bold">1 TWD ≈ 42.0 KRW</strong></span>
@@ -352,7 +367,6 @@
         </div>
       </div>
 
-      <!-- 消費明細列表 -->
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b border-jp-gray pb-2">
           <h3 class="text-xs font-bold text-jp-text">已存入帳冊明細</h3>
@@ -389,41 +403,17 @@
         day: 1, dateStr: "Day 1 (二) · 2026/12/29", title: "抵達釜山 · 取車自駕 · 夜間輕裝整備",
         weather: "4°C ~ 11°C", driving: "金海機場 🚗 25 mins 🚗 西面飯店",
         spots: [
-          { 
-            type: "transport", catText: "抵達機場", name: "出關後換釜山PASS實體卡", lat: 35.1795, lng: 128.9382,
-            desc: "於入境大廳 1 樓 Visitor Center 櫃檯出示憑證領取實體卡。", driveNext: "5 mins (1.2 km)",
-            parkingOptions: [
-              { name: "金海機場 P1 公營停車場", type: "公共", dist: "50m", price: "₩1,500/小時", capacity: "800車位", hours: "24H", note: "旺季請於上午 9點前到達", lat: 35.1788, lng: 128.9390 }
-            ]
-          },
-          { 
-            type: "transport", catText: "交通自駕", name: "釜山租車處取車與路線測試", lat: 35.1760, lng: 128.9430,
-            desc: "確認車載 GPS 設定完好並拍照紀錄車況與胎壓。", driveNext: "25 mins (14.5 km)",
-            parkingOptions: [
-              { name: "租車公司專屬停車場", type: "公共", dist: "10m", price: "免費停放", capacity: "100車位", hours: "24H", note: "辦理取車手續免費", lat: 35.1762, lng: 128.9435 }
-            ]
-          },
-          { 
-            type: "dining", catText: "美食晚餐", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596,
-            highlight: "必吃美食：經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。", driveNext: "3 mins (0.8 km)",
-            parkingOptions: [
-              { name: "樂天百貨西面店停車場", type: "收費", dist: "50m", price: "₩3,000/小時", capacity: "1200車位", hours: "10:30~22:00", note: "消費滿萬韓元折抵1小時", lat: 35.1540, lng: 129.0585 }
-            ]
-          },
-          { 
-            type: "hotel", catText: "住宿安排", name: "住：西面商圈飯店", lat: 35.1578, lng: 129.0592,
-            desc: "辦理入住登記，車輛停放於飯店停車場。", driveNext: "明日行程出發",
-            parkingOptions: [
-              { name: "飯店地下專屬停車場", type: "收費", dist: "0m", price: "房客免費", capacity: "80車位", hours: "24H", note: "雙排停車請打N檔勿拉手煞車", lat: 35.1575, lng: 129.0595 }
-            ]
-          }
+          { type: "transport", catText: "抵達機場", name: "出關後換釜山PASS實體卡", lat: 35.1795, lng: 128.9382, desc: "於入境大廳 1 樓 Visitor Center 櫃檯出示憑證領取實體卡。" },
+          { type: "transport", catText: "交通自駕", name: "釜山租車處取車與路線測試", lat: 35.1760, lng: 128.9430, desc: "確認車載 GPS 設定完好並拍照紀錄車況與胎壓。" },
+          { type: "dining", catText: "美食晚餐", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596, highlight: "必吃美食：經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。" },
+          { type: "hotel", catText: "住宿安排", name: "住：西面商圈飯店", lat: 35.1578, lng: 129.0592, desc: "辦理入住登記，車輛停放於飯店停車場。" }
         ]
       }
     ];
 
     let currentDayIndex = 0;
     let currentCategoryFilter = 'all';
-    let map, markersGroup, polylineLayer;
+    let map, markersGroup;
     let currentKrwRate = 42.0;
     let expenses = JSON.parse(localStorage.getItem('busan_expenses') || '[]');
     let parsedReceiptItems = [];
@@ -436,7 +426,6 @@
       renderExpenses();
     };
 
-    // 📸 多品項辨識與解析邏輯
     function handleReceiptImage(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -455,15 +444,13 @@
         itemsList.innerHTML = '';
         batchBtn.classList.add('hidden');
 
-        // 模擬 OCR 智慧拆解多筆明細與品項韓文翻譯
         setTimeout(() => {
           aiStatus.textContent = '✅ 已成功拆解明細！請確認各品項名稱與金額：';
           
           parsedReceiptItems = [
             { id: 1, original: '설향 딸기 (1kg)', translated: '雪香草莓 1kg', krw: 12800, checked: true },
             { id: 2, original: '바나나우유 x2', translated: '香蕉牛奶 x2', krw: 3400, checked: true },
-            { id: 3, original: '신라면 컵', translated: '辛拉麵泡麵碗', krw: 1600, checked: true },
-            { id: 4, original: '종량제봉투 10L', translated: '垃圾袋 10L', krw: 500, checked: true }
+            { id: 3, original: '신라면 컵', translated: '辛拉麵泡麵碗', krw: 1600, checked: true }
           ];
 
           renderParsedItems();
@@ -501,7 +488,6 @@
       parsedReceiptItems[index].krw = parseFloat(val) || 0;
     }
 
-    // 批量直接存入帳冊
     function saveAllParsedItems() {
       const selectedItems = parsedReceiptItems.filter(i => i.checked);
       if (selectedItems.length === 0) return;
@@ -585,7 +571,6 @@
       document.getElementById('summary-spot-count').textContent = `${filteredSpots.length} 個項目`;
 
       markersGroup.clearLayers();
-      if (polylineLayer) map.removeLayer(polylineLayer);
 
       const validSpots = filteredSpots.filter(s => s.lat && s.lng);
       const allBoundsCoords = [];
