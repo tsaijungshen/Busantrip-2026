@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>釜山自駕旅遊導航手帳 (專屬行程地圖版)</title>
+  <title>釜山自駕旅遊導航手帳 (8天完整地圖修復版)</title>
   
   <link rel="manifest" href="data:application/json,{
     \"name\": \"釜山自駕旅遊導航\",
@@ -66,6 +66,16 @@
       border: 2px solid white;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
+
+    .facility-map-pin {
+      background-color: #FFFFFF;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 22px;
+      font-size: 13px;
+      border: 2px solid #3B82F6;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    }
   </style>
 </head>
 <body class="flex flex-col h-screen max-w-md mx-auto relative shadow-2xl overflow-hidden bg-jp-bg">
@@ -99,6 +109,7 @@
           <div class="flex items-center gap-2">
             <span>圖標：</span>
             <span class="text-jp-text font-medium">🟢 行程點</span>
+            <span class="text-blue-600 font-bold">🅿️ 停車場</span>
           </div>
           <span id="summary-spot-count" class="font-bold text-jp-text">4 個項目</span>
         </div>
@@ -198,7 +209,6 @@
           <div class="text-sm font-bold text-jp-text tracking-widest">旅遊景點分佈圖 (專屬行程版)</div>
         </div>
 
-        <!-- 區塊配置概覽 -->
         <div class="grid grid-cols-2 gap-2 text-[11px]">
           <div class="p-2 bg-amber-100/70 rounded-lg border border-amber-300 text-amber-900 font-medium">
             <div class="font-bold">🟡 1 【西面商圈】</div>
@@ -222,7 +232,6 @@
           </div>
         </div>
 
-        <!-- 細節清單 -->
         <div class="space-y-2 text-xs pt-1">
           <div class="bg-jp-card p-2.5 rounded-xl border border-jp-gray space-y-1">
             <div class="font-bold text-amber-800">🟡 1【西面】</div>
@@ -399,6 +408,74 @@
           { type: "transport", catText: "交通自駕", name: "釜山租車處取車與路線測試", lat: 35.1760, lng: 128.9430, desc: "確認車載 GPS 設定完好並拍照紀錄車況與胎壓。" },
           { type: "dining", catText: "美食晚餐", name: "Shake Shack (20:30~21:30)", lat: 35.1534, lng: 129.0596, highlight: "必吃美食：經典雙層牛肉堡與招牌奶昔", desc: "抵達市區後的輕鬆晚餐選擇。" },
           { type: "hotel", catText: "住宿安排", name: "住：西面商圈飯店", lat: 35.1578, lng: 129.0592, desc: "辦理入住登記，車輛停放於飯店停車場。" }
+        ]
+      },
+      {
+        day: 2, dateStr: "Day 2 (三) · 2026/12/30", title: "南浦洞 · 樂天百貨 · 札嘎其市場 · 買棉被",
+        weather: "2°C ~ 9°C", driving: "西面 🚗 20 mins 🚗 南浦洞",
+        spots: [
+          { type: "dining", catText: "早餐美食", name: "Eggdrop / 田浦咖啡街", lat: 35.1542, lng: 129.0645, highlight: "必點菜單：厚切起司三明治", desc: "晨間漫步田浦咖啡街。" },
+          { type: "shopping", catText: "韓國棉被", name: "藝珠寢具예주이불 (國際市場老店)", lat: 35.0998, lng: 129.0285, highlight: "購物亮點：真空壓縮省空間、款式齊全！", desc: "地鐵札嘎其站 7號出口步行約 300m，路口為【한일사약국】藥局，轉入路口 10-15m 即達。" },
+          { type: "dining", catText: "美食午餐", name: "豚笑-南浦店", lat: 35.0991, lng: 129.0305, desc: "人氣極高黑豬肉炸豬排。" },
+          { type: "shopping", catText: "購物巡禮", name: "樂天百貨南浦店 & 柯達專賣店", lat: 35.0976, lng: 129.0368, desc: "辦理 VIP 會員卡與購物。" },
+          { type: "dining", catText: "美食晚餐", name: "札嘎其市場帝王蟹 100號", lat: 35.0967, lng: 129.0306, desc: "享用新鮮海鮮大餐。" }
+        ]
+      },
+      {
+        day: 3, dateStr: "Day 3 (四) · 2026/12/31", title: "海雲台藍線公園 · 觀景台 · 廣安里跨年煙火",
+        weather: "1°C ~ 8°C", driving: "西面 🚗 25 mins 🚗 海雲台",
+        spots: [
+          { type: "spot", catText: "熱門景點", name: "海雲台藍線公園 (海邊膠囊列車)", lat: 35.1610, lng: 129.1705, desc: "搭乘尾浦至青沙浦段觀海列車。" },
+          { type: "spot", catText: "高空觀景", name: "釜山 X the SKY (99樓 Starbucks)", lat: 35.1598, lng: 129.1672, desc: "俯瞰海雲台海岸線與高空咖啡體驗。" },
+          { type: "dining", catText: "下午茶", name: "迎月路觀海咖啡廳", lat: 35.1585, lng: 129.1760, desc: "迎月路海景與咖啡放鬆。" },
+          { type: "spot", catText: "跨年盛會", name: "廣安里海灘 (廣安大橋跨年煙火)", lat: 35.1532, lng: 129.1186, highlight: "🎉 跨年倒數與無人機煙火秀", desc: "提前前往廣安里佔位觀賞跨年秀。" }
+        ]
+      },
+      {
+        day: 4, dateStr: "Day 4 (五) · 2027/01/01", title: "海東龍宮寺新年祈福 · 樂天世界與 Outlet",
+        weather: "3°C ~ 10°C", driving: "市區 🚗 30 mins 🚗 東釜山",
+        spots: [
+          { type: "spot", catText: "新年祈福", name: "海東龍宮寺 (韓國唯一海邊寺廟)", lat: 35.1884, lng: 129.2234, desc: "迎接新年海邊日出與祈福。" },
+          { type: "spot", catText: "主題樂園", name: "釜山樂天世界冒險樂園", lat: 35.1950, lng: 129.2155, desc: "歡樂遊樂設施體驗。" },
+          { type: "shopping", catText: " Outlet購物", name: "樂天 Outlet 東釜山店", lat: 35.1920, lng: 129.2130, desc: "品牌折扣採買。" },
+          { type: "dining", catText: "美食晚餐", name: "機張海鮮市場 (蒸長腳蟹)", lat: 35.2445, lng: 129.2220, desc: "品嚐機張名物鮮甜蒸蟹。" }
+        ]
+      },
+      {
+        day: 5, dateStr: "Day 5 (六) · 2027/01/02", title: "太宗台遊園 · 白淺灘文化村 · 換住廣安里",
+        weather: "2°C ~ 9°C", driving: "影島 🚗 20 mins 🚗 廣安里飯店",
+        spots: [
+          { type: "spot", catText: "自然風景", name: "太宗台公園 (搭乘 Danubi 列車)", lat: 35.0531, lng: 129.0872, desc: "觀賞壯麗峭壁與海景。" },
+          { type: "spot", catText: "人氣散策", name: "白淺灘文化村", lat: 35.0772, lng: 129.0435, desc: "沿海彩色小屋與海景階梯。" },
+          { type: "hotel", catText: "住宿切換", name: "住：廣安里 Orange Hotel", lat: 35.1538, lng: 129.1180, desc: "辦理海景飯店入住手續。" },
+          { type: "dining", catText: "晚餐美食", name: "廣安里韓式烤肉", lat: 35.1545, lng: 129.1175, desc: "享用美味韓式烤五花肉。" }
+        ]
+      },
+      {
+        day: 6, dateStr: "Day 6 (日) · 2027/01/03", title: "甘川洞彩虹村 · 松島海上纜車 · 富平夜市",
+        weather: "3°C ~ 11°C", driving: "廣安里 🚗 25 mins 🚗 西面/南浦",
+        spots: [
+          { type: "spot", catText: "文化地標", name: "甘川洞文化村 (尋找小王子)", lat: 35.0975, lng: 129.0106, desc: "彩虹山城拍攝熱門景點。" },
+          { type: "spot", catText: "海上體驗", name: "松島海上纜車 & 龍宮雲橋", lat: 35.0765, lng: 129.0238, desc: "跨海水晶纜車與空中步道。" },
+          { type: "dining", catText: "夜市小吃", name: "富平罐頭市場 & 傳統夜市", lat: 35.1005, lng: 129.0262, desc: "品嚐辣炒年糕、魚餅與各式道地小吃。" }
+        ]
+      },
+      {
+        day: 7, dateStr: "Day 7 (一) · 2027/01/04", title: "廣安里晨漫 · 新世界 SPA LAND · 伴手禮採買",
+        weather: "4°C ~ 10°C", driving: "廣安里 🚗 10 mins 🚗 汗蒸幕",
+        spots: [
+          { type: "spot", catText: "海景放鬆", name: "廣安里海水浴場晨間散步", lat: 35.1532, lng: 129.1186, desc: "享受清晨沙灘與廣安大橋景致。" },
+          { type: "spot", catText: "汗蒸幕體驗", name: "新世界 SPA LAND 汗蒸幕", lat: 35.1688, lng: 129.1296, desc: "頂級五星級汗蒸幕舒壓放鬆。" },
+          { type: "shopping", catText: "伴手禮採買", name: "E-Mart / 樂天大型超市", lat: 35.1665, lng: 129.1320, desc: "採買韓國草莓、海苔與泡麵禮盒。" }
+        ]
+      },
+      {
+        day: 8, dateStr: "Day 8 (二) · 2027/01/05", title: "最後商圈採購 · 自駕還車 · 滿載返台",
+        weather: "5°C ~ 12°C", driving: "西面 🚗 25 mins 🚗 金海機場還車",
+        spots: [
+          { type: "shopping", catText: "地下街採買", name: "西面地下街最後血拼", lat: 35.1578, lng: 129.0592, desc: "補齊美妝與流行服飾。" },
+          { type: "transport", catText: "租車歸還", name: "金海機場租車處還車", lat: 35.1760, lng: 128.9430, desc: "檢查車況、油位與返還車輛。" },
+          { type: "transport", catText: "返台航班", name: "金海國際機場 (CI187 19:50起飛)", lat: 35.1795, lng: 128.9382, desc: "辦理登機與退稅，搭機返回桃園機場。" }
         ]
       }
     ];
@@ -607,7 +684,9 @@
       const dayHeader = document.getElementById('day-header');
       if (tabId === 'itinerary') {
         dayHeader.classList.remove('hidden');
-        setTimeout(() => { map.invalidateSize(); }, 200);
+        setTimeout(() => { 
+          if (map) map.invalidateSize(); 
+        }, 200);
       } else {
         dayHeader.classList.add('hidden');
       }
