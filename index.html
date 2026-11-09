@@ -94,7 +94,7 @@
         <div class="flex justify-between items-center text-xs px-1">
           <div class="flex items-center gap-1.5 font-bold text-jp-text">
             <span>🗺️</span>
-            <span id="map-header-title">Day 1 開動線地圖</span>
+            <span id="map-header-title">Day 1 行車路線與導航地圖</span>
           </div>
           <span id="spots-count-badge" class="px-2 py-0.5 bg-jp-accentLight text-jp-accent font-bold rounded-full text-[10px]">
             4 個點位
@@ -844,7 +844,7 @@
 
     let currentDayIndex = 0;
     let currentCategoryFilter = 'all';
-    let map, markersGroup;
+    let map, markersGroup, polylineLayer;
     let currentKrwRate = 42.0;
     let expenses = JSON.parse(localStorage.getItem('busan_expenses') || '[]');
     let parsedReceiptItems = [];
@@ -1026,7 +1026,7 @@
 
     function renderDayContent(index) {
       const data = itineraryData[index];
-      document.getElementById('map-header-title').textContent = `Day ${data.day} 路線與 Koro 停車指南地圖`;
+      document.getElementById('map-header-title').textContent = `Day ${data.day} 行車路線與 Koro 停車指南`;
       document.getElementById('day-date-title').textContent = data.dateStr;
       document.getElementById('day-main-title').textContent = data.title;
       document.getElementById('weather-badge').querySelector('span:last-child').textContent = data.weather;
@@ -1036,14 +1036,21 @@
       document.getElementById('summary-spot-count').textContent = `${filteredSpots.length} 個項目`;
 
       markersGroup.clearLayers();
+      if (polylineLayer) {
+        map.removeLayer(polylineLayer);
+      }
 
       const validSpots = filteredSpots.filter(s => s.lat && s.lng);
       const allBoundsCoords = [];
+      const routePathCoords = [];
 
       validSpots.forEach((spot, idx) => {
-        allBoundsCoords.push([spot.lat, spot.lng]);
+        const coord = [spot.lat, spot.lng];
+        allBoundsCoords.push(coord);
+        routePathCoords.push(coord); // 串連行車路線軌跡
+
         const mainIcon = L.divIcon({ className: 'custom-map-pin', html: `${idx + 1}`, iconSize: [24, 24], iconAnchor: [12, 12] });
-        const marker = L.marker([spot.lat, spot.lng], { icon: mainIcon }).addTo(markersGroup);
+        const marker = L.marker(coord, { icon: mainIcon }).addTo(markersGroup);
         marker.bindPopup(`<b>${idx + 1}. ${spot.name}</b><br>${spot.desc}`);
 
         if (spot.parkingOptions) {
@@ -1056,6 +1063,16 @@
           });
         }
       });
+
+      // 繪製當日行程的行車路線連線 (Polyline)
+      if (routePathCoords.length > 1) {
+        polylineLayer = L.polyline(routePathCoords, {
+          color: '#5A6B5C',
+          weight: 4,
+          opacity: 0.8,
+          dashArray: '6, 6' // 虛線風格提升導航手帳質感
+        }).addTo(map);
+      }
 
       if (validSpots.length > 0) {
         map.fitBounds(L.latLngBounds(allBoundsCoords), { padding: [30, 30] });
