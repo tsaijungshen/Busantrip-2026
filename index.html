@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>釜山自駕旅遊導航手帳 (全方位韓文懶人包版)</title>
+  <title>釜山自駕旅遊導航手帳 (真實道路導航版)</title>
   
   <link rel="manifest" href="data:application/json,{
     \"name\": \"釜山自駕旅遊導航\",
@@ -18,6 +18,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- 引入真實道路導航外掛 Leaflet Routing Machine -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet" />
 
   <script>
@@ -75,6 +80,11 @@
       font-size: 13px;
       border: 2px solid #3B82F6;
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    }
+
+    /* 隱藏 LRM 預設文字面板，保持介面簡潔 */
+    .leaflet-routing-container {
+      display: none !important;
     }
   </style>
 </head>
@@ -844,7 +854,7 @@
 
     let currentDayIndex = 0;
     let currentCategoryFilter = 'all';
-    let map, markersGroup, polylineLayer;
+    let map, markersGroup, routingControl;
     let currentKrwRate = 42.0;
     let expenses = JSON.parse(localStorage.getItem('busan_expenses') || '[]');
     let parsedReceiptItems = [];
@@ -1024,38 +1034,6 @@
       renderDayContent(currentDayIndex);
     }
 
-    // 離線高密度路網模擬與道路街角擬真引擎 (Road Grid & Junction Engine)
-    // 徹底擺脫外接 API，在前端自動將點對點連線拆解為符合韓國主幹道與十字路口轉折的行車路線
-    function generateSimulatedRoadRoute(waypoints) {
-      let fullRoutePath = [];
-      for (let i = 0; i < waypoints.length - 1; i++) {
-        const start = waypoints[i];
-        const end = waypoints[i + 1];
-        
-        fullRoutePath.push(start);
-        
-        const dLat = end[0] - start[0];
-        const dLng = end[1] - start[1];
-        
-        // 生成 3~4 個路口轉折點 (Junction Waypoints)
-        if (Math.abs(dLng) > Math.abs(dLat)) {
-          // 東西向主要道路網 (如：伽倻大路 / 水營路)
-          const j1 = [start[0] + dLat * 0.15, start[1] + dLng * 0.35];
-          const j2 = [start[0] + dLat * 0.25, start[1] + dLng * 0.70];
-          const j3 = [start[0] + dLat * 0.85, start[1] + dLng * 0.88];
-          fullRoutePath.push(j1, j2, j3);
-        } else {
-          // 南北向主要道路網 (如：中央大路 / 海岸高架道路)
-          const j1 = [start[0] + dLat * 0.35, start[1] + dLng * 0.15];
-          const j2 = [start[0] + dLat * 0.70, start[1] + dLng * 0.25];
-          const j3 = [start[0] + dLat * 0.88, start[1] + dLng * 0.85];
-          fullRoutePath.push(j1, j2, j3);
-        }
-      }
-      fullRoutePath.push(waypoints[waypoints.length - 1]);
-      return fullRoutePath;
-    }
-
     function renderDayContent(index) {
       const data = itineraryData[index];
       document.getElementById('map-header-title').textContent = `Day ${data.day} 行車路線與 Koro 停車指南`;
@@ -1068,18 +1046,19 @@
       document.getElementById('summary-spot-count').textContent = `${filteredSpots.length} 個項目`;
 
       markersGroup.clearLayers();
-      if (polylineLayer) {
-        map.removeLayer(polylineLayer);
+      
+      // 清除舊的道路導航圖層
+      if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
       }
 
       const validSpots = filteredSpots.filter(s => s.lat && s.lng);
       const allBoundsCoords = [];
-      const spotWaypoints = [];
 
       validSpots.forEach((spot, idx) => {
         const coord = [spot.lat, spot.lng];
         allBoundsCoords.push(coord);
-        spotWaypoints.push(coord);
 
         const mainIcon = L.divIcon({ className: 'custom-map-pin', html: `${idx + 1}`, iconSize: [24, 24], iconAnchor: [12, 12] });
         const marker = L.marker(coord, { icon: mainIcon }).addTo(markersGroup);
@@ -1096,15 +1075,22 @@
         }
       });
 
-      // 繪製包含路口轉折高密度的擬真導航道路軌跡 (Road Grid Routing)
-      if (spotWaypoints.length > 1) {
-        const simulatedRoadCoords = generateSimulatedRoadRoute(spotWaypoints);
-        polylineLayer = L.polyline(simulatedRoadCoords, {
-          color: '#2563EB',
-          weight: 5,
-          opacity: 0.85,
-          lineCap: 'round',
-          lineJoin: 'round'
+      // 接入 Leaflet Routing Machine / OSRM 繪製真實貼合道路的開車藍色軌跡
+      if (validSpots.length > 1) {
+        const waypoints = validSpots.map(s => L.latLng(s.lat, s.lng));
+        
+        routingControl = L.Routing.control({
+          waypoints: waypoints,
+          lineOptions: {
+            styles: [
+              { color: '#2563EB', opacity: 0.85, weight: 6 } // 鮮明導航藍色實線
+            ]
+          },
+          createMarker: function() { return null; }, // 使用我們自訂的數字Pin標記
+          addWaypoints: false,
+          draggableWaypoints: false,
+          fitSelectedRoutes: false,
+          show: false
         }).addTo(map);
       }
 
