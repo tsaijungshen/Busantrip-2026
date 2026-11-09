@@ -427,185 +427,197 @@
       </div>
     
 
- <!-- 視圖 3: 隨身工具箱 -->
-<div id="tab-toolkit" class="space-y-4">
-  <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">✈️ 隨身資訊與工具箱</h2>
+<!-- 視圖 3: 隨身工具箱 -->
+    <div id="tab-toolkit" class="hidden space-y-4">
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">✈️ 隨身資訊與工具箱</h2>
 
-  <!-- 1. 中華航空 往返機票明細 -->
-  <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
-    <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
-      <span>✈️</span> 中華航空 往返機票明細
-    </h3>
-    <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
-      <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
-        <span class="font-bold text-jp-text">🛫 去程：台北 (TPE) ➔ 釜山 (PUS)</span>
-        <span class="text-jp-sub font-mono">2026/12/29 (二)</span>
-      </div>
-      <div class="flex justify-between items-center text-jp-text font-medium">
-        <div><div class="text-sm font-bold font-mono">15:40</div><div class="text-[11px] text-jp-sub">桃園機場 T1</div></div>
-        <div class="text-center text-jp-sub text-[10px]"><div>CI186 | A321neo</div><div>經濟艙 · 🍱 含餐</div></div>
-        <div class="text-right"><div class="text-sm font-bold font-mono">18:50</div><div class="text-[11px] text-jp-sub">金海機場 I</div></div>
-      </div>
-    </div>
-    <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
-      <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
-        <span class="font-bold text-jp-text">🛬 返回：釜山 (PUS) ➔ 台北 (TPE)</span>
-        <span class="text-jp-sub font-mono">2027/01/05 (二)</span>
-      </div>
-      <div class="flex justify-between items-center text-jp-text font-medium">
-        <div><div class="text-sm font-bold font-mono">19:50</div><div class="text-[11px] text-jp-sub">金海機場 I</div></div>
-        <div class="text-center text-jp-sub text-[10px]"><div>CI187 | A321neo</div><div>經濟艙 · 🍱 含餐</div></div>
-        <div class="text-right"><div class="text-sm font-bold font-mono">21:30</div><div class="text-[11px] text-jp-sub">桃園機場 T1</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. 🗺️ 釜山 12/29 - 1/5 專屬景點分佈圖卡片 (機票下方) -->
-  <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-200 shadow-sm space-y-3">
-    <div class="text-center border-b border-amber-200 pb-2">
-      <div class="text-xl font-extrabold text-red-600 tracking-wider">釜山 12/29 - 1/5</div>
-      <div class="text-sm font-bold text-jp-text tracking-widest">旅遊景點分佈圖 (專屬行程版)</div>
-    </div>
-
-    <div class="grid grid-cols-2 gap-2 text-[11px]">
-      <div class="p-2 bg-amber-100/70 rounded-lg border border-amber-300 text-amber-900 font-medium">
-        <div class="font-bold">🟡 1 【西面商圈】</div>
-        <div class="text-[10px] text-amber-800">飯店宿 · 咖啡街 · Shake Shack</div>
-      </div>
-      <div class="p-2 bg-emerald-100/70 rounded-lg border border-emerald-300 text-emerald-900 font-medium">
-        <div class="font-bold">🟢 9 【海雲台區】</div>
-        <div class="text-[10px] text-emerald-800">膠囊列車 · X the SKY · 汗蒸幕</div>
-      </div>
-      <div class="p-2 bg-pink-100/70 rounded-lg border border-pink-300 text-pink-900 font-medium">
-        <div class="font-bold">🩷 6 【廣安里】</div>
-        <div class="text-[10px] text-pink-800">跨年煙火 · 海景飯店 · 沙灘烤肉</div>
-      </div>
-      <div class="p-2 bg-purple-100/70 rounded-lg border border-purple-300 text-purple-900 font-medium">
-        <div class="font-bold">🟣 10 【機張東釜山】</div>
-        <div class="text-[10px] text-purple-800">龍宮寺 · 樂天世界 · 蒸長腳蟹</div>
-      </div>
-      <div class="p-2 bg-blue-100/70 rounded-lg border border-blue-300 text-blue-900 font-medium col-span-2">
-        <div class="font-bold">🔵 5 【南浦 & 影島 & 松島】</div>
-        <div class="text-[10px] text-blue-800">換錢所 · 買棉被 · 豚笑豬排 · 帝王蟹 · 太宗台 · 纜車</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3. 💰 MONEYPLANET 釜山南浦洞換錢所 -->
-  <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
-    <div class="flex justify-between items-center border-b border-jp-gray pb-2">
-      <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1.5">
-        <span>💰</span> MONEYPLANET 釜山南浦洞換錢所
-      </h3>
-      <span class="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded border border-amber-200 font-bold">最佳匯率推薦</span>
-    </div>
-    <div class="text-xs space-y-2">
-      <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1">
-        <div class="font-bold text-jp-text">📍 地址與交通：</div>
-        <div class="text-jp-sub text-[11px] leading-relaxed">
-          釜山市中區光復路 39-1 (釜山地鐵1號線札嘎其站 7號出口，或南浦站 1號出口步行約 5分鐘)
-        </div>
-        <div class="flex gap-2 text-[10px] pt-1">
-          <a href="https://map.naver.com/v5/search/MONEYPLANET+BUSAN" target="_blank" class="text-emerald-700 font-bold hover:underline">🚀 Naver 地圖 ↗</a>
-          <a href="https://map.kakao.com/link/search/MONEYPLANET+BUSAN" target="_blank" class="text-amber-700 font-bold hover:underline">🟡 Kakao 地圖 ↗</a>
-        </div>
-      </div>
-
-      <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1">
-        <div class="font-bold text-jp-text">⏰ 營業時間：</div>
-        <div class="text-jp-sub text-[11px]">
-          週一至週六 09:00 ~ 20:00 | 週日 09:00 ~ 18:00
-        </div>
-      </div>
-
-      <div class="p-2.5 bg-amber-50/80 rounded-xl border border-amber-200/80 text-amber-900 text-[11px] space-y-0.5">
-        <div class="font-bold">💡 換錢小技巧 (Kiosk 無人機)：</div>
-        <div>官網搜尋「Kiosk」，無人外幣兌換機可以換到 100 韓元單位的零錢，且完全免手續費！</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4. 🍓 韓國草莓採買指南 -->
-  <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
-    <h3 class="text-xs font-bold text-red-600 flex items-center gap-1.5">
-      <span>🍓</span> 韓國超市草莓採買小百科 (11~12月必吃)
-    </h3>
-    <div class="space-y-2 text-xs">
-      <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1.5">
-        <div class="font-bold text-jp-text">🏷️ 標籤三大品種辨識：</div>
-        <div class="space-y-1 text-[11px]">
-          <div class="flex justify-between">
-            <span class="font-bold text-jp-accent">1. 雪香 (설향)</span>
-            <span class="text-jp-sub">最常見、軟嫩多汁、酸甜平衡</span>
+      <!-- 1. 機票資訊 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
+        <h3 class="text-xs font-bold text-jp-accent flex items-center gap-1.5">
+          <span>✈️</span> 中華航空 往返機票明細
+        </h3>
+        <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
+          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
+            <span class="font-bold text-jp-text">🛫 去程：台北 (TPE) ➔ 釜山 (PUS)</span>
+            <span class="text-jp-sub font-mono">2026/12/29 (二)</span>
           </div>
-          <div class="flex justify-between">
-            <span class="font-bold text-jp-accent">2. Geumsil (금실)</span>
-            <span class="text-jp-sub">甜度高、果肉紮實帶淡桃香</span>
+          <div class="flex justify-between items-center text-jp-text font-medium">
+            <div><div class="text-sm font-bold font-mono">15:40</div><div class="text-[11px] text-jp-sub">桃園機場 T1</div></div>
+            <div class="text-center text-jp-sub text-[10px]"><div>CI186 | A321neo</div><div>經濟艙 · 🍱 含餐</div></div>
+            <div class="text-right"><div class="text-sm font-bold font-mono">18:50</div><div class="text-[11px] text-jp-sub">金海機場 I</div></div>
           </div>
-          <div class="flex justify-between">
-            <span class="font-bold text-jp-accent">3. Kingsberry (킹스베리)</span>
-            <span class="text-jp-sub">超大顆 (約雪香2倍大)</span>
+        </div>
+        <div class="p-3 bg-jp-bg rounded-xl border border-jp-gray space-y-2 text-xs">
+          <div class="flex justify-between items-center border-b border-jp-gray pb-1.5">
+            <span class="font-bold text-jp-text">🛬 返回：釜山 (PUS) ➔ 台北 (TPE)</span>
+            <span class="text-jp-sub font-mono">2027/01/05 (二)</span>
+          </div>
+          <div class="flex justify-between items-center text-jp-text font-medium">
+            <div><div class="text-sm font-bold font-mono">19:50</div><div class="text-[11px] text-jp-sub">金海機場 I</div></div>
+            <div class="text-center text-jp-sub text-[10px]"><div>CI187 | A321neo</div><div>經濟艙 · 🍱 含餐</div></div>
+            <div class="text-right"><div class="text-sm font-bold font-mono">21:30</div><div class="text-[11px] text-jp-sub">桃園機場 T1</div></div>
           </div>
         </div>
       </div>
 
-      <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900 text-[11px] space-y-1">
-        <div class="font-bold">✔ 超市挑選 3 大口訣：</div>
-        <ul class="list-disc list-inside space-y-0.5 text-[10.5px]">
-          <li>蒂頭綠綠的且微微往上翘</li>
-          <li>蒂頭旁邊也紅紅的</li>
-          <li>草莓表面亮亮的</li>
-        </ul>
-        <div class="text-[10px] text-emerald-700 pt-0.5">※ 買回飯店用水輕輕沖一下即可食用！</div>
+      <!-- 2. 🗺️ 釜山 12/29 - 1/5 專屬景點分佈圖卡片 -->
+      <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-200 shadow-sm space-y-3">
+        <div class="text-center border-b border-amber-200 pb-2">
+          <div class="text-xl font-extrabold text-red-600 tracking-wider">釜山 12/29 - 1/5</div>
+          <div class="text-sm font-bold text-jp-text tracking-widest">旅遊景點分佈圖 (專屬行程版)</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div class="p-2 bg-amber-100/70 rounded-lg border border-amber-300 text-amber-900 font-medium">
+            <div class="font-bold">🟡 1 【西面商圈】</div>
+            <div class="text-[10px] text-amber-800">飯店宿 · 咖啡街 · Shake Shack</div>
+          </div>
+          <div class="p-2 bg-emerald-100/70 rounded-lg border border-emerald-300 text-emerald-900 font-medium">
+            <div class="font-bold">🟢 9 【海雲台區】</div>
+            <div class="text-[10px] text-emerald-800">膠囊列車 · X the SKY · 汗蒸幕</div>
+          </div>
+          <div class="p-2 bg-pink-100/70 rounded-lg border border-pink-300 text-pink-900 font-medium">
+            <div class="font-bold">🩷 6 【廣安里】</div>
+            <div class="text-[10px] text-pink-800">跨年煙火 · 海景飯店 · 沙灘烤肉</div>
+          </div>
+          <div class="p-2 bg-purple-100/70 rounded-lg border border-purple-300 text-purple-900 font-medium">
+            <div class="font-bold">🟣 10 【機張東釜山】</div>
+            <div class="text-[10px] text-purple-800">龍宮寺 · 樂天世界 · 蒸長腳蟹</div>
+          </div>
+          <div class="p-2 bg-blue-100/70 rounded-lg border border-blue-300 text-blue-900 font-medium col-span-2">
+            <div class="font-bold">🔵 5 【南浦 & 影島 & 松島】</div>
+            <div class="text-[10px] text-blue-800">換錢所 · 買棉被 · 豚笑豬排 · 帝王蟹 · 太宗台 · 纜車</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 💰 MONEYPLANET 換錢所 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+        <div class="flex justify-between items-center border-b border-jp-gray pb-2">
+          <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1.5">
+            <span>💰</span> MONEYPLANET 釜山南浦洞換錢所
+          </h3>
+          <span class="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded border border-amber-200 font-bold">最佳匯率推薦</span>
+        </div>
+        <div class="text-xs space-y-2">
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1">
+            <div class="font-bold text-jp-text">📍 地址與交通：</div>
+            <div class="text-jp-sub text-[11px] leading-relaxed">
+              釜山市中區光復路 39-1 (釜山地鐵1號線札嘎其站 7號出口，或南浦站 1號出口步行約 5分鐘)
+            </div>
+            <div class="flex gap-2 text-[10px] pt-1">
+              <a href="https://map.naver.com/v5/search/MONEYPLANET+BUSAN" target="_blank" class="text-emerald-700 font-bold hover:underline">🚀 Naver 地圖 ↗</a>
+              <a href="https://map.kakao.com/link/search/MONEYPLANET+BUSAN" target="_blank" class="text-amber-700 font-bold hover:underline">🟡 Kakao 地圖 ↗</a>
+            </div>
+          </div>
+
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1">
+            <div class="font-bold text-jp-text">⏰ 營業時間：</div>
+            <div class="text-jp-sub text-[11px]">
+              週一至週六 09:00 ~ 20:00 | 週日 09:00 ~ 18:00
+            </div>
+          </div>
+
+          <div class="p-2.5 bg-amber-50/80 rounded-xl border border-amber-200/80 text-amber-900 text-[11px] space-y-0.5">
+            <div class="font-bold">💡 換錢小技巧 (Kiosk 無人機)：</div>
+            <div>官網搜尋「Kiosk」，無人外幣兌換機可以換到 100 韓元單位的零錢，且完全免手續費！</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 🍓 韓國草莓採買指南 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+        <h3 class="text-xs font-bold text-red-600 flex items-center gap-1.5">
+          <span>🍓</span> 韓國超市草莓採買小百科 (11~12月必吃)
+        </h3>
+        <div class="space-y-2 text-xs">
+          <div class="p-2.5 bg-jp-bg rounded-xl border border-jp-gray/60 space-y-1.5">
+            <div class="font-bold text-jp-text">🏷️ 標籤三大品種辨識：</div>
+            <div class="space-y-1 text-[11px]">
+              <div class="flex justify-between">
+                <span class="font-bold text-jp-accent">1. 雪香 (설향)</span>
+                <span class="text-jp-sub">最常見、軟嫩多汁、酸甜平衡</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-bold text-jp-accent">2. Geumsil (금실)</span>
+                <span class="text-jp-sub">甜度高、果肉紮實帶淡桃香</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-bold text-jp-accent">3. Kingsberry (킹스베리)</span>
+                <span class="text-jp-sub">超大顆 (約雪香2倍大)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900 text-[11px] space-y-1">
+            <div class="font-bold">✔ 超市挑選 3 大口訣：</div>
+            <ul class="list-disc list-inside space-y-0.5 text-[10.5px]">
+              <li>蒂頭綠綠的且微微往上翘</li>
+              <li>蒂頭旁邊也紅紅的</li>
+              <li>草莓表面亮亮的</li>
+            </ul>
+            <div class="text-[10px] text-emerald-700 pt-0.5">※ 買回飯店用水輕輕沖一下即可食用！</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 🚘 Koro 自駕提醒 -->
+      <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
+        <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1.5">
+          <span>🚘</span> KoreabyCar (Koro) 韓國自駕重點提醒
+        </h3>
+        <div class="text-[11px] text-jp-text space-y-2 leading-relaxed">
+          <div class="p-2 bg-amber-50 rounded-xl border border-amber-200 text-amber-900">
+            <strong>💳 無人閘門刷卡失敗：</strong> 海外信用卡常卡關，請按閘門上 <strong>「도움/Call (呼叫鈕)」</strong> 聯絡人工處理。
+          </div>
+          <div class="p-2 bg-jp-bg rounded-xl border border-jp-gray space-y-1">
+            <div class="font-bold text-jp-accent">🅿️ 雙排停車 (Double Parking)：</div>
+            <p>若停在擋住別人的位置，請打 <strong>N檔 (空檔)</strong>、<strong>不拉手煞車</strong>，並在擋風玻璃處留下電話號碼。</p>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- 5. 🚘 Koro 自駕提醒 -->
-  <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-2.5">
-    <h3 class="text-xs font-bold text-jp-warm flex items-center gap-1.5">
-      <span>🚘</span> KoreabyCar (Koro) 韓國自駕重點提醒
-    </h3>
-    <div class="text-[11px] text-jp-text space-y-2 leading-relaxed">
-      <div class="p-2 bg-amber-50 rounded-xl border border-amber-200 text-amber-900">
-        <strong>💳 無人閘門刷卡失敗：</strong> 海外信用卡常卡關，請按閘門上 <strong>「도움/Call (呼叫鈕)」</strong> 聯絡人工處理。
-      </div>
-      <div class="p-2 bg-jp-bg rounded-xl border border-jp-gray space-y-1">
-        <div class="font-bold text-jp-accent">🅿️ 雙排停車 (Double Parking)：</div>
-        <p>若停在擋住別人的位置，請打 <strong>N檔 (空檔)</strong>、<strong>不拉手煞車</strong>，並在擋風玻璃處留下電話號碼。</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-    <!-- 視圖 4: 離線記帳與智慧收據翻譯 -->
+    <!-- 視圖 4: 離線記帳與智慧收據多品項翻譯 -->
     <div id="tab-budget" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 智能收據翻譯與記帳</h2>
+      <h2 class="text-sm font-bold text-jp-text border-l-4 border-jp-accent pl-2">💰 智能拍照收據多品項入帳</h2>
       
       <div class="bg-jp-card p-4 rounded-2xl border border-jp-gray shadow-sm space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-jp-text flex items-center gap-1.5">
-            <span>📷</span> 拍照收據 / 翻譯入帳
+            <span>📸</span> 拍照收據 / 多品項自動辨識
           </h3>
-          <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold border border-emerald-200">AI 輔助確認</span>
+          <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold border border-emerald-200">一鍵批量入帳</span>
         </div>
 
         <div class="space-y-2.5">
           <input type="file" id="receipt-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleReceiptImage(event)" />
           
           <button onclick="document.getElementById('receipt-file-input').click()" class="w-full py-3 bg-jp-bg hover:bg-jp-accentLight rounded-xl border-2 border-dashed border-jp-accent/40 flex flex-col items-center justify-center gap-1 text-xs font-bold text-jp-accent transition-all">
-            <span class="text-lg">📸</span>
+            <span class="text-lg">📷</span>
             <span>點擊拍照或上傳收據照片</span>
-            <span class="text-[10px] text-jp-sub font-normal">自動辨識品項、韓文翻譯並填入下方欄位</span>
+            <span class="text-[10px] text-jp-sub font-normal">自動辨識所有明細、品項翻譯與單價</span>
           </button>
 
-          <div id="receipt-preview-container" class="hidden space-y-2 p-3 bg-jp-bg rounded-xl border border-jp-gray">
+          <div id="receipt-preview-container" class="hidden space-y-3 p-3 bg-jp-bg rounded-xl border border-jp-gray">
             <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-jp-text">收據預覽與分析中...</span>
+              <span class="text-xs font-bold text-jp-text flex items-center gap-1">🧾 收據明細分析結果</span>
               <button onclick="clearReceipt()" class="text-[10px] text-red-600 font-bold">重新拍照</button>
             </div>
-            <img id="receipt-img-preview" class="w-full h-32 object-cover rounded-lg border border-jp-gray" />
-            <div id="receipt-ai-status" class="text-[11px] text-jp-warm font-medium">✨ 正在分析收據品項與金額...</div>
+            
+            <div class="flex gap-3 items-center">
+              <img id="receipt-img-preview" class="w-16 h-16 object-cover rounded-lg border border-jp-gray flex-shrink-0" />
+              <div id="receipt-ai-status" class="text-[11px] text-jp-warm font-medium">✨ 正在解析收據明細...</div>
+            </div>
+
+            <div id="parsed-items-list" class="space-y-2 pt-1 border-t border-jp-gray/80"></div>
+
+            <div id="batch-save-btn-container" class="hidden pt-1">
+              <button onclick="saveAllParsedItems()" class="w-full py-2.5 bg-jp-accent text-white rounded-xl text-xs font-bold shadow hover:opacity-90 flex justify-center items-center gap-1.5">
+                <span>✅</span>
+                <span>確認無誤，將勾選項目全部存入帳冊</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -616,10 +628,10 @@
           <span class="text-emerald-600 font-medium text-[10px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">🟢 每日自動同步</span>
         </div>
         <div class="space-y-2">
-          <input type="text" id="expense-title" placeholder="消費品項（如：豚笑黑豬肉、油錢）" class="w-full text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none" />
+          <input type="text" id="expense-title" placeholder="手動新增品項（如：計程車費、零食）" class="w-full text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none" />
           <div class="flex gap-2">
             <input type="number" id="expense-amount" placeholder="金額 (韓元 KRW)" class="flex-1 text-xs p-2.5 bg-jp-bg rounded-xl border border-jp-gray focus:outline-none" />
-            <button onclick="addExpense()" class="bg-jp-accent text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm hover:opacity-90">確認存入帳冊</button>
+            <button onclick="addSingleExpense()" class="bg-jp-accent text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm hover:opacity-90">單筆存入</button>
           </div>
         </div>
       </div>
